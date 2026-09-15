@@ -42,8 +42,7 @@ export function Philosophy() {
                 />
               </div>
               <figcaption className="eyebrow text-mute mt-4">
-                {/* Location is sourced; no date or event is claimed. */}
-                Nelson T. Ajulo
+                NELSON T. AJULO, PhD
               </figcaption>
             </figure>
           </Reveal>

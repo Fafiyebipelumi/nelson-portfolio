@@ -57,7 +57,7 @@ export const profile = {
   /* Nigerian-born, Netherlands-based [thehague.com]; MyHives is
      headquartered in The Hague [myhives.nl] */
   location: "The Hague, Netherlands",
-  roles: ["Entrepreneur", "Investor", "Technologist"],
+  roles: ["ENTREPRENEUR", "INVESTOR", "TECHNOLOGIST"],
 
   statement:
     "Building technology that acts when people cannot — and intelligence that helps them do more.",
