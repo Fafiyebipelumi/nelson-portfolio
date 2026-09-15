@@ -100,10 +100,10 @@ export const myhives = {
   body: [
     /* Framing derived from MyHives' own positioning: every other safety
        product has one trigger — you, pressing something [myhives.io] */
-    "Every personal safety product begins with the same assumption: that you will be able to act. Press the button. Make the call. Say the words. BEEKON is built for the moments when you cannot.",
-    /* On-device learning, trusted circle, 170+ countries with live
-       translation, nothing shared until something is wrong [myhives.io] */
-    "It learns your routes, your rhythms and your normal — privately, on your own device. When something is not normal, it tells the people you chose what happened and where, across 170+ countries with live translation. Nothing is shared until something is wrong.",
+    "Every safety product assumes you can act — press the button, make the call, say the words. BEEKON is built for the moments you cannot.",
+    /* On-device learning, trusted circle, 170+ countries, nothing shared
+       until something is wrong [myhives.io] */
+    "It learns your normal, privately and on-device. When something isn’t, it tells the people you chose — what happened and where, in 170+ countries. Nothing is shared until something is wrong.",
   ],
 
   /* Verbatim, attributed to Nelson T. Ajulo [PR 2026-09] */
@@ -165,7 +165,7 @@ export const joble = {
     /* Web agent + phone agent + unified workspace; qualifies, books,
        runs outbound; 13 languages; EU data residency; live in ~5 min
        [joble.app] */
-    "Joble puts an AI agent on the website and on the phone, with one workspace behind both. Questions get answered, leads get qualified, meetings get booked — in thirteen languages, on EU data residency, live in about five minutes.",
+    "Joble puts an AI agent on the website and the phone, one workspace behind both — answering questions, qualifying leads and booking meetings, around the clock.",
   ],
 
   facts: [
@@ -264,8 +264,8 @@ export const bigPicture = {
     after: ".",
   },
   body: [
-    "Africa will not be a late adopter of artificial intelligence. It will be one of the places where the stakes are highest and the leverage greatest — in classrooms, on farms, in clinics, and in the small businesses that employ most of the continent.",
-    "That future turns on two things: access, and sovereignty. Whether models, data and infrastructure are built to serve local realities, or simply arrive from somewhere else. It is a conversation I keep showing up for.",
+    "Africa will not be a late adopter of artificial intelligence. It will be one of the places where the stakes are highest, and the leverage greatest.",
+    "The question is no longer whether the technology arrives, but who it is built to serve. Access and sovereignty. That is the conversation I keep showing up for.",
   ],
 
   /* Nelson's involvement is described as participation only. AIFOD's summit
