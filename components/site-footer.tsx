@@ -19,7 +19,7 @@ export function SiteFooter() {
         </p>
 
         <div className="text-slate flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-8">
-          <p className="eyebrow">Concept direction · 2026</p>
+          <p className="eyebrow">Copyright &copy; · 2026</p>
           <a
             href="#top"
             className="link-draw eyebrow hover:text-bone transition-colors"

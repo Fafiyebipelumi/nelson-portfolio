@@ -14,6 +14,7 @@
    is warm before the tap completes.
    ========================================================================== */
 
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -93,7 +94,7 @@ export function MobileMenu({
                     ease: EASE,
                   }}
                 >
-                  <a
+                  <Link
                     href={item.href}
                     onClick={onClose}
                     className="text-bone flex items-baseline gap-4 py-5 text-3xl tracking-[-0.03em]"
@@ -102,7 +103,7 @@ export function MobileMenu({
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     {item.label}
-                  </a>
+                  </Link>
                 </motion.li>
               ))}
             </ul>

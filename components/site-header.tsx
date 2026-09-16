@@ -3,19 +3,23 @@
 /* ============================================================================
    SITE HEADER
    ----------------------------------------------------------------------------
-   Starts transparent over the ink hero with light type, then swaps to a
-   translucent paper bar with dark type once the hero is behind you. That
-   crossover is the only reason the bar itself needs to be a client component,
-   and it is done with a passive scroll listener coalesced into one rAF
-   callback so it never does layout work per event.
+   Shared across every route (rendered once in the root layout). It starts
+   transparent over an ink hero with light type, then takes on a translucent
+   bar — ink or paper — matching whichever surface is passing beneath it. That
+   surface-matching is the only reason the bar needs to be a client component,
+   and it is driven by a passive scroll listener coalesced into a single rAF.
 
-   The mobile overlay lives in a separate, code-split module. It is imported on
-   first intent (pointer or focus on the trigger) rather than at page load, so
-   the animation runtime it depends on stays off the critical path — and off
-   desktop entirely.
+   Because the header persists across client-side navigations, the ink-section
+   bounds are re-measured whenever the route changes (`pathname`), otherwise a
+   new page would inherit the previous page's tone map.
+
+   The mobile overlay is code-split and imported on first intent, so the
+   animation runtime it needs never touches the critical path — or desktop.
    ========================================================================== */
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Menu } from "lucide-react";
 import { navigation, profile } from "@/lib/content";
@@ -35,13 +39,14 @@ export function SiteHeader() {
   const [menuReady, setMenuReady] = useState(false);
   const frame = useRef(0);
   const inkRanges = useRef<Array<[number, number]>>([]);
+  const pathname = usePathname();
 
   useEffect(() => {
-    /* The page alternates paper and ink surfaces, so a single fixed bar style
+    /* The site alternates paper and ink surfaces, so a single fixed bar style
        cannot work throughout — a light bar stranded over an ink section reads
-       as a rendering fault. Ink section bounds are measured once here (and on
-       resize) so the scroll handler only ever does arithmetic, never a layout
-       read, on the way past. */
+       as a rendering fault. Ink section bounds are measured up front (and on
+       resize / route change) so the scroll handler only ever does arithmetic,
+       never a layout read, on the way past. */
     const measure = () => {
       inkRanges.current = Array.from(
         document.querySelectorAll<HTMLElement>('[data-tone="ink"]'),
@@ -72,16 +77,22 @@ export function SiteHeader() {
       read();
     };
 
-    measure();
-    read();
+    /* Wait a frame after a route change so the incoming page has laid out
+       before its ink sections are measured. */
+    const settle = window.requestAnimationFrame(() => {
+      measure();
+      read();
+    });
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => {
+      window.cancelAnimationFrame(settle);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (frame.current) window.cancelAnimationFrame(frame.current);
     };
-  }, []);
+  }, [pathname]);
 
   /* Warm the overlay chunk on intent, so the tap itself is instant. */
   const prefetchMenu = useCallback(() => setMenuReady(true), []);
@@ -118,8 +129,8 @@ export function SiteHeader() {
       >
         <div className="gutter flex h-16 items-center justify-between sm:h-20">
           {/* Name mark */}
-          <a
-            href="#top"
+          <Link
+            href="/#top"
             className={`font-mono text-[0.8125rem] tracking-[0.14em] uppercase transition-colors duration-500 ${
               light ? "text-bone" : "text-charcoal"
             }`}
@@ -128,14 +139,14 @@ export function SiteHeader() {
             <span className={light ? "text-slate" : "text-mute"}>
               {profile.lastName}
             </span>
-          </a>
+          </Link>
 
           {/* Desktop navigation */}
           <nav aria-label="Sections" className="hidden md:block">
             <ul className="flex items-center gap-8 lg:gap-10">
               {navigation.map((item) => (
                 <li key={item.href}>
-                  <a
+                  <Link
                     href={item.href}
                     className={`link-draw font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors duration-300 ${
                       light
@@ -144,7 +155,7 @@ export function SiteHeader() {
                     }`}
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

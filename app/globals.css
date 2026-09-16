@@ -90,6 +90,20 @@
      of the list by exactly -50%, so the loop is seamless. Slow on purpose —
      this is a passing credit roll, not a ticker. */
   --animate-marquee: marquee 42s linear infinite;
+
+  /* Podcast waveform — a soft audio-level motif. Each bar shares this and
+     offsets its own delay/duration so the row never pulses in lockstep. */
+  --animate-equalize: equalize 1.9s ease-in-out infinite;
+}
+
+@keyframes equalize {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
 @keyframes marquee {

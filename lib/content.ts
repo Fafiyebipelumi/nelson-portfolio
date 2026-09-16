@@ -444,13 +444,187 @@ export const contact = {
 } as const;
 
 /* -------------------------------------------------------------------------- */
+/*  Podcast  (/podcast)                                                       */
+/* -------------------------------------------------------------------------- */
+
+/* CONCEPT — the show does not exist yet; this is designed from scratch as part
+   of the proposal. Everything here is working copy:
+
+   • `name` is a WORKING TITLE. It deliberately extends the site's closing line
+     ("Let's build what comes next") so the podcast reads as the continuation
+     of that thought. Confirm or replace before launch.
+   • Episodes are an ILLUSTRATIVE line-up, not published work. No real guests
+     are named — doing so would imply associations that don't exist. Guests
+     read "To be announced".
+   • Subscribe links are placeholders until the show is hosted somewhere.
+   • The application posts to a hosted form endpoint (Formspree/Tally) set via
+     NEXT_PUBLIC_PODCAST_FORM_ENDPOINT. Until that's set, the form simulates a
+     successful submission so the prototype demos cleanly. */
+
+export interface PodcastEpisode {
+  index: string;
+  title: string;
+  blurb: string;
+  guest: string;
+}
+
+export interface ApplyField {
+  name: string;
+  label: string;
+  type: "text" | "email" | "url" | "textarea";
+  placeholder: string;
+  required: boolean;
+  autoComplete?: string;
+}
+
+export const podcast = {
+  /** ⚠ Working title — confirm with Nelson before launch. */
+  name: "What Comes Next",
+  nameIsPlaceholder: true,
+
+  hero: {
+    eyebrow: "The podcast",
+    tagline: {
+      before: "Conversations with the people deciding ",
+      emphasis: "who technology reaches",
+      after: ".",
+    },
+    standing:
+      "A long-form conversation with the founders, investors and researchers building the next decade of opportunity — in AI, in safety, and in the markets the industry usually reaches last.",
+    status: "Season one — in production",
+  },
+
+  /* Subscribe destinations — placeholders until the show is hosted. */
+  subscribe: [
+    { label: "Spotify", href: "#", placeholder: true },
+    { label: "Apple Podcasts", href: "#", placeholder: true },
+    { label: "YouTube", href: "#", placeholder: true },
+    { label: "RSS", href: "#", placeholder: true },
+  ],
+
+  premise: {
+    eyebrow: "The premise",
+    headline: {
+      before: "Most conversations about technology stop at ",
+      emphasis: "what it can do",
+      after: ".",
+    },
+    body: [
+      "This one starts with a harder question: who does it actually reach, and who gets left waiting?",
+      "Each episode sits down with someone building at that edge — expanding access, closing distance, turning a clever system into something that changes an ordinary life. Founders and funders, engineers and operators, the occasional heretic.",
+      "No hype cycle, no launch tour. Just the real texture of building things that matter, told by the people doing it.",
+    ],
+  },
+
+  episodes: {
+    eyebrow: "Season one",
+    headline: "The opening line-up.",
+    note: "Illustrative — sample themes, guests to be announced",
+    items: [
+      {
+        index: "01",
+        title: "The first minute is the whole emergency",
+        blurb:
+          "Why the hardest problem in personal safety is not the response — it's the seconds before anyone knows.",
+        guest: "Guest to be announced",
+      },
+      {
+        index: "02",
+        title: "What a small business actually buys when it buys AI",
+        blurb:
+          "Beyond the demos: what changes when an agent answers every call and never forgets to follow up.",
+        guest: "Guest to be announced",
+      },
+      {
+        index: "03",
+        title: "Access before intelligence",
+        blurb:
+          "AI in developing economies — what has to be true on the ground before the models matter.",
+        guest: "Guest to be announced",
+      },
+    ] satisfies PodcastEpisode[],
+  },
+
+  /* The centrepiece: the open invitation. */
+  apply: {
+    eyebrow: "Be part of it",
+    headline: {
+      before: "There's a ",
+      emphasis: "seat at the table",
+      after: ".",
+    },
+    intro:
+      "The best guests rarely have a press team. If you're building, funding or researching something that widens who gets to participate — put yourself forward. Every application is read.",
+    lookingFor: [
+      "Founders building in AI, fintech, safety or hard infrastructure",
+      "Investors and operators backing overlooked markets",
+      "Researchers turning work into things people can use",
+      "Anyone expanding access to opportunity in an unusual way",
+    ],
+    form: {
+      fields: [
+        {
+          name: "name",
+          label: "Full name",
+          type: "text",
+          placeholder: "Your name",
+          required: true,
+          autoComplete: "name",
+        },
+        {
+          name: "email",
+          label: "Email",
+          type: "email",
+          placeholder: "you@company.com",
+          required: true,
+          autoComplete: "email",
+        },
+        {
+          name: "role",
+          label: "Role & organisation",
+          type: "text",
+          placeholder: "Founder & CEO, Company",
+          required: true,
+          autoComplete: "organization-title",
+        },
+        {
+          name: "link",
+          label: "LinkedIn or website",
+          type: "url",
+          placeholder: "https://",
+          required: false,
+          autoComplete: "url",
+        },
+        {
+          name: "pitch",
+          label: "What would you want to explore on the show?",
+          type: "textarea",
+          placeholder:
+            "A sentence or two on what you're building and the conversation you'd want to have.",
+          required: true,
+        },
+      ] satisfies ApplyField[],
+      submitLabel: "Submit application",
+      successTitle: "Application received.",
+      successBody:
+        "Thank you — it's in. If there's a fit, you'll hear from the team directly.",
+      errorBody: "Something went wrong. Please try again, or email hello@tnajulo.com.",
+      consent: "Applications go straight to the show's team. No list, no spam.",
+    },
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
 /*  Navigation                                                                */
 /* -------------------------------------------------------------------------- */
 
+/* Section links use the "/#id" form so they resolve from any route — an
+   in-page scroll on the homepage, a navigate-then-scroll from /podcast. */
 export const navigation = [
-  { label: "Position", href: "#position" },
-  { label: "Building", href: "#building" },
-  { label: "Journey", href: "#journey" },
-  { label: "Perspective", href: "#perspective" },
-  { label: "Contact", href: "#contact" },
+  { label: "Position", href: "/#position" },
+  { label: "Building", href: "/#building" },
+  { label: "Journey", href: "/#journey" },
+  { label: "Perspective", href: "/#perspective" },
+  { label: "Podcast", href: "/podcast" },
+  { label: "Contact", href: "/#contact" },
 ] as const;

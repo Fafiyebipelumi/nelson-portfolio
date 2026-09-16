@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { RevealObserver } from "@/components/reveal-observer";
+import { SiteHeader } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
 
 /* Three families, each with a distinct job and nothing spare:
@@ -92,7 +94,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
     >
       <body className="bg-paper text-charcoal min-h-dvh">
+        {/* Header and footer are shared across every route. */}
+        <SiteHeader />
         {children}
+        <SiteFooter />
         {/* Drives every scroll reveal on the page from a single observer. */}
         <RevealObserver />
       </body>
