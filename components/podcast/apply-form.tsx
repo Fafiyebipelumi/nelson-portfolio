@@ -65,18 +65,19 @@ export function ApplyForm() {
     const payload = Object.fromEntries(data.entries());
 
     try {
-      if (ENDPOINT) {
-        const res = await fetch(ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error("Request failed");
-      } else {
-        /* No endpoint configured — simulate a successful submission so the
-           prototype behaves realistically. Swap in a real endpoint to send. */
-        await new Promise((resolve) => setTimeout(resolve, 900));
-      }
+      /* No silent fallback (brief §4.3): if the endpoint is not configured, or
+         the request fails, the applicant sees an error rather than a fake
+         success. The endpoint is a form service (Formspree) whose recipient is
+         set to support@tnajulo.com. */
+      if (!ENDPOINT) throw new Error("Form endpoint not configured");
+
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ ...payload, _subject: "What Comes Next guest application" }),
+      });
+      if (!res.ok) throw new Error("Request failed");
+
       setStatus("success");
       requestAnimationFrame(() => successRef.current?.focus());
     } catch {
@@ -89,9 +90,9 @@ export function ApplyForm() {
       <div
         ref={successRef}
         tabIndex={-1}
-        className="border-signal-bright/40 flex flex-col items-start gap-5 border p-8 sm:p-10"
+        className="border-airwave/40 flex flex-col items-start gap-5 border p-8 sm:p-10"
       >
-        <span className="border-signal-bright/50 text-signal-bright flex size-11 items-center justify-center rounded-full border">
+        <span className="border-airwave/50 text-airwave flex size-11 items-center justify-center rounded-full border">
           <Check className="size-5" strokeWidth={1.75} aria-hidden="true" />
         </span>
         <h3 className="text-bone text-2xl font-medium tracking-[-0.02em]">
@@ -117,7 +118,7 @@ export function ApplyForm() {
           "aria-invalid": hasError || undefined,
           "aria-describedby": hasError ? errorId : undefined,
           className:
-            "bg-ink-raised border-rule-ink text-bone placeholder:text-slate/70 focus-visible:border-signal-bright w-full border px-4 py-3.5 text-base transition-colors duration-200 outline-none",
+            "bg-ink-raised border-rule-ink text-bone placeholder:text-slate/70 focus-visible:border-airwave w-full border px-4 py-3.5 text-base transition-colors duration-200 outline-none",
         };
 
         return (
@@ -128,7 +129,7 @@ export function ApplyForm() {
             >
               {field.label}
               {!field.required ? (
-                <span className="text-slate normal-case">— optional</span>
+                <span className="text-slate normal-case">(optional)</span>
               ) : null}
             </label>
 
@@ -143,7 +144,7 @@ export function ApplyForm() {
             )}
 
             {hasError ? (
-              <p id={errorId} className="text-signal-bright text-sm">
+              <p id={errorId} className="text-airwave text-sm">
                 {errors[field.name]}
               </p>
             ) : null}
@@ -157,14 +158,14 @@ export function ApplyForm() {
       </div>
 
       {status === "error" ? (
-        <p className="text-signal-bright text-sm">{COPY.errorBody}</p>
+        <p className="text-airwave text-sm">{COPY.errorBody}</p>
       ) : null}
 
       <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="group bg-signal-bright text-ink hover:bg-bone inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-medium tracking-[0.01em] transition-colors duration-300 disabled:opacity-60"
+          className="group bg-airwave text-ink hover:bg-bone inline-flex items-center justify-center gap-2.5 px-7 py-4 text-sm font-medium tracking-[0.01em] transition-colors duration-300 disabled:opacity-60"
         >
           {status === "submitting" ? "Sending…" : COPY.submitLabel}
           <ArrowRight

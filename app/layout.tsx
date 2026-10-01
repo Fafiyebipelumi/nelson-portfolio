@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { RevealObserver } from "@/components/reveal-observer";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { Analytics } from "@/components/analytics";
 import "./globals.css";
 
 /* Three families, each with a distinct job and nothing spare:
@@ -33,13 +34,13 @@ const instrumentSerif = Instrument_Serif({
 const SITE_URL = "https://tnajulo.com";
 
 const DESCRIPTION =
-  "Nelson T. Ajulo is a technology entrepreneur and investor building at the intersection of artificial intelligence, everyday safety and economic opportunity. Founder and CEO/CTO of MyHives, makers of BEEKON.";
+  "Nelson T. Ajulo is a technology entrepreneur and investor building at the intersection of artificial intelligence, everyday safety and economic opportunity. CEO and Co-Founder of MyHives, makers of BEEKON, protecting 35,000+ people across 190+ countries. Founder of Joble. General Partner at 15Wins Ventures. AIFOD Global Advocate.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Nelson T. Ajulo — Entrepreneur, Investor, Technologist",
-    template: "%s — Nelson T. Ajulo",
+    default: "Nelson T. Ajulo, Entrepreneur, Investor, Technologist",
+    template: "%s · Nelson T. Ajulo",
   },
   description: DESCRIPTION,
   alternates: {
@@ -62,7 +63,7 @@ export const metadata: Metadata = {
     type: "profile",
     firstName: "Nelson",
     lastName: "Ajulo",
-    title: "Nelson T. Ajulo — Entrepreneur, Investor, Technologist",
+    title: "Nelson T. Ajulo, Entrepreneur, Investor, Technologist",
     description: DESCRIPTION,
     url: SITE_URL,
     siteName: "Nelson T. Ajulo",
@@ -70,7 +71,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nelson T. Ajulo — Entrepreneur, Investor, Technologist",
+    title: "Nelson T. Ajulo, Entrepreneur, Investor, Technologist",
     description: DESCRIPTION,
   },
   robots: {
@@ -80,11 +81,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f2ed" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0b0c" },
-  ],
-  colorScheme: "light",
+  themeColor: "#0c1a13",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -100,6 +98,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <SiteFooter />
         {/* Drives every scroll reveal on the page from a single observer. */}
         <RevealObserver />
+        <Analytics />
       </body>
     </html>
   );

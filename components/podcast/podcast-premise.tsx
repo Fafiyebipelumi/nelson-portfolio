@@ -5,20 +5,22 @@ import { Reveal } from "../motion-primitives";
 /* ============================================================================
    PODCAST — PREMISE
    ----------------------------------------------------------------------------
-   The editorial statement: what the show is and who it's for. Type-led, on
-   paper, in the same manifesto register as the homepage Position section.
+   The editorial statement: what the show is and who it's for. Type-led, on the
+   ink surface (the podcast is dark by default, brief 4.2), in the same
+   manifesto register as the homepage Position section but carrying the podcast
+   aqua accent.
    ========================================================================== */
 
 export function PodcastPremise() {
   return (
-    <Section id="premise" tone="paper">
+    <Section id="premise" tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="01" label={podcast.premise.eyebrow} />
+        <SectionLabel index="02" label={podcast.premise.eyebrow} tone="podcast" />
 
         <Reveal>
-          <h2 className="text-display text-charcoal max-w-5xl font-medium">
+          <h2 className="text-display text-bone max-w-5xl font-medium">
             {podcast.premise.headline.before}
-            <span className="text-signal font-serif italic">
+            <span className="text-airwave">
               {podcast.premise.headline.emphasis}
             </span>
             {podcast.premise.headline.after}
@@ -32,8 +34,8 @@ export function PodcastPremise() {
                 <p
                   className={
                     i === 0
-                      ? "text-lead text-charcoal"
-                      : "text-graphite text-base leading-relaxed sm:text-[1.0625rem]"
+                      ? "text-lead text-bone"
+                      : "text-ash text-base leading-relaxed sm:text-[1.0625rem]"
                   }
                 >
                   {paragraph}

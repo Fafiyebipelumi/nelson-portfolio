@@ -23,7 +23,7 @@ export function BigPicture() {
         <Reveal>
           <h2 className="text-display text-bone max-w-5xl font-medium">
             {bigPicture.headline.before}
-            <span className="text-signal-bright font-serif italic">
+            <span className="text-signal-bright">
               {bigPicture.headline.emphasis}
             </span>
             {bigPicture.headline.after}

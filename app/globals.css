@@ -3,43 +3,62 @@
 /* ============================================================
    NELSON T. AJULO — DESIGN SYSTEM
    ------------------------------------------------------------
-   A warm-paper editorial system with an ink counterpoint.
+   A dark-first editorial system drawn from Nelson's own brand
+   identity: the near-black, green-tinted surfaces of his sites
+   (tnajulo.com, MyHives) paired with an emerald/teal accent.
    Deliberately avoids the dark-neon/purple-gradient "AI site"
-   idiom in favour of something closer to a printed journal:
-   generous whitespace, hairline rules, and typography doing
-   nearly all of the visual work.
+   idiom — typography and hairline rules still do the visual
+   work; only the temperature has flipped from paper to ink.
 
-   Accent: "signal" — a deep amber. Chosen because it reads as
-   alert/beacon (the safety thread running through his work)
-   and as honey (the hive), without ever becoming neon.
+   NOTE ON TOKEN NAMES: the surface tokens keep their original
+   "paper" / "ink" names for a low-risk remap (no component
+   markup changed). Post-flip both are dark: "paper" is the
+   primary green-black surface, "ink" the deeper counterpoint.
+
+   Accent: "signal" — an emerald/teal (his #51ae8e / #03bbad
+   family). Reads as alert/beacon (the safety thread running
+   through his work) and as living signal, never neon.
    ============================================================ */
 
 @theme {
-  /* ---- Surfaces ---- */
-  --color-paper: #f4f2ed; /* warm off-white, primary surface   */
-  --color-paper-raised: #faf9f6; /* lifted cards on paper             */
-  --color-paper-deep: #e9e6df; /* recessed / muted passages         */
+  /* ---- Surfaces (dark-first, green-tinted black) ---- */
+  --color-paper: #0c1a13; /* green-black, primary surface       */
+  --color-paper-raised: #12271d; /* lifted cards on paper             */
+  --color-paper-deep: #08120d; /* recessed / muted passages         */
 
-  --color-ink: #0b0b0c; /* near-black, counterpoint surface   */
-  --color-ink-raised: #141416; /* lifted panels on ink               */
-  --color-ink-soft: #1c1c1f; /* hairlines & fills on ink           */
+  --color-ink: #060c09; /* deepest green-black, counterpoint  */
+  --color-ink-raised: #0e1b15; /* lifted panels on ink               */
+  --color-ink-soft: #16261f; /* hairlines & fills on ink           */
 
-  /* ---- Text ---- */
-  --color-charcoal: #26262a; /* headings on paper                  */
-  --color-graphite: #66666b; /* body on paper       — 5.4:1 AA     */
-  --color-mute: #8a8a90; /* decorative only on paper           */
+  /* ---- Text (light on dark; headings pure white) ---- */
+  --color-charcoal: #ffffff; /* headings on paper   — 17.9:1 AAA   */
+  --color-graphite: #aebab4; /* body on paper       — 8.9:1 AAA    */
+  --color-mute: #7e8c85; /* decorative only on paper — 5.1:1   */
 
-  --color-bone: #ece9e3; /* headings on ink                    */
-  --color-ash: #a2a2a9; /* body on ink         — 7.6:1 AAA    */
-  --color-slate: #6e6e75; /* decorative only on ink             */
+  --color-bone: #ffffff; /* headings on ink     — 19.7:1 AAA   */
+  --color-ash: #aebab4; /* body on ink         — 9.9:1 AAA    */
+  --color-slate: #7e8c85; /* decorative only on ink — 5.6:1     */
 
-  /* ---- Accent ---- */
-  --color-signal: #a65a14; /* on paper            — 4.6:1 AA     */
-  --color-signal-bright: #e8a54d; /* on ink              — 9.3:1 AAA    */
+  /* ---- Accent (emerald / teal — his real brand colour) ---- */
+  --color-signal: #3fd0b8; /* on paper            — 9.3:1 AAA    */
+  --color-signal-bright: #57cbb8; /* on ink              — 10:1 AAA     */
 
-  /* ---- Hairlines ---- */
-  --color-rule: rgb(11 11 12 / 0.12);
-  --color-rule-strong: rgb(11 11 12 / 0.24);
+  /* ---- Secondary / pop (magenta, from MyHives #e8107f) ----
+     Reserved for rare emphasis (live states, tags). Not wired into
+     components by default; available as text-flare / bg-flare. */
+  --color-flare: #f0489e; /* on dark             — 5.2:1 AA     */
+  --color-flare-deep: #c40e6c; /* on light, if ever needed          */
+
+  /* ---- Podcast accent ----
+     The podcast is its own subsystem (dark by default) and carries a
+     distinct aqua that now sits in the same family as the site accent.
+     Reads as audio signal and evening listening, never neon. */
+  --color-airwave: #57cbb8; /* on ink              — ~9:1 AAA        */
+  --color-airwave-deep: #1f7d6e; /* on paper, if ever needed          */
+
+  /* ---- Hairlines (light-based so they read on dark surfaces) ---- */
+  --color-rule: rgb(255 255 255 / 0.12);
+  --color-rule-strong: rgb(255 255 255 / 0.22);
   --color-rule-ink: rgb(236 233 227 / 0.14);
   --color-rule-ink-strong: rgb(236 233 227 / 0.28);
 
@@ -86,12 +105,7 @@
      the two halves are one system. */
   --animate-travel: travel 9s ease-in-out infinite;
 
-  /* Featured-in marquee. Translates a track that holds two identical copies
-     of the list by exactly -50%, so the loop is seamless. Slow on purpose —
-     this is a passing credit roll, not a ticker. */
-  --animate-marquee: marquee 42s linear infinite;
-
-  /* Podcast waveform — a soft audio-level motif. Each bar shares this and
+  /* Podcast waveform: a soft audio-level motif. Each bar shares this and
      offsets its own delay/duration so the row never pulses in lockstep. */
   --animate-equalize: equalize 1.9s ease-in-out infinite;
 }
@@ -103,18 +117,6 @@
   }
   50% {
     transform: scaleY(1);
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  /* The track holds three identical copies; shifting by exactly one third
-     lands the next copy where the first began, so the loop is seamless and
-     still fills very wide viewports where a single copy would not. */
-  to {
-    transform: translate3d(-33.3333%, 0, 0);
   }
 }
 
@@ -346,18 +348,6 @@
     opacity: 1 !important;
     transform: none !important;
   }
-
-  /* The marquee stops travelling and becomes a static, centred wrap of the
-     single real copy — the decorative duplicate is dropped entirely. */
-  .marquee-track {
-    width: auto !important;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem 2.5rem;
-  }
-  .marquee-track [data-marquee-dupe] {
-    display: none;
-  }
 }
 
 /* ============================================================
@@ -408,52 +398,6 @@
   }
   @media (width >= 100rem) {
     padding-inline: 6rem;
-  }
-}
-
-/* Fades content into the page at both horizontal edges — used to let the
-   marquee arrive and leave rather than butt against a hard border. */
-@utility edge-fade-x {
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    #000 9%,
-    #000 91%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    #000 9%,
-    #000 91%,
-    transparent 100%
-  );
-}
-
-/* Featured-in logo sizing. Base height is uniform per breakpoint; each logo
-   may scale itself via `--fi-s` to correct for square or padded artwork. */
-@utility fi-logo {
-  width: auto;
-  height: calc(1.5rem * var(--fi-s, 1));
-  @media (width >= 40rem) {
-    height: calc(1.75rem * var(--fi-s, 1));
-  }
-  @media (width >= 64rem) {
-    height: calc(2rem * var(--fi-s, 1));
-  }
-}
-
-/* Marquee track: two copies of the children laid side by side, translated as
-   one. Pauses on hover/focus-within so a reader can settle on a name, and is
-   frozen entirely under reduced-motion (the CSS kill-switch zeroes the
-   duration, leaving the first copy shown statically). */
-@utility marquee-track {
-  display: flex;
-  width: max-content;
-  animation: var(--animate-marquee);
-  &:hover,
-  &:focus-within {
-    animation-play-state: paused;
   }
 }
 

@@ -124,10 +124,9 @@ export function Hero() {
             style={{ animationDelay: "0.46s" }}
           >
             <p className="text-subtitle text-bone max-w-xl font-normal">
-              Building technology that acts when people cannot
-              <span className="text-signal-bright"> — </span>
+              Building technology that acts when people cannot,
               and{" "}
-              <span className="font-serif italic">
+              <span className="">
                 intelligence that helps them do more
               </span>
               .

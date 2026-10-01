@@ -19,14 +19,14 @@ import { Reveal } from "./motion-primitives";
 
 export function Journey() {
   return (
-    <Section id="journey" tone="deep">
+    <Section id="journey" tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="05" label="The journey" />
+        <SectionLabel index="05" label="The journey" tone="ink" />
 
         <Reveal>
           <h2 className="text-title text-charcoal mb-16 max-w-3xl font-medium sm:mb-20">
             Access, then opportunity, then{" "}
-            <span className="text-signal font-serif italic">
+            <span className="text-signal">
               intelligence and safety
             </span>
             .
@@ -54,7 +54,7 @@ export function Journey() {
                         className={`size-[7px] shrink-0 rounded-full ${
                           active
                             ? "bg-signal"
-                            : "border-rule-strong bg-paper-deep border"
+                            : "border-rule-ink-strong bg-ink-soft border"
                         }`}
                       />
                       <span
@@ -110,7 +110,7 @@ export function Journey() {
             <span className="flex items-center gap-2.5">
               <span
                 aria-hidden="true"
-                className="border-rule-strong bg-paper-deep size-[7px] rounded-full border"
+                className="border-rule-ink-strong bg-ink-soft size-[7px] rounded-full border"
               />
               <span className="eyebrow">Previous chapter</span>
             </span>

@@ -15,7 +15,7 @@ export function PodcastApply() {
   return (
     <Section id="apply" tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="03" label={podcast.apply.eyebrow} tone="ink" />
+        <SectionLabel index="05" label={podcast.apply.eyebrow} tone="podcast" />
 
         <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
           {/* Invitation */}
@@ -23,7 +23,7 @@ export function PodcastApply() {
             <Reveal>
               <h2 className="text-display text-bone font-medium">
                 {podcast.apply.headline.before}
-                <span className="text-signal-bright font-serif italic">
+                <span className="text-airwave">
                   {podcast.apply.headline.emphasis}
                 </span>
                 {podcast.apply.headline.after}
@@ -38,7 +38,7 @@ export function PodcastApply() {
 
             <div className="mt-12">
               <Reveal>
-                <p className="eyebrow text-slate mb-5">Who we&rsquo;re looking for</p>
+                <p className="eyebrow text-slate mb-5">Who we are looking for</p>
               </Reveal>
               <Stagger className="border-rule-ink border-t">
                 {podcast.apply.lookingFor.map((item) => (
@@ -46,7 +46,7 @@ export function PodcastApply() {
                     <div className="flex items-baseline gap-4 py-4">
                       <span
                         aria-hidden="true"
-                        className="bg-signal-bright mt-2 size-1.5 shrink-0 rounded-full"
+                        className="bg-airwave mt-2 size-1.5 shrink-0 rounded-full"
                       />
                       <span className="text-ash text-base leading-relaxed">
                         {item}

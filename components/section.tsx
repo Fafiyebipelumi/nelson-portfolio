@@ -19,12 +19,20 @@ const toneClass: Record<Tone, string> = {
   ink: "on-ink bg-ink text-bone",
 };
 
+/* The section's own surface colour, used to build the seam bleed. */
+const toneColor: Record<Tone, string> = {
+  paper: "var(--color-paper)",
+  deep: "var(--color-paper-deep)",
+  ink: "var(--color-ink)",
+};
+
 export function Section({
   id,
   tone = "paper",
   children,
   className = "",
   grain = false,
+  seam = true,
 }: {
   id?: string;
   tone?: Tone;
@@ -32,6 +40,13 @@ export function Section({
   className?: string;
   /** Adds the paper-tooth texture. Reserved for ink surfaces. */
   grain?: boolean;
+  /**
+   * Soft-blends the seam with the section above by bleeding this section's
+   * own colour up over the previous one, cross-fading the two surfaces
+   * instead of butting them at a hard line. Disable for a section that sits
+   * first on a page (nothing above to blend into).
+   */
+  seam?: boolean;
 }) {
   return (
     <section
@@ -43,6 +58,21 @@ export function Section({
       /* Offsets the fixed header for anchor navigation. */
       style={{ scrollMarginTop: "5rem" }}
     >
+      {/* Seam bleed. Sits just above this section's top edge, over the tail of
+          the previous one. Transparent at the top lets the previous surface
+          show through, resolving to this section's colour at the seam — so any
+          two neighbours cross-fade regardless of which tones they are, and
+          same-tone neighbours show nothing. Later siblings paint above earlier
+          ones, so no z-index bookkeeping is needed. */}
+      {seam ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-0 h-24 -translate-y-full sm:h-28 lg:h-32"
+          style={{
+            background: `linear-gradient(to bottom, transparent, ${toneColor[tone]})`,
+          }}
+        />
+      ) : null}
       {grain ? <div aria-hidden="true" className="grain-layer z-0" /> : null}
       <div className="relative z-10">{children}</div>
     </section>
@@ -80,7 +110,8 @@ export function SectionLabel({
 }: {
   index: string;
   label: string;
-  tone?: Tone;
+  /** "podcast" is a dark tone that uses the aqua accent instead of amber. */
+  tone?: Tone | "podcast";
   /**
    * Promotes the label to the section's `h2`. Used where the section's
    * meaning lives in a statement rather than a headline, so the outline
@@ -88,16 +119,18 @@ export function SectionLabel({
    */
   asHeading?: boolean;
 }) {
-  const onInk = tone === "ink";
+  const onInk = tone === "ink" || tone === "podcast";
+  const indexColor =
+    tone === "podcast"
+      ? "text-airwave"
+      : onInk
+        ? "text-signal-bright"
+        : "text-signal";
   const LabelTag = asHeading ? "h2" : "span";
 
   return (
     <div className="mb-12 flex items-baseline gap-4 sm:mb-16 sm:gap-6">
-      <span
-        className={`eyebrow shrink-0 ${onInk ? "text-signal-bright" : "text-signal"}`}
-      >
-        {index}
-      </span>
+      <span className={`eyebrow shrink-0 ${indexColor}`}>{index}</span>
       <LabelTag
         className={`eyebrow shrink-0 ${onInk ? "text-ash" : "text-graphite"}`}
       >

@@ -20,7 +20,7 @@ export function Philosophy() {
         <Reveal>
           <h2 className="text-display max-w-5xl font-medium">
             {philosophy.headline.before}
-            <span className="text-signal font-serif italic">
+            <span className="text-signal">
               {philosophy.headline.emphasis}
             </span>
             {philosophy.headline.after}

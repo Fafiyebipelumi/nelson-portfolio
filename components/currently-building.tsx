@@ -1,5 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
-import { joble, myhives, type Fact } from "@/lib/content";
+import { fifteenWins, joble, myhives, type Fact } from "@/lib/content";
 import { Section, SectionBody, SectionLabel } from "./section";
 import { Reveal } from "./motion-primitives";
 import { SignalChain } from "./signal-chain";
@@ -7,13 +7,12 @@ import { SignalChain } from "./signal-chain";
 /* ============================================================================
    03 — CURRENTLY BUILDING
    ----------------------------------------------------------------------------
-   Two editorial case studies rather than a card grid. They are set as
-   deliberate opposites — MyHives on ink, Joble on paper — so the page turns
-   between them and the pairing does argumentative work before section 04
-   states it outright.
+   Three editorial case studies rather than a card grid, set as a turning
+   sequence: MyHives on ink, Joble on paper, 15Wins on the recessed deep tone.
+   The third card (15Wins) was added per brief §5.
 
-   Only MyHives and Joble appear here. Zarttech does not: it is a concluded
-   chapter and lives in section 09.
+   Zarttech does not appear here: it is a concluded chapter (about/previous
+   work), never presented as a current venture.
    ========================================================================== */
 
 function FactList({ facts, tone }: { facts: readonly Fact[]; tone: "ink" | "paper" }) {
@@ -80,7 +79,7 @@ function MyHivesFeature() {
   return (
     <Section id="building" tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="03" label="Currently building · 01/02" tone="ink" />
+        <SectionLabel index="03" label="Currently building · 01/03" tone="ink" />
 
         {/* Masthead */}
         <Reveal>
@@ -182,9 +181,9 @@ function MyHivesFeature() {
 
 function JobleFeature() {
   return (
-    <Section tone="paper">
+    <Section tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="03" label="Currently building · 02/02" />
+        <SectionLabel index="03" label="Currently building · 02/03" tone="ink" />
 
         <Reveal>
           <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
@@ -219,9 +218,58 @@ function JobleFeature() {
           </div>
 
           <Reveal className="lg:col-span-4 lg:col-start-9" delay={0.1}>
-            <FactList facts={joble.facts} tone="paper" />
+            <FactList facts={joble.facts} tone="ink" />
             <div className="mt-7">
-              <VisitLink href={joble.href} label="joble.app" tone="paper" />
+              <VisitLink href={joble.href} label="joble.app" tone="ink" />
+            </div>
+          </Reveal>
+        </div>
+      </SectionBody>
+    </Section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+
+function FifteenWinsFeature() {
+  return (
+    <Section tone="ink" grain>
+      <SectionBody>
+        <SectionLabel index="03" label="Currently building · 03/03" tone="ink" />
+
+        <Reveal>
+          <h2 className="text-charcoal text-2xl font-medium tracking-[0.02em] uppercase sm:text-3xl">
+            {fifteenWins.wordmark}
+          </h2>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <h3 className="text-title text-charcoal mt-8 max-w-4xl font-medium sm:mt-10">
+            {fifteenWins.headline}
+          </h3>
+        </Reveal>
+
+        <div className="mt-14 grid gap-12 sm:mt-16 lg:grid-cols-12 lg:gap-8">
+          <div className="space-y-6 lg:col-span-6">
+            {fifteenWins.body.map((paragraph, i) => (
+              <Reveal key={i} delay={i * 0.06}>
+                <p
+                  className={
+                    i === 0
+                      ? "text-lead text-charcoal"
+                      : "text-graphite text-base leading-relaxed sm:text-[1.0625rem]"
+                  }
+                >
+                  {paragraph}
+                </p>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="lg:col-span-4 lg:col-start-9" delay={0.1}>
+            <FactList facts={fifteenWins.facts} tone="ink" />
+            <div className="mt-7">
+              <VisitLink href={fifteenWins.href} label="15wins.com" tone="ink" />
             </div>
           </Reveal>
         </div>
@@ -237,6 +285,7 @@ export function CurrentlyBuilding() {
     <>
       <MyHivesFeature />
       <JobleFeature />
+      <FifteenWinsFeature />
     </>
   );
 }

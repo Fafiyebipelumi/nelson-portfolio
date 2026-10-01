@@ -31,7 +31,7 @@ function Half({
 }) {
   return (
     <div className={align === "right" ? "lg:text-right" : undefined}>
-      <p className="eyebrow text-signal-bright">{venture}</p>
+      <p className="eyebrow">{venture}</p>
 
       <h3 className="text-title text-bone mt-5 font-medium uppercase">
         {title}
@@ -105,13 +105,13 @@ export function Duality() {
         <Reveal className="mt-24 sm:mt-32 lg:mt-44" y={30}>
           <div className="mx-auto max-w-5xl text-center">
             <DrawRule className="bg-signal-bright/40 mx-auto mb-12 h-px w-16 sm:mb-16" />
-            <p className="text-display text-bone font-medium">
+            {/* <p className="text-display text-bone font-medium">
               {duality.statement.before}
               <span className="text-signal-bright font-serif italic">
                 {duality.statement.emphasis}
               </span>
               {duality.statement.after}
-            </p>
+            </p> */}
           </div>
         </Reveal>
       </SectionBody>

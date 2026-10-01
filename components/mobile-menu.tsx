@@ -80,11 +80,11 @@ export function MobileMenu({
             </button>
           </div>
 
-          <nav aria-label="Sections" className="gutter mt-8">
+          <nav aria-label="Primary" className="gutter mt-8">
             <ul className="border-rule-ink border-t">
               {navigation.map((item, i) => (
                 <motion.li
-                  key={item.href}
+                  key={item.label}
                   className="border-rule-ink border-b"
                   initial={reduced ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -94,16 +94,40 @@ export function MobileMenu({
                     ease: EASE,
                   }}
                 >
-                  <Link
-                    href={item.href}
-                    onClick={onClose}
-                    className="text-bone flex items-baseline gap-4 py-5 text-3xl tracking-[-0.03em]"
-                  >
-                    <span className="eyebrow text-signal-bright">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {item.label}
-                  </Link>
+                  {item.children ? (
+                    <div className="py-5">
+                      <span className="text-slate flex items-baseline gap-4 text-3xl tracking-[-0.03em]">
+                        <span className="eyebrow text-signal-bright">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        {item.label}
+                      </span>
+                      <ul className="mt-4 flex flex-col gap-3 pl-10">
+                        {item.children.map((child) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              onClick={onClose}
+                              className="text-ash hover:text-bone text-xl transition-colors"
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <Link
+                      href={item.href ?? "/"}
+                      onClick={onClose}
+                      className="text-bone flex items-baseline gap-4 py-5 text-3xl tracking-[-0.03em]"
+                    >
+                      <span className="eyebrow text-signal-bright">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {item.label}
+                    </Link>
+                  )}
                 </motion.li>
               ))}
             </ul>

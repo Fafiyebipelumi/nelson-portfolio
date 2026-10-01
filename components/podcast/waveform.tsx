@@ -28,9 +28,14 @@ export function Waveform({
   tone = "ink",
 }: {
   className?: string;
-  tone?: "ink" | "paper";
+  tone?: "ink" | "paper" | "podcast";
 }) {
-  const color = tone === "ink" ? "bg-signal-bright/70" : "bg-signal/60";
+  const color =
+    tone === "podcast"
+      ? "bg-airwave/75"
+      : tone === "ink"
+        ? "bg-signal-bright/70"
+        : "bg-signal/60";
 
   return (
     <div

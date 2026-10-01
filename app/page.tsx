@@ -4,7 +4,7 @@ import { CurrentlyBuilding } from "@/components/currently-building";
 import { Duality } from "@/components/duality";
 import { Journey } from "@/components/journey";
 import { BigPicture } from "@/components/big-picture";
-import { FeaturedIn } from "@/components/featured-in";
+import { InstitutionalContext } from "@/components/institutional-context";
 import { Speaking } from "@/components/speaking";
 // import { PreviousChapters } from "@/components/previous-chapters"; // section 09 currently disabled
 import { PodcastTeaser } from "@/components/podcast-teaser";
@@ -30,7 +30,7 @@ export default function Home() {
       {/* 04 */} <Duality />
       {/* 05 */} <Journey />
       {/* 06 */} <BigPicture />
-      {/* 07 */} <FeaturedIn />
+      {/* 07 */} <InstitutionalContext />
       {/* 08 */} <Speaking />
       {/* 09 <PreviousChapters /> */}
       {/* 09 */} <PodcastTeaser />

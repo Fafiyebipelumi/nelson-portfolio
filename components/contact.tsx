@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { contact, profile } from "@/lib/content";
 import { Section, SectionBody } from "./section";
@@ -18,7 +19,7 @@ export function Contact() {
         <Reveal>
           <h2 className="text-display text-bone max-w-4xl font-medium">
             {contact.statement.before}
-            <span className="text-signal-bright font-serif italic">
+            <span className="text-signal-bright">
               {contact.statement.emphasis}
             </span>
             {contact.statement.after}
@@ -36,33 +37,40 @@ export function Contact() {
         <DrawRule className="bg-rule-ink-strong mt-16 h-px w-full sm:mt-20 lg:mt-28" />
 
         <Stagger>
-          {contact.channels.map((channel) => (
-            <StaggerItem
-              key={channel.label}
-              className="border-rule-ink border-b"
-            >
-              <a
-                href={channel.href}
-                {...(channel.href.startsWith("http")
-                  ? { target: "_blank", rel: "noopener noreferrer" }
-                  : {})}
-                className="group flex items-baseline justify-between gap-6 py-6 sm:py-7"
-              >
+          {contact.channels.map((channel) => {
+            const internal = channel.href.startsWith("/");
+            const rowClass =
+              "group flex items-baseline justify-between gap-6 py-6 sm:py-7";
+            const inner = (
+              <>
                 <span className="flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-6">
                   <span className="text-bone group-hover:text-signal-bright text-2xl font-medium tracking-[-0.025em] transition-colors duration-300 sm:text-3xl">
                     {channel.label}
                   </span>
                   <span className="eyebrow text-slate">{channel.value}</span>
                 </span>
-
                 <ArrowUpRight
                   className="text-slate group-hover:text-signal-bright size-5 shrink-0 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 group-hover:-translate-y-1"
                   strokeWidth={1.5}
                   aria-hidden="true"
                 />
-              </a>
-            </StaggerItem>
-          ))}
+              </>
+            );
+
+            return (
+              <StaggerItem key={channel.label} className="border-rule-ink border-b">
+                {internal ? (
+                  <Link href={channel.href} className={rowClass}>
+                    {inner}
+                  </Link>
+                ) : (
+                  <a href={channel.href} className={rowClass}>
+                    {inner}
+                  </a>
+                )}
+              </StaggerItem>
+            );
+          })}
         </Stagger>
 
         <Reveal>

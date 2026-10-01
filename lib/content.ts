@@ -59,13 +59,14 @@ export const profile = {
   location: "The Hague, Netherlands",
   roles: ["ENTREPRENEUR", "INVESTOR", "TECHNOLOGIST"],
 
+  /* Verbatim hero copy [Website brief §5]. No em/en dashes as punctuation
+     anywhere on the site [brief writing rule]. */
   statement:
-    "Building technology that acts when people cannot — and intelligence that helps them do more.",
+    "Building technology that acts when people cannot, and intelligence that helps them do more.",
 
-  /* Each role below is sourced. MyHives: founder and CEO/CTO [PR 2026-09].
-     Joble: founder [joble.app / Crunchbase]. 15Wins: venture investing. */
+  /* Verbatim hero subhead [Website brief §5]. */
   standing:
-    "Founder and CEO/CTO of MyHives, makers of BEEKON. Founder of Joble. Investing through 15Wins Ventures.",
+    "CEO and Co-Founder of MyHives, makers of BEEKON. Founder of Joble. General Partner at 15Wins Ventures. AIFOD Global Advocate.",
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -83,7 +84,8 @@ export const philosophy = {
   body: [
     "I have spent my career on one question in different forms: who does this actually reach? Access is not a feature you add at the end. It decides whether a product changes a life or merely impresses a market.",
     "That question moved from talent and opportunity, to the systems businesses run on, to the seconds that decide whether someone gets help. The technology changed. The question did not.",
-    "So I build for the edges — emerging markets, small businesses, ordinary evenings that go wrong. Intelligence is only worth building if it leaves people more capable than they were without it.",
+    /* Corrected per brief §5: em dash removed. */
+    "So I build for the edges. Emerging markets, small businesses, ordinary evenings that go wrong. Intelligence is only worth building if it leaves people more capable than they were without it.",
   ],
 } as const;
 
@@ -97,13 +99,10 @@ export const myhives = {
   headline: "Technology that protects before the emergency.",
   href: "https://myhives.nl",
 
+  /* Verbatim corrected body [brief §5]: em dashes removed, 170+ to 190+. */
   body: [
-    /* Framing derived from MyHives' own positioning: every other safety
-       product has one trigger — you, pressing something [myhives.io] */
-    "Every safety product assumes you can act — press the button, make the call, say the words. BEEKON is built for the moments you cannot.",
-    /* On-device learning, trusted circle, 170+ countries, nothing shared
-       until something is wrong [myhives.io] */
-    "It learns your normal, privately and on-device. When something isn’t, it tells the people you chose — what happened and where, in 170+ countries. Nothing is shared until something is wrong.",
+    "Every safety product assumes you can act: press the button, make the call, say the words. BEEKON is built for the moments you cannot.",
+    "It learns your normal, privately and on-device. When something isn’t, it tells the people you chose, what happened and where, in 190+ countries. Nothing is shared until something is wrong.",
   ],
 
   /* Verbatim, attributed to Nelson T. Ajulo [PR 2026-09] */
@@ -113,11 +112,11 @@ export const myhives = {
   },
 
   facts: [
-    { label: "Role", value: "Founder, CEO/CTO" },
+    { label: "Role", value: "CEO & Co-Founder" },
     /* Founded in The Hague in 2025 by Nelson T. Ajulo and
        Anniek van Veldhuizen [PR 2026-09] */
     { label: "Founded", value: "The Hague, 2025" },
-    { label: "Alerting", value: "170+ countries" },
+    { label: "Alerting", value: "190+ countries" },
     { label: "Privacy", value: "On-device by design" },
   ] satisfies Fact[],
 
@@ -137,7 +136,7 @@ export const myhives = {
     {
       index: "03",
       name: "Context",
-      body: "Where you are, what time it is, what was happening around you — the difference between an anomaly and an emergency.",
+      body: "Where you are, what time it is, what was happening around you: the difference between an anomaly and an emergency.",
     },
     {
       index: "04",
@@ -165,7 +164,7 @@ export const joble = {
     /* Web agent + phone agent + unified workspace; qualifies, books,
        runs outbound; 13 languages; EU data residency; live in ~5 min
        [joble.app] */
-    "Joble puts an AI agent on the website and the phone, one workspace behind both — answering questions, qualifying leads and booking meetings, around the clock.",
+    "Joble puts an AI agent on the website and the phone, one workspace behind both, answering questions, qualifying leads and booking meetings, around the clock.",
   ],
 
   facts: [
@@ -173,6 +172,25 @@ export const joble = {
     { label: "Surface", value: "Web · Phone · Workspace" },
     { label: "Built for", value: "Retail, services, hospitality" },
     { label: "Data", value: "EU residency" },
+  ] satisfies Fact[],
+} as const;
+
+/* New third "Currently building" card [brief §5]. All copy verbatim. */
+export const fifteenWins = {
+  wordmark: "15Wins Ventures",
+  headline: "Capital and studio infrastructure for the next decade.",
+  href: "https://15wins.com",
+
+  body: [
+    "A venture platform for what technology has not yet reached.",
+    "Not every company gets built by writing a cheque. Some need capital, some need infrastructure, some need someone who has done the specific hard thing before. 15Wins provides the whole stack, from idea to validated market entry, across Europe, the UK, Africa, and the US.",
+  ],
+
+  facts: [
+    { label: "Role", value: "General Partner" },
+    { label: "Focus", value: "AI, safety, infrastructure" },
+    { label: "Geography", value: "Europe, UK, Africa, US" },
+    { label: "Stage", value: "Pre-seed to Series A" },
   ] satisfies Fact[],
 } as const;
 
@@ -192,11 +210,11 @@ export const duality = {
     venture: "Joble",
     body: "Technology that helps businesses do more.",
   },
-  statement: {
-    before: "AI should not only make systems smarter. It should make people more ",
-    emphasis: "capable",
-    after: ".",
-  },
+  // statement: {
+  //   before: "AI should not only make systems smarter. It should make people more ",
+  //   emphasis: "capable",
+  //   after: ".",
+  // },
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -299,70 +317,40 @@ export const bigPicture = {
 } as const;
 
 /* -------------------------------------------------------------------------- */
-/*  07 — Featured in                                                          */
+/*  07 — Institutional context                                               */
 /* -------------------------------------------------------------------------- */
 
-/* ACCURACY NOTE — read before editing.
-
-   `verified: true` entries are outlets that demonstrably carried the MyHives /
-   BEEKON+ launch announcement of 12 September 2026. These are real pickups on
-   the public record [PR 2026-09 syndication].
-
-   `verified: false` entries are ASPIRATIONAL PLACEHOLDERS. There is no evidence
-   Nelson has been featured in these publications. They exist only to show how
-   the marquee reads with recognisable mastheads, and the UI marks the strip as
-   provisional so nothing is misrepresented. Replace or remove before launch —
-   swap in confirmed outlets (ideally with supplied logo assets).
-
-   The component renders names as typeset wordmarks, not borrowed logos, so the
-   prototype never ships trademarked artwork it has no right to use. */
-/* `width`/`height` are each asset's intrinsic pixel dimensions, used only to
-   preserve aspect ratio — the marquee renders every logo at a uniform height.
-   Logo files supplied by the client and stored in /public. */
-export interface Outlet {
-  name: string;
-  src: string;
-  width: number;
-  height: number;
-  /* Per-logo optical size multiplier against the marquee's base height.
-     Used to compensate for artwork that is square or heavily padded and would
-     otherwise read smaller than the wordmarks beside it. Defaults to 1. */
-  scale?: number;
+/* Replaces the former "Featured in" logo strip [brief §1.1]. Displaying
+   editorial brand marks without genuine, linkable coverage was a trademark and
+   credibility risk, so it is removed entirely. This panel carries verifiable
+   institutional standing instead, all copy verbatim from brief §5. A proper
+   "In the press" section replaces this only if real coverage with working
+   links arrives. */
+export interface Credential {
+  label: string;
+  body: string;
 }
 
-export const featuredIn = {
-  eyebrow: "Featured in",
-  headline: {
-    before: "The work, ",
-    emphasis: "in the wider conversation",
-    after: ".",
-  },
-  outlets: [
-    { name: "Forbes", src: "/forbes.png", width: 359, height: 140 },
+export const institutional = {
+  eyebrow: "Institutional context",
+  items: [
     {
-      name: "TechCrunch",
-      src: "/techcrunch-vector-logo.png",
-      width: 900,
-      height: 500,
-      // Wordmark sits in a wide, padded canvas — scale up to match.
-      scale: 1.4,
-    },
-    { name: "Bloomberg", src: "/bloomberg.png", width: 348, height: 145 },
-    {
-      name: "The Washington Post",
-      src: "/the-washington-post-logo-svg-vector.svg",
-      width: 192,
-      height: 192,
-      // Square emblem rather than a wordmark — needs the most compensation.
-      scale: 1.85,
+      label: "AIFOD Global Advocate",
+      body: "AI for Developing Countries Forum, Geneva. Contributed to the Summer Summit at the UN Palais des Nations in August 2026, on the panel Small Takes the Lead, addressing AI sovereignty and equitable access.",
     },
     {
-      name: "Business Insider",
-      src: "/business-insider.png",
-      width: 351,
-      height: 144,
+      label: "CSU Innovation Award",
+      body: "€10,000 recognition for MyHives from CSU, national facility services.",
     },
-  ] satisfies Outlet[],
+    {
+      label: "Backed by",
+      body: "Trigion (Securitas group, licensed 24/7 alarm centre), Marsh (global insurance broker), CSU (national facility services), TZorg (home care, 300,000+ clients).",
+    },
+    {
+      label: "Prior recognitions",
+      body: "European Entrepreneur of the Year (2024). Bold EdTech Award (2023). FUTR150 Founders and Startups Award (2022).",
+    },
+  ] satisfies Credential[],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -373,13 +361,14 @@ export const speaking = {
   eyebrow: "Speaking",
   headline: "Rooms where this gets decided.",
   body: "Nelson speaks on artificial intelligence and its distribution, everyday safety technology, building deep tech from Europe, and what the next decade of opportunity looks like for emerging markets.",
+  /* Subjects verbatim from brief §5 (homepage Speaking section). */
   topics: [
-    "Artificial intelligence & society",
+    "AI and society",
+    "AI sovereignty",
     "Everyday safety technology",
-    "Entrepreneurship",
-    "African innovation",
-    "Future of work",
-    "Venture building & investment",
+    "Building deep tech from Europe",
+    "African innovation and diaspora capital",
+    "Venture building and investment",
   ],
 } as const;
 
@@ -407,7 +396,14 @@ export const previousChapters = {
 /*  10 — Contact                                                              */
 /* -------------------------------------------------------------------------- */
 
-/* ⚠ `placeholder: true` links need real destinations before launch. */
+/* Social links. LinkedIn URL to be verified before launch. */
+export const social = {
+  linkedin: "https://www.linkedin.com/in/nelson-ta/",
+} as const;
+
+/* Homepage closing CTA, routed by enquiry type per brief §5. Each door points
+   at the desk that handles it: the contact page, the speaking form, press, and
+   the podcast guest application. */
 export const contact = {
   statement: {
     before: "Let's build what ",
@@ -416,50 +412,43 @@ export const contact = {
   },
   body: "Open to conversations about building, backing and deploying technology that reaches further than it has to.",
   channels: [
-    {
-      label: "LinkedIn",
-      value: "Follow the thinking",
-      href: "https://www.linkedin.com/in/nelson-ta/",
-      placeholder: true, // verify exact profile URL
-    },
-    {
-      label: "Email",
-      value: "Direct enquiries",
-      href: "mailto:hello@tnajulo.com",
-      placeholder: true, // confirm preferred address
-    },
-    // {
-    //   label: "Speaking",
-    //   value: "Events & panels",
-    //   href: "mailto:hello@tnajulo.com?subject=Speaking%20enquiry",
-    //   placeholder: true,
-    // },
-    // {
-    //   label: "Collaboration",
-    //   value: "Ventures & investment",
-    //   href: "mailto:hello@tnajulo.com?subject=Collaboration",
-    //   placeholder: true,
-    // },
+    { label: "Building or backing", value: "Get in touch", href: "/contact" },
+    { label: "Speaking", value: "Speaking enquiries", href: "/speaking#booking" },
+    { label: "Press or media", value: "Media enquiries", href: "mailto:press@tnajulo.com" },
+    { label: "Podcast", value: "Guest application", href: "/podcast#apply" },
   ],
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  09 — Podcast preview (homepage)                                            */
+/* -------------------------------------------------------------------------- */
+
+/* NEW SECTION per brief §5. Copy verbatim; distinct from the podcast hero
+   tagline. The show name is carried inside the body, as the brief sets it. */
+export const podcastPreview = {
+  eyebrow: "Podcast",
+  headline: "A podcast on who technology reaches.",
+  body: "What Comes Next. A long-form conversation with the founders, investors, and researchers building the next decade of opportunity. Season one, coming soon.",
+  cta: { label: "Listen and apply as a guest", href: "/podcast" },
 } as const;
 
 /* -------------------------------------------------------------------------- */
 /*  Podcast  (/podcast)                                                       */
 /* -------------------------------------------------------------------------- */
 
-/* CONCEPT — the show does not exist yet; this is designed from scratch as part
-   of the proposal. Everything here is working copy:
+/* Podcast content. Prose is verbatim from brief §4.4 where the brief supplies
+   it. Notes on the live wiring:
 
-   • `name` is a WORKING TITLE. It deliberately extends the site's closing line
-     ("Let's build what comes next") so the podcast reads as the continuation
-     of that thought. Confirm or replace before launch.
-   • Episodes are an ILLUSTRATIVE line-up, not published work. No real guests
-     are named — doing so would imply associations that don't exist. Guests
-     read "To be announced".
-   • Subscribe links are placeholders until the show is hosted somewhere.
-   • The application posts to a hosted form endpoint (Formspree/Tally) set via
-     NEXT_PUBLIC_PODCAST_FORM_ENDPOINT. Until that's set, the form simulates a
-     successful submission so the prototype demos cleanly. */
+   • `name` ("What Comes Next") is confirmed by Nelson.
+   • The lineup is an illustrative season one: themes are real, guests read
+     "Guest to be announced". Real episodes replace these via Sanity (task #4).
+   • Subscribe and social links are placeholders until the show is hosted and
+     handles are confirmed.
+   • The guest application posts to NEXT_PUBLIC_PODCAST_FORM_ENDPOINT and
+     notifies support@tnajulo.com. There is no silent fallback: an unconfigured
+     or failed submission surfaces an error (brief §4.3, forms must never
+     silently fail).
+   • The newsletter posts to /api/subscribe, which calls Beehiiv server-side. */
 
 export interface PodcastEpisode {
   index: string;
@@ -478,20 +467,28 @@ export interface ApplyField {
 }
 
 export const podcast = {
-  /** ⚠ Working title — confirm with Nelson before launch. */
+  /* Title confirmed by Nelson and set verbatim in brief §4.4. */
   name: "What Comes Next",
-  nameIsPlaceholder: true,
+  nameIsPlaceholder: false,
 
   hero: {
     eyebrow: "The podcast",
     tagline: {
       before: "Conversations with the people deciding ",
-      emphasis: "who technology reaches",
+      emphasis: "who technology actually reaches",
       after: ".",
     },
     standing:
-      "A long-form conversation with the founders, investors and researchers building the next decade of opportunity — in AI, in safety, and in the markets the industry usually reaches last.",
-    status: "Season one — in production",
+      "A long-form conversation with the founders, investors and researchers building the next decade of opportunity, in AI, in safety, and in the markets the industry usually reaches last.",
+    status: "Season one, coming soon",
+
+    /* Hero atmosphere: a microphone photograph for the right-hand column,
+       desaturated and masked so it dissolves into the ink on every edge (the
+       same treatment as the portrait on the home hero). Save the file into
+       public/ and point this at it. Set to "" to hide the column entirely.
+       A dark, close, off-centre crop reads best; a bright centred product
+       shot fights the type and lands as stock. */
+    image: "/podcast-mic.png",
   },
 
   /* Subscribe destinations — placeholders until the show is hosted. */
@@ -511,21 +508,48 @@ export const podcast = {
     },
     body: [
       "This one starts with a harder question: who does it actually reach, and who gets left waiting?",
-      "Each episode sits down with someone building at that edge — expanding access, closing distance, turning a clever system into something that changes an ordinary life. Founders and funders, engineers and operators, the occasional heretic.",
+      "Each episode sits down with someone building at that edge. Expanding access. Closing distance. Turning a clever system into something that changes an ordinary life. Founders and funders, engineers and operators, the occasional heretic.",
       "No hype cycle, no launch tour. Just the real texture of building things that matter, told by the people doing it.",
     ],
   },
 
+  /* B — Latest episode. A launch TEMPLATE per brief §4.4: no episode exists
+     yet, so guest/duration/date are bracketed placeholders and the player is a
+     placeholder until a real episode (and its embed URL) lands via Sanity. */
+  latest: {
+    eyebrow: "Latest episode",
+    number: "Episode 01",
+    title: "The first minute is the whole emergency",
+    guest: "With [Guest name], [Role, Organisation]",
+    meta: "[Duration] · [Publication date]",
+    synopsis:
+      "Every safety product on the market assumes you can act. You can press the button. You can make the call. You can say the words. In the seconds when none of that is possible, what actually helps?",
+    note: "Template shown for launch. Episode 01 publishes with season one.",
+    links: [
+      { label: "Listen on Spotify", href: "#" },
+      { label: "Apple Podcasts", href: "#" },
+      { label: "YouTube", href: "#" },
+      { label: "Read transcript", href: "#" },
+    ],
+  },
+
+  /* D — Season one lineup. Six planned conversations, copy verbatim from
+     brief §4.4. Guests are deliberately "to be announced"; themes stay
+     visible. Real episodes replace these via Sanity (task #4). */
   episodes: {
     eyebrow: "Season one",
-    headline: "The opening line-up.",
-    note: "Illustrative — sample themes, guests to be announced",
+    headline: "The opening arc.",
+    /* The count prefix ("Six conversations.") is prepended in the component so
+       it always matches the number of episodes actually listed (confirmed with
+       Nelson; overrides the fixed "Six" in brief §4.4). */
+    subTail: "One thread. Who technology reaches, and who gets left behind.",
+    note: "Sample lineup. Guests to be announced.",
     items: [
       {
         index: "01",
         title: "The first minute is the whole emergency",
         blurb:
-          "Why the hardest problem in personal safety is not the response — it's the seconds before anyone knows.",
+          "Why the hardest problem in personal safety is not the response, it is the seconds before anyone knows.",
         guest: "Guest to be announced",
       },
       {
@@ -539,10 +563,41 @@ export const podcast = {
         index: "03",
         title: "Access before intelligence",
         blurb:
-          "AI in developing economies — what has to be true on the ground before the models matter.",
+          "AI in developing economies. What has to be true on the ground before the models matter.",
+        guest: "Guest to be announced",
+      },
+      {
+        index: "04",
+        title: "The compute layer nobody talks about",
+        blurb:
+          "Who owns the infrastructure that runs the models, and what that means for everyone else.",
+        guest: "Guest to be announced",
+      },
+      {
+        index: "05",
+        title: "Building deep tech from Europe",
+        blurb:
+          "Why the Old World may be better positioned for the next decade than the Valley admits.",
+        guest: "Guest to be announced",
+      },
+      {
+        index: "06",
+        title: "The talent that leaves, and the talent that stays",
+        blurb:
+          "What five years of moving African engineers into global AI teams taught me about who benefits.",
         guest: "Guest to be announced",
       },
     ] satisfies PodcastEpisode[],
+  },
+
+  /* F — Meet the host. Copy verbatim from brief §4.4. */
+  host: {
+    eyebrow: "Meet the host",
+    name: "Nelson T. Ajulo, PhD",
+    bio: "Nelson is a technology entrepreneur and investor. He is CEO and Co-Founder of MyHives, an AI safety platform protecting 35,000+ people across 190+ countries. He is founder of Joble, an AI customer engagement platform serving 500+ businesses. He is General Partner at 15Wins Ventures. He is an AIFOD Global Advocate and contributed to the AI for Developing Countries Forum Summer Summit at the UN Palais des Nations in August 2026.",
+    line: "He has spent his career on one question in different forms: who does this actually reach?",
+    photo: "/nelson-ta.jpeg",
+    cta: { label: "Learn more about Nelson", href: "/about" },
   },
 
   /* The centrepiece: the open invitation. */
@@ -554,9 +609,9 @@ export const podcast = {
       after: ".",
     },
     intro:
-      "The best guests rarely have a press team. If you're building, funding or researching something that widens who gets to participate — put yourself forward. Every application is read.",
+      "The best guests rarely have a press team. If you are building, funding, or researching something that widens who gets to participate, put yourself forward. Every application is read.",
     lookingFor: [
-      "Founders building in AI, fintech, safety or hard infrastructure",
+      "Founders building in AI, fintech, safety, or hard infrastructure",
       "Investors and operators backing overlooked markets",
       "Researchers turning work into things people can use",
       "Anyone expanding access to opportunity in an unusual way",
@@ -603,28 +658,336 @@ export const podcast = {
             "A sentence or two on what you're building and the conversation you'd want to have.",
           required: true,
         },
+        {
+          name: "appearances",
+          label: "Prior podcast or speaking appearances",
+          type: "text",
+          placeholder: "Links or names, if any",
+          required: false,
+        },
+        {
+          name: "referral",
+          label: "How did you hear about the show?",
+          type: "text",
+          placeholder: "A friend, LinkedIn, a guest",
+          required: true,
+        },
       ] satisfies ApplyField[],
       submitLabel: "Submit application",
       successTitle: "Application received.",
       successBody:
-        "Thank you — it's in. If there's a fit, you'll hear from the team directly.",
-      errorBody: "Something went wrong. Please try again, or email hello@tnajulo.com.",
+        "Thank you, it is in. If there is a fit, you will hear from the team directly.",
+      errorBody:
+        "Something went wrong. Please try again, or email support@tnajulo.com.",
       consent: "Applications go straight to the show's team. No list, no spam.",
     },
   },
+
+  /* H — Sponsor. Copy verbatim from brief §4.4. */
+  sponsor: {
+    eyebrow: "Sponsor",
+    headline: "Sponsor a season.",
+    body: "A limited number of sponsorship slots are open for season one. Reach a curated audience of founders, investors, and operators building in AI, safety, and emerging markets.",
+    cta: {
+      label: "Request the sponsor deck",
+      href: "mailto:support@tnajulo.com?subject=What%20Comes%20Next%20sponsorship",
+    },
+  },
+
+  /* I — Newsletter. Copy verbatim from brief §4.4. Wired to Beehiiv via a
+     server route; see components/podcast/podcast-newsletter.tsx. */
+  newsletter: {
+    eyebrow: "Newsletter",
+    headline: "Get the show in your inbox.",
+    body: "Every new episode, guest reading lists, and one line from Nelson each week. No spam, unsubscribe anytime.",
+    placeholder: "you@email.com",
+    submitLabel: "Subscribe",
+    successBody: "You are in. Watch your inbox.",
+    errorBody: "Something went wrong. Please try again.",
+  },
+
+  /* J — Community. No verbatim copy in the brief; kept minimal and marked.
+     Social handles to be confirmed with Nelson before launch. */
+  community: {
+    eyebrow: "Community",
+    headline: "Follow the show.",
+    links: [
+      { label: "LinkedIn", href: "#", placeholder: true },
+      { label: "X", href: "#", placeholder: true },
+      { label: "YouTube", href: "#", placeholder: true },
+      { label: "Instagram", href: "#", placeholder: true },
+    ],
+    note: "Social handles to be confirmed.",
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  About  (/about)  — copy verbatim from brief §6                            */
+/* -------------------------------------------------------------------------- */
+
+export const about = {
+  eyebrow: "About",
+  heading: "About Nelson.",
+  intro: [
+    "Nelson T. Ajulo is a technology entrepreneur and investor building at the intersection of artificial intelligence, everyday safety, and economic opportunity.",
+    "He is CEO and Co-Founder of MyHives, an AI safety platform protecting 35,000+ people across 190+ countries, with distribution partnerships including Trigion (Securitas group), Marsh, CSU, and TZorg. He is founder of Joble, an AI customer engagement platform trusted by 500+ businesses. He is General Partner at 15Wins Ventures, a venture studio deploying across Europe, the UK, Africa, and the US.",
+    "Nelson is an AIFOD Global Advocate for the AI for Developing Countries Forum, and contributed to the AIFOD Summer Summit at the UN Palais des Nations in Geneva in August 2026.",
+  ],
+  earlierWork: {
+    heading: "Earlier work.",
+    body: [
+      "Before MyHives, Joble, and 15Wins, Nelson founded Zarttech (2020 to 2025), a global IT talent platform he scaled to 700+ engineers across four countries before winding down in 2025. Concurrently he founded the Zarttalent Foundation, which trained 2,000+ young Africans, with a focus on women in tech, in data and engineering skills.",
+      "Nelson has three prior venture exits: The Bridge Empire Consultancy (acquired in 2020), TBEC Education (sold to a family office in 2020), and Fly TBEC (sold to a family office in 2020).",
+    ],
+  },
+  education: {
+    heading: "Education.",
+    items: [
+      "PhD, International Economics, University of Gdansk",
+      "MBA, Business Administration, Anglia Ruskin University",
+      "Master's and Bachelor's, Architecture, Limkokwing University of Creative Technology",
+      "Cybersecurity: Managing Risk in the Information Age, Harvard University executive programme",
+    ],
+  },
+  recognitions: {
+    heading: "Recognitions.",
+    items: [
+      "CSU Innovation Award (MyHives, 2026)",
+      "European Entrepreneur of the Year (2024)",
+      "Bold EdTech Award (2023)",
+      "FUTR150 Founders and Startups Award (2022)",
+    ],
+  },
+  boardAdvisory: {
+    heading: "Board and advisory.",
+    items: [
+      "Chairman, Supervisory Board, MyHives Nigeria",
+      "Investor and Advisor, Heilen",
+      "Member, ForbesBLK",
+      "Mentor, Diverse Leaders in Tech, Amsterdam",
+    ],
+  },
+  location: "Nelson is based in The Hague, Netherlands.",
+  /* CV asset to be supplied by Nelson. */
+  cta: [
+    { label: "Download CV", href: "#", placeholder: true },
+    { label: "Contact", href: "/contact", placeholder: false },
+  ],
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Company anchor pages  — brief §10; reuse §5 copy + verified extras        */
+/* -------------------------------------------------------------------------- */
+
+/* Page-specific additions to the existing myhives / joble / fifteenWins
+   objects. `extra` is the additional partnerships/traction paragraph the brief
+   asks for, written only from verified facts. */
+export const companyExtras = {
+  myhives: {
+    siteLabel: "myhives.nl",
+    extra:
+      "MyHives works with distribution partners including Trigion (Securitas group, licensed 24/7 alarm centre), Marsh, CSU, and TZorg, and protects 35,000+ people across 190+ countries.",
+  },
+  joble: {
+    siteLabel: "joble.app",
+    extra:
+      "Joble is trusted by 500+ businesses across e-commerce, professional services, and hospitality.",
+  },
+  fifteenwins: {
+    siteLabel: "15wins.com",
+    extra:
+      "15Wins deploys from pre-seed to Series A across Europe, the UK, Africa, and the US, focused on AI, safety, and infrastructure.",
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Speaking page  (/speaking)  — copy verbatim from brief §7                 */
+/* -------------------------------------------------------------------------- */
+
+export const speakingPage = {
+  eyebrow: "Speaking",
+  heading: "Speaking.",
+  lead: {
+    heading: "What Nelson speaks about.",
+    body: "Nelson speaks on artificial intelligence and its distribution, everyday safety technology, building deep tech from Europe, and what the next decade of opportunity looks like for emerging markets.",
+  },
+  signature: {
+    heading: "Signature talks.",
+    talks: [
+      {
+        title:
+          "The AI Sovereignty Playbook: How Small Nations and Small Companies Own the Layer That Matters.",
+        body: "A framework for governments, founders, and investors identifying and acquiring durable ownership at the weights, compute, data, distribution, or talent layer of the AI economy. First delivered at the AIFOD Summer Summit, UN Palais des Nations, August 2026.",
+      },
+      {
+        title: "The First Minute Is the Whole Emergency.",
+        body: "Why the hardest problem in personal safety is not the response, it is the seconds before anyone knows. Drawing on the design of MyHives and BEEKON.",
+      },
+      {
+        title: "What Diaspora Capital Is Actually Building.",
+        body: "An operator view on how founders abroad are deploying capital and infrastructure back into Nigeria and across Africa, and what makes the pattern compound. Drawing on 15Wins Ventures, MyHives Nigeria, and Zarttech.",
+      },
+      {
+        title: "Building Deep Tech from Europe.",
+        body: "Why the Old World may be better positioned for the next decade than the Valley admits.",
+      },
+    ],
+  },
+  recent: {
+    heading: "Recent appearances.",
+    items: [
+      "AIFOD Summer Summit, UN Palais des Nations, Geneva, August 2026. Panel: Small Takes the Lead.",
+    ],
+  },
+  booking: {
+    heading: "Booking.",
+    body: "To invite Nelson to speak at your event, submit the form below. Please include event name, date, audience profile, honorarium and travel arrangement, and desired topic. Every enquiry is read.",
+    kit: { label: "Download speaker kit PDF", href: "#", placeholder: true },
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Press page  (/press)  — copy verbatim from brief §8                       */
+/* -------------------------------------------------------------------------- */
+
+export const press = {
+  eyebrow: "Press",
+  heading: "Press and media.",
+  bios: [
+    {
+      label: "Short bio (50 words)",
+      body: "Dr Nelson T. Ajulo is CEO and Co-Founder of MyHives, an AI safety platform protecting 35,000+ people across 190+ countries. He is also founder of Joble and General Partner at 15Wins Ventures. He is an AIFOD Global Advocate and holds a PhD in International Economics from the University of Gdansk.",
+    },
+    {
+      label: "Medium bio (100 words)",
+      body: "Nelson T. Ajulo, PhD, is a serial founder and technology executive building at the intersection of AI, safety, and capital access across Europe and Africa. He is CEO and Co-Founder of MyHives, protecting 35,000+ people in 190+ countries; founder of Joble (500+ business clients); and General Partner at 15Wins Ventures. Previously, he founded Zarttech, scaling to 700+ engineers across four countries. As an AIFOD Global Advocate, he contributes to global conversations on AI sovereignty and equitable access. Nelson holds a PhD in International Economics, an MBA, and completed Cybersecurity executive studies at Harvard University.",
+    },
+  ],
+  longBio: {
+    label: "Long bio",
+    note: "The full About profile is the long-form biography.",
+    href: "/about",
+  },
+  headshots: {
+    heading: "Headshots.",
+    body: "High resolution portraits in landscape and portrait orientations, formal and working environments, licensed for editorial use with credit.",
+    cta: { label: "Download high-res pack", href: "#", placeholder: true },
+  },
+  boilerplates: {
+    heading: "Boilerplates.",
+    items: [
+      {
+        name: "MyHives",
+        body: "MyHives is the world's first everyday safety AI guardian, protecting 35,000+ people across 190+ countries, headquartered in The Hague.",
+      },
+      {
+        name: "Joble",
+        body: "Joble puts an AI agent on the website and the phone of small businesses, answering, qualifying, and booking around the clock, trusted by 500+ businesses.",
+      },
+      {
+        name: "15Wins Ventures",
+        body: "15Wins Ventures is a venture platform providing capital and studio infrastructure to companies in AI, safety, and infrastructure across Europe, the UK, Africa, and the US.",
+      },
+    ],
+  },
+  coverage: {
+    heading: "Coverage.",
+    /* Intentionally empty until real, linkable coverage exists (brief §8). */
+    note: "Real coverage links only, added chronologically.",
+  },
+  mediaEnquiries: { heading: "Media enquiries.", email: "press@tnajulo.com" },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Contact page  (/contact)  — copy verbatim from brief §9                   */
+/* -------------------------------------------------------------------------- */
+
+/* Builder note (brief §9): all mailboxes below were confirmed by Nelson to
+   exist. Speaking and guest enquiries route to on-site forms. */
+export const contactPage = {
+  eyebrow: "Contact",
+  heading: "Get in touch.",
+  intro:
+    "Nelson receives more enquiries than he can answer personally. Please route yours below so it reaches the right desk quickly.",
+  routes: [
+    {
+      label: "For MyHives, BEEKON, distribution or partnerships",
+      value: "partnerships@myhives.nl",
+      href: "mailto:partnerships@myhives.nl",
+    },
+    {
+      label: "For Joble customer or partner enquiries",
+      value: "hello@joble.app",
+      href: "mailto:hello@joble.app",
+    },
+    {
+      label: "For 15Wins Ventures pitches or LP conversations",
+      value: "nelson@15wins.com",
+      href: "mailto:nelson@15wins.com",
+    },
+    {
+      label: "For speaking enquiries",
+      value: "Speaking form",
+      href: "/speaking#booking",
+    },
+    { label: "For press", value: "press@tnajulo.com", href: "mailto:press@tnajulo.com" },
+    {
+      label: "For podcast guest applications",
+      value: "Guest application",
+      href: "/podcast#apply",
+    },
+    { label: "For everything else", value: "hello@tnajulo.com", href: "mailto:hello@tnajulo.com" },
+  ],
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Writing page  (/writing)                                                  */
+/* -------------------------------------------------------------------------- */
+
+export const writingPage = {
+  eyebrow: "Writing",
+  heading: "Writing.",
+  lead: "Long-form pieces and essays on artificial intelligence, safety, entrepreneurship, and the economics of access.",
+  empty: "The first pieces are on the way. In the meantime, follow the thinking on LinkedIn.",
 } as const;
 
 /* -------------------------------------------------------------------------- */
 /*  Navigation                                                                */
 /* -------------------------------------------------------------------------- */
 
-/* Section links use the "/#id" form so they resolve from any route — an
-   in-page scroll on the homepage, a navigate-then-scroll from /podcast. */
-export const navigation = [
-  { label: "Position", href: "/#position" },
-  { label: "Building", href: "/#building" },
-  { label: "Journey", href: "/#journey" },
-  { label: "Perspective", href: "/#perspective" },
+/* Primary nav per brief §3: Home (name mark), About, Companies (dropdown),
+   Podcast, Speaking, Writing, Contact. Press lives in the footer. */
+export interface NavItem {
+  label: string;
+  href?: string;
+  children?: { label: string; href: string }[];
+}
+
+export const navigation: NavItem[] = [
+  { label: "About", href: "/about" },
+  {
+    label: "Companies",
+    children: [
+      { label: "MyHives", href: "/myhives" },
+      { label: "Joble", href: "/joble" },
+      { label: "15Wins", href: "/15wins" },
+    ],
+  },
   { label: "Podcast", href: "/podcast" },
-  { label: "Contact", href: "/#contact" },
-] as const;
+  { label: "Speaking", href: "/speaking" },
+  { label: "Writing", href: "/writing" },
+  { label: "Contact", href: "/contact" },
+];
+
+/* Footer navigation, including Press (brief §3). */
+export const footerNav: { label: string; href: string }[] = [
+  { label: "About", href: "/about" },
+  { label: "MyHives", href: "/myhives" },
+  { label: "Joble", href: "/joble" },
+  { label: "15Wins", href: "/15wins" },
+  { label: "Podcast", href: "/podcast" },
+  { label: "Speaking", href: "/speaking" },
+  { label: "Writing", href: "/writing" },
+  { label: "Contact", href: "/contact" },
+  { label: "Press", href: "/press" },
+];

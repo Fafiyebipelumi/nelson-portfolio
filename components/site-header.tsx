@@ -21,7 +21,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { navigation, profile } from "@/lib/content";
 
 const MobileMenu = dynamic(
@@ -128,9 +128,9 @@ export function SiteHeader() {
         }`}
       >
         <div className="gutter flex h-16 items-center justify-between sm:h-20">
-          {/* Name mark */}
+          {/* Name mark (Home) */}
           <Link
-            href="/#top"
+            href="/"
             className={`font-mono text-[0.8125rem] tracking-[0.14em] uppercase transition-colors duration-500 ${
               light ? "text-bone" : "text-charcoal"
             }`}
@@ -142,22 +142,70 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop navigation */}
-          <nav aria-label="Sections" className="hidden md:block">
+          <nav aria-label="Primary" className="hidden md:block">
             <ul className="flex items-center gap-8 lg:gap-10">
-              {navigation.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={`link-draw font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors duration-300 ${
-                      light
-                        ? "text-ash hover:text-bone"
-                        : "text-graphite hover:text-charcoal"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              {navigation.map((item) => {
+                const linkClass = `link-draw font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors duration-300 ${
+                  light
+                    ? "text-ash hover:text-bone"
+                    : "text-graphite hover:text-charcoal"
+                }`;
+
+                if (item.children) {
+                  /* Dropdown: opens on hover and on keyboard focus-within, so
+                     it works without JavaScript state. */
+                  return (
+                    <li key={item.label} className="group relative">
+                      <button
+                        type="button"
+                        aria-haspopup="true"
+                        className={`${linkClass} flex items-center gap-1.5`}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          className="size-3 transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
+                          strokeWidth={2}
+                          aria-hidden="true"
+                        />
+                      </button>
+                      <div
+                        className={`invisible absolute top-full left-1/2 z-10 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
+                      >
+                        <ul
+                          className={`flex min-w-44 flex-col border p-2 backdrop-blur-xl ${
+                            light
+                              ? "border-rule-ink bg-ink/90"
+                              : "border-rule bg-paper/95"
+                          }`}
+                        >
+                          {item.children.map((child) => (
+                            <li key={child.href}>
+                              <Link
+                                href={child.href}
+                                className={`block px-3 py-2 font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors ${
+                                  light
+                                    ? "text-ash hover:bg-ink-soft hover:text-bone"
+                                    : "text-graphite hover:bg-paper-deep hover:text-charcoal"
+                                }`}
+                              >
+                                {child.label}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={item.label}>
+                    <Link href={item.href ?? "/"} className={linkClass}>
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
 
