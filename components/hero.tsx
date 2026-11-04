@@ -1,29 +1,23 @@
 import Image from "next/image";
-import { profile } from "@/lib/content";
-import { HeroVisual } from "./hero-visual";
+import { ArrowUpRight } from "lucide-react";
+import { homeHero } from "@/lib/content";
+import { ActionButton, PlayIcon } from "./action-button";
+import { Stripes } from "./stripes";
 
 /* ============================================================================
-   01 — HERO
+   01 — HERO  (Figma redesign, November 2026)
    ----------------------------------------------------------------------------
-   Server component. The intro reveal is CSS-only (`animate-rise`), staggered
-   with inline delays, so the most important screen on the site ships with zero
-   JavaScript of its own.
+   Pure black, the B.png glow on the left, and Nelson's portrait filling the
+   right. The portrait has a black studio background, so it merges straight
+   into the page with no cut-out or mask.
 
-   Composition: a three-band editorial page — meta rail, the name set as large
-   as the viewport will carry, reading matter on the baseline.
+   The portrait frame reproduces the Figma crop exactly: a 939 x 812 frame
+   holding the photo scaled to 1147.74 x 1721.41, offset to (120.08, -152) and
+   rotated 4 degrees about its top-left corner (values from the exported SVG,
+   converted to percentages of the frame so it scales).
 
-   The portrait is placed as a full-height column on the right edge rather than
-   inline at the bottom. Two reasons: inline, its height *added* to the hero and
-   pushed the statement below the fold on a 900px laptop; as a column its height
-   is governed by the hero instead. It also stops reading as a pasted thumbnail
-   and starts reading as atmosphere, which is the more expensive effect.
-
-   Desktop only, deliberately. On mobile the hero is pure typography — faster to
-   paint (the LCP becomes text) and stronger to look at — and his face appears
-   immediately below in section 02 anyway.
-
-   Greyscale is not a stylistic tic: the backdrop of the source photograph is
-   purple, which has no place in this palette.
+   Server component. The intro animation is CSS (`animate-rise`), so the most
+   important screen on the site ships with no JavaScript of its own.
    ========================================================================== */
 
 export function Hero() {
@@ -31,118 +25,95 @@ export function Hero() {
     <section
       id="top"
       data-tone="ink"
-      className="on-ink bg-ink text-bone grain relative isolate overflow-hidden"
+      className="on-ink text-cream relative isolate overflow-hidden bg-black"
     >
-      <HeroVisual />
+      {/* Glow. Its right half sits under the portrait's black background. */}
+      <Image
+        src="/B.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-10 object-cover object-left"
+      />
 
-      {/* Portrait column — right edge, dissolving into the ink on every side.
-          The fade is done by masking the image itself rather than laying an
-          opaque ink gradient over it. An overlay also hid the measuring grid
-          underneath, which produced a visible vertical seam down the page;
-          masking lets the grid run straight through. The two masks are nested
-          rather than composited, which avoids relying on mask-composite. */}
+      {/* Portrait frame: full height on the right from 1024px. Below that it
+          fills the top of the screen with the face in view, fading at its left
+          edge so some of the glow still shows. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-1 hidden w-[38%] lg:block"
-        style={{
-          maskImage:
-            "linear-gradient(to bottom, transparent 0%, #000 11%, #000 74%, transparent 99%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, transparent 0%, #000 11%, #000 74%, transparent 99%)",
-        }}
+        className="pointer-events-none absolute top-0 right-[-14vw] z-0 aspect-[939/812] h-[64svh] overflow-hidden [mask-image:linear-gradient(to_right,transparent_22%,#000_48%)] sm:right-[-6vw] sm:h-[70svh] lg:right-0 lg:bottom-0 lg:h-auto lg:[mask-image:none]"
       >
         <div
-          className="absolute inset-0"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.22) 30%, #000 74%)",
-            WebkitMaskImage:
-              "linear-gradient(to right, transparent 0%, rgba(0,0,0,0.22) 30%, #000 74%)",
-          }}
+          className="absolute origin-top-left rotate-[4deg]"
+          style={{ left: "12.788%", top: "-18.719%", width: "122.23%", height: "212%" }}
         >
           <Image
-            src="/nelson-ta1.jpeg"
+            src="/nelson-portrait.jpg"
             alt=""
             fill
-            /* Below lg the element is display:none, so hint a trivially small
-               candidate rather than downloading a desktop-sized crop. */
-            sizes="(min-width: 1024px) 38vw, 1px"
             priority
-            className="object-cover object-[46%_50%] opacity-80 grayscale contrast-[1.05]"
+            sizes="(min-width: 1024px) 75vw, 130vw"
+            className="object-cover"
           />
         </div>
+        {/* Below 1024px the frame ends mid-screen: fade its bottom edge out. */}
+        <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-b from-transparent to-black lg:hidden" />
       </div>
 
-      <div aria-hidden="true" className="grain-layer z-1" />
+      {/* Small screens: the text sits over the lower part of the portrait,
+          so a black fade keeps it legible. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 z-0 h-[62%] bg-gradient-to-t from-black via-black/85 to-transparent lg:hidden"
+      />
 
-      <div className="gutter relative z-10 flex min-h-dvh flex-col justify-between pt-24 pb-10 sm:pt-32 sm:pb-12 lg:pb-16">
-        {/* ---- Meta rail ----
-            Stacked to the left at every breakpoint rather than justified
-            across the full width. Justified, the roles line ran into the
-            bright window highlight in the portrait and lost its contrast;
-            the right half of the rail is the portrait's territory. */}
-        <div
-          className="animate-rise border-rule-ink space-y-2.5 border-b pb-5"
-          style={{ animationDelay: "0.1s" }}
-        >
-          {/* <p className="eyebrow text-ash">{profile.location}</p> */}
-          <p className="eyebrow text-slate">
-            {profile.roles.map((role, i) => (
-              <span key={role}>
-                {i > 0 ? <span className="text-signal-bright"> · </span> : null}
-                {role}
-              </span>
-            ))}
-          </p>
-        </div>
-
-        {/* ---- Name ---- */}
-        <div className="flex flex-1 flex-col justify-center py-10 sm:py-14">
-          {/* The two lines are separate blocks for the staggered reveal, so an
-              explicit space keeps the accessible name "Nelson T. Ajulo" rather
-              than "NelsonT. Ajulo". */}
-          <h1 className="text-hero font-medium uppercase">
-            <span
-              className="animate-rise block"
-              style={{ animationDelay: "0.22s" }}
-            >
-              {profile.firstName}
-            </span>{" "}
-            <span
-              className="animate-rise text-ash block"
-              style={{ animationDelay: "0.34s" }}
-            >
-              {profile.lastName}
-            </span>
+      <div className="gutter relative z-10 flex min-h-[112svh] flex-col justify-end pt-32 pb-14 sm:min-h-[100svh] lg:min-h-[max(100svh,46rem)] lg:pb-14">
+        <div className="max-w-[46rem] lg:max-w-[58%]">
+          {/* The design sets Instrument Serif about 12% narrower than its
+              natural width (as on the intro screen), one line from 1024px. */}
+          <h1
+            className="animate-rise origin-left font-serif text-[clamp(3.4rem,9.6vw,9.75rem)] leading-[0.86] uppercase [scale:0.88_1] lg:whitespace-nowrap"
+            style={{ animationDelay: "0.15s" }}
+          >
+            {homeHero.title}
           </h1>
-        </div>
 
-        {/* ---- Reading matter ---- */}
-        <div className="grid gap-8 sm:gap-12 lg:grid-cols-12 lg:items-end lg:gap-8">
-          <div
-            className="animate-rise lg:col-span-5"
-            style={{ animationDelay: "0.46s" }}
+          <p
+            className="animate-rise mt-5 font-sans text-[clamp(1.5rem,2.85vw,2.6rem)] leading-[1.15] font-medium tracking-[-0.02em] lg:mt-7 lg:whitespace-nowrap"
+            style={{ animationDelay: "0.3s" }}
           >
-            <p className="text-subtitle text-bone max-w-xl font-normal">
-              Building technology that acts when people cannot,
-              and{" "}
-              <span className="">
-                intelligence that helps them do more
-              </span>
-              .
-            </p>
-          </div>
+            {homeHero.tagline}
+          </p>
+
+          <p
+            className="animate-rise text-sand mt-5 max-w-[51rem] font-sans text-[clamp(1rem,1.3vw,1.25rem)] leading-[1.45] lg:mt-7"
+            style={{ animationDelay: "0.42s" }}
+          >
+            {homeHero.standing}
+          </p>
 
           <div
-            className="animate-rise lg:col-span-3 lg:col-start-7"
-            style={{ animationDelay: "0.58s" }}
+            className="animate-rise mt-8 flex flex-wrap gap-4 lg:mt-10 lg:gap-5"
+            style={{ animationDelay: "0.54s" }}
           >
-            <p className="text-ash max-w-sm text-sm leading-relaxed">
-              {profile.standing}
-            </p>
+            <ActionButton href={homeHero.ctas.primary.href}>
+              <PlayIcon />
+              {homeHero.ctas.primary.label}
+            </ActionButton>
+            <ActionButton href={homeHero.ctas.secondary.href} variant="dark">
+              {homeHero.ctas.secondary.label}
+              <ArrowUpRight
+                className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+            </ActionButton>
           </div>
         </div>
       </div>
+
+      <Stripes className="relative z-10" />
     </section>
   );
 }

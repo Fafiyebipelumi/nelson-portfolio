@@ -1,4 +1,4 @@
-import { journey } from "@/lib/content";
+import { journey, journeySection } from "@/lib/content";
 import { Section, SectionBody, SectionLabel } from "./section";
 import { Reveal } from "./motion-primitives";
 
@@ -11,25 +11,23 @@ import { Reveal } from "./motion-primitives";
    one. You can read which parts of the story are still running without
    parsing a single date.
 
-   Dates appear only where a public source supports them. Chapters without a
-   verifiable date carry a qualitative label instead of an invented year —
-   which is why Zarttech reads "Concluded 2025" and early work reads only
-   "Nigeria · Netherlands".
+   Dates appear only where they are supported. Chapters without a date carry
+   a qualitative label (the area of work) instead of an invented year.
    ========================================================================== */
 
 export function Journey() {
   return (
     <Section id="journey" tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="05" label="The journey" tone="ink" />
+        <SectionLabel index="05" label={journeySection.eyebrow} tone="ink" />
 
         <Reveal>
           <h2 className="text-title text-charcoal mb-16 max-w-3xl font-medium sm:mb-20">
-            Access, then opportunity, then{" "}
+            {journeySection.headline.before}
             <span className="text-signal">
-              intelligence and safety
+              {journeySection.headline.emphasis}
             </span>
-            .
+            {journeySection.headline.after}
           </h2>
         </Reveal>
 

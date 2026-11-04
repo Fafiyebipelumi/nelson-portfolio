@@ -41,7 +41,7 @@ export async function generateMetadata(
   if (!post) return { title: "Essay not found" };
 
   return {
-    title: `${post.title} · Writing`,
+    title: { absolute: `${post.title} | Nelson T. Ajulo` },
     description: post.excerpt,
     alternates: { canonical: `/writing/${post.slug}` },
     openGraph: {

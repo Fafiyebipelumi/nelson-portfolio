@@ -1,17 +1,15 @@
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { bigPicture } from "@/lib/content";
 import { Section, SectionBody, SectionLabel } from "./section";
-import { Reveal, Stagger, StaggerItem } from "./motion-primitives";
+import { Reveal } from "./motion-primitives";
 
 /* ============================================================================
    06 — AI, AFRICA & THE BIGGER PICTURE
    ----------------------------------------------------------------------------
-   Establishes that the work is not only commercial.
-
-   Accuracy note: Nelson's involvement is described strictly as participation.
-   The AIFOD summit details (UN Office at Geneva, delegates from 100+
-   countries, the theme "Small Takes the Lead") are the forum's own published
-   facts and are attributed to the forum, not to him. No speaking slot, panel
-   position, keynote or appointment is claimed anywhere in this section.
+   Establishes that the work is not only commercial. The homepage carries the
+   short version and links to /ai-africa for the full argument. The AIFOD
+   engagement is described in section 07 (Institutional context).
    ========================================================================== */
 
 export function BigPicture() {
@@ -45,11 +43,25 @@ export function BigPicture() {
                 </p>
               </Reveal>
             ))}
+
+            <Reveal delay={0.2}>
+              <Link
+                href={bigPicture.cta.href}
+                className="link-draw group text-signal-bright hover:text-bone mt-4 inline-flex items-baseline gap-2 font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors"
+              >
+                {bigPicture.cta.label}
+                <ArrowUpRight
+                  className="size-3.5 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
+              </Link>
+            </Reveal>
           </div>
 
-          {/* Themes — plain text, hairline separated. No icons: eight small
-              glyphs here would read as a feature grid, which is the opposite
-              of the intent. */}
+          {/* Themes — plain text, hairline separated. No icons: small glyphs
+              here would read as a feature grid, which is the opposite of the
+              intent. */}
           <Reveal className="lg:col-span-4 lg:col-start-9" delay={0.1}>
             <p className="eyebrow text-slate mb-5">Working themes</p>
             <ul className="border-rule-ink grid grid-cols-1 border-t sm:grid-cols-2 lg:grid-cols-1">
@@ -63,34 +75,6 @@ export function BigPicture() {
               ))}
             </ul>
           </Reveal>
-        </div>
-
-        {/* Engagements */}
-        <div className="mt-20 sm:mt-24 lg:mt-32">
-          <Reveal>
-            <p className="eyebrow text-slate mb-8">In the conversation</p>
-          </Reveal>
-
-          <Stagger className="border-rule-ink-strong border-t">
-            {bigPicture.engagements.map((item) => (
-              <StaggerItem key={item.name} className="border-rule-ink border-b">
-                <div className="grid gap-x-8 gap-y-3 py-7 sm:py-9 lg:grid-cols-12 lg:items-baseline">
-                  <p className="eyebrow text-signal-bright lg:col-span-2">
-                    {item.role}
-                  </p>
-                  <h3 className="text-bone text-xl font-medium tracking-[-0.02em] lg:col-span-4 sm:text-2xl">
-                    {item.name}
-                  </h3>
-                  <div className="lg:col-span-6">
-                    <p className="text-ash text-sm">{item.place}</p>
-                    <p className="text-slate mt-2 max-w-xl text-sm leading-relaxed">
-                      {item.note}
-                    </p>
-                  </div>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
         </div>
       </SectionBody>
     </Section>

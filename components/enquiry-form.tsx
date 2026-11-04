@@ -3,7 +3,8 @@
 /* ============================================================================
    ENQUIRY FORM
    ----------------------------------------------------------------------------
-   Reusable ink-surface form (used for speaking bookings). Posts to the form
+   Reusable ink-surface form (speaking bookings and the /contact enquiry).
+   Supports text, email, url, textarea and select fields. Posts to the form
    service in NEXT_PUBLIC_PODCAST_FORM_ENDPOINT, whose recipient is
    support@tnajulo.com. Same contract as the guest form: real validation, a
    tagged subject, and no silent success — an unconfigured or failed submit
@@ -25,12 +26,15 @@ export function EnquiryForm({
   submitLabel = "Send enquiry",
   successTitle = "Enquiry received.",
   successBody = "Thank you. It has reached the right desk and every enquiry is read.",
+  note,
 }: {
-  fields: ApplyField[];
+  fields: readonly ApplyField[];
   subject: string;
   submitLabel?: string;
   successTitle?: string;
   successBody?: string;
+  /** Small print under the submit button, e.g. how details are used. */
+  note?: string;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -109,6 +113,21 @@ export function EnquiryForm({
             </label>
             {field.type === "textarea" ? (
               <textarea {...shared} rows={4} className={`${shared.className} resize-none`} />
+            ) : field.type === "select" ? (
+              <select
+                {...shared}
+                defaultValue=""
+                className={`${shared.className} appearance-none bg-[url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='12'%20height='12'%20fill='none'%20stroke='%2357cbb8'%20stroke-width='1.5'%3E%3Cpath%20d='M2%204l4%204%204-4'/%3E%3C/svg%3E")] bg-[length:12px] bg-[right_1rem_center] bg-no-repeat pr-10 invalid:text-slate [&_option]:bg-ink [&_option]:text-bone`}
+              >
+                <option value="" disabled>
+                  {field.placeholder}
+                </option>
+                {field.options?.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             ) : (
               <input {...shared} type={field.type} autoComplete={field.autoComplete} />
             )}
@@ -139,6 +158,8 @@ export function EnquiryForm({
           aria-hidden="true"
         />
       </button>
+
+      {note ? <p className="text-slate max-w-sm text-xs leading-relaxed">{note}</p> : null}
     </form>
   );
 }

@@ -33,14 +33,19 @@ const instrumentSerif = Instrument_Serif({
 
 const SITE_URL = "https://tnajulo.com";
 
+/* Homepage meta description, verbatim from the October 2026 copy proposal's
+   SEO sheet. Titles follow the same sheet; pages set their own with
+   `title.absolute`. */
 const DESCRIPTION =
-  "Nelson T. Ajulo is a technology entrepreneur and investor building at the intersection of artificial intelligence, everyday safety and economic opportunity. CEO and Co-Founder of MyHives, makers of BEEKON, protecting 35,000+ people across 190+ countries. Founder of Joble. General Partner at 15Wins Ventures. AIFOD Global Advocate.";
+  "Discover Nelson T. Ajulo's work in artificial intelligence, everyday safety technology, early-stage investment and venture building through MyHives, Joble and 15Wins Ventures.";
+
+const TITLE = "Nelson T. Ajulo | Technology Entrepreneur & Investor";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Nelson T. Ajulo, Entrepreneur, Investor, Technologist",
-    template: "%s · Nelson T. Ajulo",
+    default: TITLE,
+    template: "%s | Nelson T. Ajulo",
   },
   description: DESCRIPTION,
   alternates: {
@@ -51,11 +56,13 @@ export const metadata: Metadata = {
     "technology entrepreneur",
     "AI entrepreneur",
     "investor",
+    "venture builder",
     "MyHives",
     "BEEKON",
     "Joble",
-    "AI for Africa",
-    "future of work",
+    "15Wins Ventures",
+    "AI in Africa",
+    "AI sovereignty",
   ],
   authors: [{ name: "Nelson T. Ajulo", url: SITE_URL }],
   creator: "Nelson T. Ajulo",
@@ -63,7 +70,7 @@ export const metadata: Metadata = {
     type: "profile",
     firstName: "Nelson",
     lastName: "Ajulo",
-    title: "Nelson T. Ajulo, Entrepreneur, Investor, Technologist",
+    title: TITLE,
     description: DESCRIPTION,
     url: SITE_URL,
     siteName: "Nelson T. Ajulo",
@@ -71,7 +78,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Nelson T. Ajulo, Entrepreneur, Investor, Technologist",
+    title: TITLE,
     description: DESCRIPTION,
   },
   robots: {
@@ -81,16 +88,34 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0c1a13",
+  themeColor: "#000000",
   colorScheme: "dark",
 };
+
+/* Decides, before first paint, whether the homepage intro screen plays: only
+   when the visitor lands on "/", once per browser session, and never with
+   reduced motion. It holds for at least 3.6s and until the page (including
+   the portrait and glow images) has loaded, capped at 7s. Any click, key,
+   wheel or touch skips it. The intro itself is pure CSS (see .splash in
+   globals.css), so without this script it still plays and clears itself. */
+const SPLASH_SCRIPT = `(function(){var d=document.documentElement;function set(v){d.setAttribute('data-splash',v)}
+try{if(location.pathname!=='/'||matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('nta-splash')){set('seen');return}sessionStorage.setItem('nta-splash','1')}catch(e){set('seen');return}
+set('playing');var t0=Date.now();var t=setTimeout(ready,3600);
+function ready(){if(document.readyState==='complete'||Date.now()-t0>7000)return leave();addEventListener('load',leave);t=setTimeout(leave,7000-(Date.now()-t0))}
+function leave(){if(d.getAttribute('data-splash')!=='playing')return;clearTimeout(t);set('leaving');setTimeout(function(){set('done')},950)}
+['pointerdown','keydown','wheel','touchstart'].forEach(function(e){addEventListener(e,leave,{passive:true})})})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      /* The splash script sets data-splash on <html> before hydration. */
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SPLASH_SCRIPT }} />
+      </head>
       <body className="bg-paper text-charcoal min-h-dvh">
         {/* Header and footer are shared across every route. */}
         <SiteHeader />

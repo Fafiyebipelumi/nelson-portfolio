@@ -1,31 +1,45 @@
 import type { Metadata } from "next";
-import { Download } from "lucide-react";
 import { speakingPage, type ApplyField } from "@/lib/content";
+import { JsonLd } from "@/components/json-ld";
 import { PageHeader } from "@/components/page-header";
-import { Section, SectionBody } from "@/components/section";
-import { Reveal } from "@/components/motion-primitives";
+import { Section, SectionBody, SectionLabel } from "@/components/section";
+import { Reveal, Stagger, StaggerItem } from "@/components/motion-primitives";
 import { EnquiryForm } from "@/components/enquiry-form";
 
 /* ============================================================================
-   /speaking  —  signature talks, recent appearances, booking. Brief §7.
+   /speaking  —  point of view, speaking topics, recent engagement, booking.
+   Copy from the October 2026 copy proposal.
    ========================================================================== */
 
 const DESCRIPTION =
-  "Nelson T. Ajulo speaks on AI and its distribution, everyday safety technology, building deep tech from Europe, and the next decade of opportunity for emerging markets.";
+  "Nelson T. Ajulo speaks on artificial intelligence, AI sovereignty and access, everyday safety technology, African innovation and venture building. Keynotes, panels, fireside chats and media interviews.";
 
 export const metadata: Metadata = {
-  title: "Speaking",
+  title: { absolute: "Nelson T. Ajulo | AI & Technology Speaker" },
   description: DESCRIPTION,
   alternates: { canonical: "/speaking" },
-  openGraph: { type: "website", title: "Speaking · Nelson T. Ajulo", description: DESCRIPTION, url: "/speaking" },
+  openGraph: {
+    type: "website",
+    title: "Nelson T. Ajulo | AI & Technology Speaker",
+    description: DESCRIPTION,
+    url: "/speaking",
+  },
 };
 
-/* Booking fields per brief §7 (event name, date, audience, honorarium and
-   travel, desired topic), plus contact. */
+/* Event details plus the formats the proposal names (keynotes, panels,
+   fireside chats, media interviews). */
 const bookingFields: ApplyField[] = [
   { name: "name", label: "Your name", type: "text", placeholder: "Full name", required: true, autoComplete: "name" },
-  { name: "email", label: "Email", type: "email", placeholder: "you@organisation.com", required: true, autoComplete: "email" },
+  { name: "email", label: "Work email", type: "email", placeholder: "you@organisation.com", required: true, autoComplete: "email" },
   { name: "event", label: "Event name", type: "text", placeholder: "Conference or event", required: true },
+  {
+    name: "format",
+    label: "Format",
+    type: "select",
+    placeholder: "Choose one",
+    required: true,
+    options: ["Keynote", "Conference panel", "Fireside chat", "Media interview", "Something else"],
+  },
   { name: "date", label: "Date", type: "text", placeholder: "When is it?", required: true },
   { name: "audience", label: "Audience profile", type: "text", placeholder: "Who attends, and how many?", required: false },
   { name: "arrangement", label: "Honorarium and travel arrangement", type: "text", placeholder: "Budget and logistics", required: false },
@@ -36,10 +50,7 @@ const speakingJsonLd = {
   "@context": "https://schema.org",
   "@type": "Event",
   name: "AIFOD Summer Summit",
-  location: {
-    "@type": "Place",
-    name: "UN Palais des Nations, Geneva",
-  },
+  location: { "@type": "Place", name: "United Nations Office at Geneva" },
   startDate: "2026-08",
   performer: { "@type": "Person", name: "Nelson T. Ajulo" },
 };
@@ -47,60 +58,60 @@ const speakingJsonLd = {
 export default function SpeakingPage() {
   return (
     <main id="main">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(speakingJsonLd) }}
-      />
+      <JsonLd data={speakingJsonLd} />
 
       <PageHeader
         eyebrow={speakingPage.eyebrow}
         title={speakingPage.heading}
-        lead={speakingPage.lead.body}
-      />
+        lead={speakingPage.intro[0]}
+      >
+        <div className="mt-6 max-w-2xl space-y-5">
+          {speakingPage.intro.slice(1).map((paragraph, i) => (
+            <Reveal key={i} delay={0.15 + i * 0.04}>
+              <p className="text-ash text-base leading-relaxed sm:text-lg">{paragraph}</p>
+            </Reveal>
+          ))}
+        </div>
+      </PageHeader>
 
+      {/* Speaking topics */}
       <Section tone="ink" grain>
-        <SectionBody className="!pt-0">
-          {/* Signature talks */}
-          <Reveal>
-            <h2 className="text-title text-bone mb-12 font-medium">
-              {speakingPage.signature.heading}
-            </h2>
-          </Reveal>
+        <SectionBody>
+          <SectionLabel index="01" label={speakingPage.topics.heading} tone="ink" asHeading />
 
-          <div className="border-rule-ink-strong border-t">
-            {speakingPage.signature.talks.map((talk, i) => (
-              <Reveal key={talk.title} delay={Math.min(i * 0.05, 0.15)}>
-                <article className="border-rule-ink grid gap-x-8 gap-y-4 border-b py-9 lg:grid-cols-12">
+          <Stagger className="border-rule-ink-strong border-t">
+            {speakingPage.topics.items.map((topic, i) => (
+              <StaggerItem key={topic.title} className="border-rule-ink border-b">
+                <article className="grid gap-x-8 gap-y-4 py-9 lg:grid-cols-12">
                   <span className="eyebrow text-signal-bright lg:col-span-1">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="text-subtitle text-bone font-medium lg:col-span-6">
-                    {talk.title}
+                  <h3 className="text-subtitle text-bone font-medium lg:col-span-5">
+                    {topic.title}
                   </h3>
-                  <p className="text-ash text-base leading-relaxed lg:col-span-5">
-                    {talk.body}
+                  <p className="text-ash text-base leading-relaxed lg:col-span-6">
+                    {topic.body}
                   </p>
                 </article>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
 
-          {/* Recent appearances */}
+          {/* Recent engagement */}
           <div className="mt-20 sm:mt-28">
             <Reveal>
-              <h2 className="text-title text-bone mb-10 font-medium">
-                {speakingPage.recent.heading}
-              </h2>
+              <p className="eyebrow text-signal-bright mb-6">{speakingPage.recent.heading}</p>
             </Reveal>
-            <ul className="border-rule-ink border-t">
-              {speakingPage.recent.items.map((item) => (
-                <Reveal key={item}>
-                  <li className="border-rule-ink text-ash border-b py-5 text-lg">
-                    {item}
-                  </li>
-                </Reveal>
-              ))}
-            </ul>
+            <Reveal delay={0.05}>
+              <div className="border-rule-ink grid gap-x-8 gap-y-4 border-t pt-8 lg:grid-cols-12">
+                <h3 className="text-subtitle text-bone font-medium lg:col-span-5">
+                  {speakingPage.recent.title}
+                </h3>
+                <p className="text-ash text-base leading-relaxed lg:col-span-6 lg:col-start-7">
+                  {speakingPage.recent.body}
+                </p>
+              </div>
+            </Reveal>
           </div>
         </SectionBody>
       </Section>
@@ -120,15 +131,6 @@ export default function SpeakingPage() {
                   {speakingPage.booking.body}
                 </p>
               </Reveal>
-              <Reveal delay={0.1}>
-                <a
-                  href={speakingPage.booking.kit.href}
-                  className="group border-rule-ink-strong hover:border-signal-bright text-bone mt-10 inline-flex items-center gap-2 border px-6 py-3.5 text-sm font-medium transition-colors"
-                >
-                  <Download className="size-4" strokeWidth={1.75} aria-hidden="true" />
-                  {speakingPage.booking.kit.label}
-                </a>
-              </Reveal>
             </div>
 
             <div className="lg:col-span-6 lg:col-start-7">
@@ -136,7 +138,7 @@ export default function SpeakingPage() {
                 <EnquiryForm
                   fields={bookingFields}
                   subject="Speaking enquiry from tnajulo.com"
-                  submitLabel="Send enquiry"
+                  submitLabel={speakingPage.booking.submitLabel}
                   successTitle="Enquiry received."
                   successBody="Thank you. It has reached the right desk and every enquiry is read."
                 />
