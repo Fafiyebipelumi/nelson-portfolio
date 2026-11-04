@@ -18,7 +18,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { navigation, profile } from "@/lib/content";
+import { navigation, navContact, profile } from "@/lib/content";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -58,7 +58,7 @@ export function MobileMenu({
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
-          className="on-ink bg-ink fixed inset-0 z-60 md:hidden"
+          className="on-ink bg-ink fixed inset-0 z-60 overflow-y-auto lg:hidden"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={reduced ? { opacity: 0 } : { opacity: 0 }}
@@ -82,7 +82,7 @@ export function MobileMenu({
 
           <nav aria-label="Primary" className="gutter mt-8">
             <ul className="border-rule-ink border-t">
-              {navigation.map((item, i) => (
+              {[...navigation, navContact].map((item, i) => (
                 <motion.li
                   key={item.label}
                   className="border-rule-ink border-b"
@@ -94,7 +94,7 @@ export function MobileMenu({
                     ease: EASE,
                   }}
                 >
-                  {item.children ? (
+                  {"children" in item && item.children ? (
                     <div className="py-5">
                       <span className="text-slate flex items-baseline gap-4 text-3xl tracking-[-0.03em]">
                         <span className="eyebrow text-signal-bright">

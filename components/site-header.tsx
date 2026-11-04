@@ -1,20 +1,19 @@
 "use client";
 
 /* ============================================================================
-   SITE HEADER
+   SITE HEADER  (Figma redesign, November 2026)
    ----------------------------------------------------------------------------
-   Shared across every route (rendered once in the root layout). It starts
-   transparent over an ink hero with light type, then takes on a translucent
-   bar — ink or paper — matching whichever surface is passing beneath it. That
-   surface-matching is the only reason the bar needs to be a client component,
-   and it is driven by a passive scroll listener coalesced into a single rAF.
+   Shared across every route. Name mark in Instrument Serif on the left, the
+   page links in a translucent pill in the centre (the current page lit), and
+   a cream Contact button on the right.
 
-   Because the header persists across client-side navigations, the ink-section
-   bounds are re-measured whenever the route changes (`pathname`), otherwise a
-   new page would inherit the previous page's tone map.
+   It sits transparent over the hero; once the page scrolls it takes a dark,
+   blurred backing so it stays legible over cream sections too. The scroll
+   listener is passive and coalesced into a single rAF.
 
-   The mobile overlay is code-split and imported on first intent, so the
-   animation runtime it needs never touches the critical path — or desktop.
+   Below 1024px the pill gives way to the Menu button. The mobile overlay is
+   code-split and loaded on first intent, so its animation runtime never
+   touches the critical path.
    ========================================================================== */
 
 import dynamic from "next/dynamic";
@@ -22,171 +21,111 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu } from "lucide-react";
-import { navigation, profile } from "@/lib/content";
+import { navigation, navContact } from "@/lib/content";
+import { ActionButton } from "./action-button";
 
 const MobileMenu = dynamic(
   () => import("./mobile-menu").then((mod) => mod.MobileMenu),
   { ssr: false },
 );
 
+function isActive(pathname: string, href: string) {
+  const path = href.split("#")[0];
+  return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`);
+}
+
 export function SiteHeader() {
-  /** True once the hero has scrolled away and the bar needs a background. */
-  const [pinned, setPinned] = useState(false);
-  /** Tone of the section currently passing under the bar. */
-  const [overInk, setOverInk] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   /** Defers mounting (and therefore downloading) the overlay until wanted. */
   const [menuReady, setMenuReady] = useState(false);
   const frame = useRef(0);
-  const inkRanges = useRef<Array<[number, number]>>([]);
   const pathname = usePathname();
 
   useEffect(() => {
-    /* The site alternates paper and ink surfaces, so a single fixed bar style
-       cannot work throughout — a light bar stranded over an ink section reads
-       as a rendering fault. Ink section bounds are measured up front (and on
-       resize / route change) so the scroll handler only ever does arithmetic,
-       never a layout read, on the way past. */
-    const measure = () => {
-      inkRanges.current = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-tone="ink"]'),
-      ).map((el) => {
-        const top = el.getBoundingClientRect().top + window.scrollY;
-        return [top, top + el.offsetHeight] as [number, number];
-      });
-    };
-
     const read = () => {
       frame.current = 0;
-      const y = window.scrollY;
-      /* Sample just below the bar's own bottom edge. */
-      const probe = y + 72;
-      setPinned(y > window.innerHeight * 0.8);
-      setOverInk(
-        inkRanges.current.some(([top, bottom]) => probe >= top && probe < bottom),
-      );
+      setScrolled(window.scrollY > 24);
     };
-
     const onScroll = () => {
       if (frame.current) return;
       frame.current = window.requestAnimationFrame(read);
     };
-
-    const onResize = () => {
-      measure();
-      read();
-    };
-
-    /* Wait a frame after a route change so the incoming page has laid out
-       before its ink sections are measured. */
-    const settle = window.requestAnimationFrame(() => {
-      measure();
-      read();
-    });
-
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
     return () => {
-      window.cancelAnimationFrame(settle);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
       if (frame.current) window.cancelAnimationFrame(frame.current);
     };
   }, [pathname]);
 
-  /* Warm the overlay chunk on intent, so the tap itself is instant. */
   const prefetchMenu = useCallback(() => setMenuReady(true), []);
   const close = useCallback(() => setMenuOpen(false), []);
-
   const openMenu = useCallback(() => {
     setMenuReady(true);
     setMenuOpen(true);
   }, []);
 
-  /* Type follows the surface underneath, not the scroll position. */
-  const light = overInk;
-
-  const surface = !pinned
-    ? "border-transparent"
-    : overInk
-      ? "border-rule-ink bg-ink/80 border-b backdrop-blur-xl"
-      : "border-rule bg-paper/85 border-b backdrop-blur-xl";
+  const linkClass = (active: boolean) =>
+    `whitespace-nowrap rounded-full px-3 py-2.5 font-sans text-[0.8125rem] tracking-[0.02em] uppercase transition-colors duration-200 xl:px-[1.15rem] xl:text-[0.9rem] ${
+      active ? "text-cream" : "text-stone hover:text-cream"
+    }`;
 
   return (
     <>
       {/* Keyboard users shouldn't have to tab the whole nav to reach content. */}
       <a
         href="#main"
-        className="bg-ink text-bone sr-only font-mono text-xs tracking-[0.14em] uppercase focus-visible:not-sr-only focus-visible:fixed focus-visible:top-3 focus-visible:left-3 focus-visible:z-70 focus-visible:px-4 focus-visible:py-3"
+        className="bg-cream text-umber sr-only font-sans text-sm focus-visible:not-sr-only focus-visible:fixed focus-visible:top-3 focus-visible:left-3 focus-visible:z-70 focus-visible:rounded-md focus-visible:px-4 focus-visible:py-3"
       >
         Skip to content
       </a>
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500 ${surface} ${
-          light ? "on-ink" : ""
+        className={`on-ink fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-300 ${
+          scrolled
+            ? "border-b border-white/10 bg-black/75 backdrop-blur-xl"
+            : "border-b border-transparent"
         }`}
       >
-        <div className="gutter flex h-16 items-center justify-between sm:h-20">
+        <div className="gutter flex h-[4.5rem] items-center justify-between gap-6 lg:h-[7rem]">
           {/* Name mark (Home) */}
           <Link
             href="/"
-            className={`font-mono text-[0.8125rem] tracking-[0.14em] uppercase transition-colors duration-500 ${
-              light ? "text-bone" : "text-charcoal"
-            }`}
+            className="text-cream shrink-0 font-serif text-[1.75rem] leading-none whitespace-nowrap lg:pl-6 lg:text-[2.25rem] xl:pl-9 xl:text-[2.65rem]"
           >
-            <span className="font-medium">{profile.firstName}</span>{" "}
-            <span className={light ? "text-slate" : "text-mute"}>
-              {profile.lastName}
-            </span>
+            Nelson T. Ajulo
           </Link>
 
           {/* Desktop navigation */}
-          <nav aria-label="Primary" className="hidden md:block">
-            <ul className="flex items-center gap-8 lg:gap-10">
+          <nav aria-label="Primary" className="hidden lg:block">
+            <ul className="flex items-center rounded-full bg-white/[0.14] px-2 py-2 backdrop-blur-md xl:px-3">
               {navigation.map((item) => {
-                const linkClass = `link-draw font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors duration-300 ${
-                  light
-                    ? "text-ash hover:text-bone"
-                    : "text-graphite hover:text-charcoal"
-                }`;
+                const active = isActive(pathname, item.href);
 
                 if (item.children) {
-                  /* Dropdown: opens on hover and on keyboard focus-within, so
-                     it works without JavaScript state. */
+                  /* Dropdown: opens on hover and keyboard focus, no JS state. */
                   return (
                     <li key={item.label} className="group relative">
-                      <button
-                        type="button"
-                        aria-haspopup="true"
-                        className={`${linkClass} flex items-center gap-1.5`}
+                      <Link
+                        href={item.href}
+                        aria-current={active ? "page" : undefined}
+                        className={`${linkClass(active)} inline-flex items-center gap-1.5`}
                       >
                         {item.label}
                         <ChevronDown
-                          className="size-3 transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
+                          className="size-3.5 transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180"
                           strokeWidth={2}
                           aria-hidden="true"
                         />
-                      </button>
-                      <div
-                        className={`invisible absolute top-full left-1/2 z-10 -translate-x-1/2 pt-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
-                      >
-                        <ul
-                          className={`flex min-w-44 flex-col border p-2 backdrop-blur-xl ${
-                            light
-                              ? "border-rule-ink bg-ink/90"
-                              : "border-rule bg-paper/95"
-                          }`}
-                        >
+                      </Link>
+                      <div className="invisible absolute top-full left-1/2 z-10 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                        <ul className="flex min-w-48 flex-col rounded-2xl border border-white/10 bg-black/90 p-2 backdrop-blur-xl">
                           {item.children.map((child) => (
                             <li key={child.href}>
                               <Link
                                 href={child.href}
-                                className={`block px-3 py-2 font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors ${
-                                  light
-                                    ? "text-ash hover:bg-ink-soft hover:text-bone"
-                                    : "text-graphite hover:bg-paper-deep hover:text-charcoal"
-                                }`}
+                                className="text-stone hover:text-cream block rounded-xl px-4 py-2.5 font-sans text-[0.8125rem] tracking-[0.02em] uppercase transition-colors hover:bg-white/[0.08]"
                               >
                                 {child.label}
                               </Link>
@@ -200,7 +139,11 @@ export function SiteHeader() {
 
                 return (
                   <li key={item.label}>
-                    <Link href={item.href ?? "/"} className={linkClass}>
+                    <Link
+                      href={item.href}
+                      aria-current={active ? "page" : undefined}
+                      className={linkClass(active)}
+                    >
                       {item.label}
                     </Link>
                   </li>
@@ -209,22 +152,27 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          {/* Mobile trigger */}
-          <button
-            type="button"
-            onClick={openMenu}
-            onPointerEnter={prefetchMenu}
-            onTouchStart={prefetchMenu}
-            onFocus={prefetchMenu}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            className={`-mr-2 flex items-center gap-2 p-2 md:hidden ${
-              light ? "text-bone" : "text-charcoal"
-            }`}
-          >
-            <span className="eyebrow">Menu</span>
-            <Menu className="size-4" strokeWidth={1.5} aria-hidden="true" />
-          </button>
+          <div className="flex items-center gap-3 xl:pr-9">
+            {/* Wrapped: the button's own inline-flex would override `hidden`. */}
+            <div className="hidden lg:block">
+              <ActionButton href={navContact.href}>{navContact.label}</ActionButton>
+            </div>
+
+            {/* Mobile trigger */}
+            <button
+              type="button"
+              onClick={openMenu}
+              onPointerEnter={prefetchMenu}
+              onTouchStart={prefetchMenu}
+              onFocus={prefetchMenu}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              className="text-cream -mr-2 flex items-center gap-2 p-2 lg:hidden"
+            >
+              <span className="font-sans text-xs tracking-[0.12em] uppercase">Menu</span>
+              <Menu className="size-5" strokeWidth={1.5} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </header>
 

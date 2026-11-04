@@ -20,20 +20,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
     { url: `${SITE}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${SITE}/myhives`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE}/joble`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE}/15wins`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE}/podcast`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${SITE}/ventures`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${SITE}/ai-africa`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE}/before`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE}/speaking`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE}/writing`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${SITE}/press`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.5 },
   ];
 
   const [episodes, posts] = await Promise.all([getEpisodes(), getPosts()]);
 
   const episodeRoutes: MetadataRoute.Sitemap = episodes.map((ep) => ({
-    url: `${SITE}/podcast/${ep.slug}`,
+    url: `${SITE}/before/${ep.slug}`,
     lastModified: ep.publishedAt ? new Date(ep.publishedAt) : now,
     changeFrequency: "yearly",
     priority: 0.6,

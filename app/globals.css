@@ -62,8 +62,20 @@
   --color-rule-ink: rgb(236 233 227 / 0.14);
   --color-rule-ink-strong: rgb(236 233 227 / 0.28);
 
-  /* ---- Type families ---- */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* ---- Redesign palette (Figma, November 2026) ----
+     Pure black for the hero and intro, a warm near-black for the dark
+     sections, cream for type, buttons and light bands, and a warm grey for
+     secondary text. The colour itself comes from the glow image (B.png). */
+  --color-cream: #fff8e1; /* exact value from the Figma cover art */
+  --color-umber: #15120c;
+  --color-stone: #a8a294;
+  --color-sand: #cfc8b6;
+
+  /* ---- Type families ----
+     Body and interface: Creato Display. It is not on Google Fonts, so it is
+     loaded from local files as --font-creato; until those files are added the
+     stack falls back to Geist. Display: Instrument Serif (--font-serif). */
+  --font-sans: var(--font-creato, var(--font-geist-sans)), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
 
@@ -108,6 +120,259 @@
   /* Podcast waveform: a soft audio-level motif. Each bar shares this and
      offsets its own delay/duration so the row never pulses in lockstep. */
   --animate-equalize: equalize 1.9s ease-in-out infinite;
+}
+
+/* ============================================================
+   INTRO SCREEN (homepage, first visit in a session)
+   ------------------------------------------------------------
+   An inline script in the root layout sets html[data-splash]:
+     playing  first homepage load this session: the intro runs,
+              scroll is locked and the hero waits underneath
+     leaving  after ~3.6s, or as soon as the visitor clicks,
+              scrolls or presses a key: the exit plays while
+              the hero and header ease in beneath it
+     done     the exit has finished: the intro is removed
+     seen     every other load: the intro never shows
+   Without the script (no attribute) the intro still clears
+   itself on a CSS timer.
+
+   Sequence: glows fade up; the portrait rises out of a soft
+   blur; NELSON then T. AJULO lift in through a mask; a light
+   sweeps across the metal; the stage drifts very slowly
+   closer while the loader fills. Exit: the words part, the
+   portrait eases forward, the whole screen fades.
+   ============================================================ */
+
+html:not([data-splash]) .splash {
+  animation: splash-out 0.9s var(--ease-editorial) 3.6s forwards;
+}
+html[data-splash="leaving"] .splash {
+  animation: splash-out 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+html[data-splash="done"] .splash,
+html[data-splash="seen"] .splash {
+  display: none;
+}
+html[data-splash="playing"],
+html[data-splash="leaving"] {
+  overflow: hidden;
+}
+
+/* Glow background */
+.splash-glow {
+  animation: splash-glow 1.6s var(--ease-editorial) both;
+}
+
+/* Whole stage drifts closer while the intro holds. */
+.splash-stage {
+  animation: splash-drift 4.6s cubic-bezier(0.33, 0, 0.2, 1) both;
+}
+
+/* Portrait: rises out of a blur. On exit it eases forward. */
+.splash-portrait {
+  animation: splash-portrait-in 1.7s var(--ease-editorial) 0.2s both;
+}
+html[data-splash="leaving"] .splash-portrait {
+  animation: splash-portrait-out 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Words: lift in through a mask, then part on exit. */
+.splash-word {
+  /* Brushed-metal fill with a dark edge, as in the design, plus a
+     narrow highlight band (the first layer) that sweeps across once. */
+  background:
+    linear-gradient(
+      105deg,
+      transparent 42%,
+      rgb(255 255 255 / 0.75) 50%,
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      #f7f5ef 0%,
+      #cfccc3 34%,
+      #8f8c83 50%,
+      #d9d6cd 62%,
+      #77746b 100%
+    );
+  background-size:
+    300% 100%,
+    100% 100%;
+  background-position:
+    130% 0,
+    0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0.012em rgb(28 27 24 / 0.9);
+  filter: drop-shadow(0 0.03em 0.05em rgb(0 0 0 / 0.65));
+}
+.splash-word-left {
+  animation:
+    splash-word-in 1.3s var(--ease-editorial) 0.55s both,
+    splash-sheen 1.4s cubic-bezier(0.45, 0, 0.25, 1) 1.7s both;
+}
+.splash-word-right {
+  animation:
+    splash-word-in 1.3s var(--ease-editorial) 0.72s both,
+    splash-sheen 1.4s cubic-bezier(0.45, 0, 0.25, 1) 1.85s both;
+}
+html[data-splash="leaving"] .splash-word-left {
+  animation: splash-part-left 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+html[data-splash="leaving"] .splash-word-right {
+  animation: splash-part-right 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+/* Loader: a hairline that fills, with a running percentage. */
+@property --splash-p {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+.splash-loader {
+  animation: splash-fade-in 0.6s ease-out 0.35s both;
+}
+html[data-splash="leaving"] .splash-loader {
+  animation: splash-out 0.35s ease-out forwards;
+}
+.splash-loader-fill {
+  transform-origin: left;
+  animation: splash-fill 3.2s cubic-bezier(0.45, 0.05, 0.25, 1) 0.35s both;
+}
+.splash-loader-count {
+  animation: splash-count 3.2s cubic-bezier(0.45, 0.05, 0.25, 1) 0.35s both;
+  counter-reset: splash var(--splash-p);
+}
+.splash-loader-count::after {
+  content: counter(splash) "%";
+}
+
+/* Homepage hero and header wait under the intro, then ease in as it
+   leaves, so the reveal reads as one continuous move. */
+html[data-splash="playing"] #top,
+html[data-splash="playing"] body > header {
+  opacity: 0;
+}
+html[data-splash="leaving"] #top,
+html[data-splash="done"] #top {
+  animation: splash-hero-in 1.4s var(--ease-editorial) 0.15s both;
+}
+html[data-splash="leaving"] body > header,
+html[data-splash="done"] body > header {
+  animation: splash-fade-in 1s var(--ease-editorial) 0.45s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash {
+    display: none;
+  }
+}
+
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes splash-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes splash-glow {
+  from {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+@keyframes splash-drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.035);
+  }
+}
+@keyframes splash-portrait-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6%, 0) scale(1.05);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+@keyframes splash-portrait-out {
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(6px);
+  }
+}
+@keyframes splash-word-in {
+  from {
+    opacity: 0;
+    clip-path: inset(100% -10% -40% -10%);
+    transform: translate3d(0, 35%, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(-20% -10% -40% -10%);
+    transform: none;
+  }
+}
+@keyframes splash-sheen {
+  from {
+    background-position:
+      130% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      -30% 0,
+      0 0;
+  }
+}
+@keyframes splash-part-left {
+  to {
+    opacity: 0;
+    transform: translate3d(-12%, 0, 0);
+  }
+}
+@keyframes splash-part-right {
+  to {
+    opacity: 0;
+    transform: translate3d(12%, 0, 0);
+  }
+}
+@keyframes splash-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes splash-count {
+  from {
+    --splash-p: 0;
+  }
+  to {
+    --splash-p: 100;
+  }
+}
+/* A rise rather than a zoom: scaling the full-width hero up would push it
+   past the viewport edge for a moment on phones. */
+@keyframes splash-hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.5rem, 0);
+  }
 }
 
 @keyframes equalize {
@@ -419,5 +684,117 @@
   &:hover::after,
   &:focus-visible::after {
     transform: scaleX(1);
+  }
+}
+
+/* Footer name: outline letters pressed into the dark ground, lit from below
+   (Figma footer). Set at natural width, unlike the squeezed display serifs,
+   so the stems stay heavy enough to read as engraved. */
+.footer-engrave {
+  color: var(--color-umber);
+  -webkit-text-stroke: 1.5px rgb(255 248 225 / 0.42);
+  text-shadow:
+    0 0.025em 0.01em rgb(255 248 225 / 0.55),
+    0 -0.01em 0.01em rgb(0 0 0 / 0.9);
+  padding-bottom: 0.14em;
+}
+
+/* ============================================================
+   BEFORE (podcast page) artwork and motion
+   ============================================================ */
+
+/* Tilted BE / FORE: pale metal, slightly see-through so the violet
+   ground tints it, with a lit top edge. Rises in on load. */
+.before-art-word {
+  background: linear-gradient(180deg, #ecebe3 0%, #c9c6ba 42%, #8c897d 70%, #bdb9ad 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  opacity: 0.86;
+  filter: drop-shadow(0 0.02em 0.02em rgb(0 0 0 / 0.45));
+  animation: before-word-in 1.3s var(--ease-editorial) both;
+}
+.before-play {
+  animation: before-pop 0.9s var(--ease-editorial) 0.45s both;
+}
+.before-play::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid rgb(255 255 255 / 0.35);
+  animation: before-ping 2.6s ease-out 1.4s infinite;
+}
+.before-sun {
+  animation: before-sun-in 1.6s var(--ease-editorial) 0.1s both;
+}
+
+/* Waveform bars breathe out of step with each other. */
+.before-bar {
+  transform-origin: center;
+  animation: before-breathe 1.8s ease-in-out infinite;
+}
+
+/* Typographic stand-in for the 3D question mark. */
+/* Solid face (a text-clipped gradient would sit under the extrusion). */
+.before-qgroup {
+  animation: before-qfloat 6s var(--ease-editorial, ease-in-out) infinite alternate;
+  transform-origin: 70% 80%;
+}
+@keyframes before-qfloat {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(-3%, -6%, 0) rotate(-4deg);
+  }
+}
+
+@keyframes before-word-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12%, 0);
+    filter: blur(8px);
+  }
+}
+@keyframes before-pop {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}
+@keyframes before-ping {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+@keyframes before-sun-in {
+  from {
+    opacity: 0;
+    transform: translate3d(18%, -18%, 0);
+  }
+}
+@keyframes before-breathe {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.62);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .before-art-word,
+  .before-play,
+  .before-play::after,
+  .before-sun,
+  .before-bar,
+  .before-qgroup {
+    animation: none;
   }
 }

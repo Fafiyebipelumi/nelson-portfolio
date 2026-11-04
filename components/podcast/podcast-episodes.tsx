@@ -102,8 +102,11 @@ export async function PodcastEpisodes() {
             <h2 className="text-title text-bone font-medium">
               {podcast.episodes.headline}
             </h2>
-            <p className="text-ash mt-5 max-w-xl text-base leading-relaxed sm:text-lg">
+            <p className="text-bone mt-5 max-w-xl text-base leading-relaxed sm:text-lg">
               {sub}
+            </p>
+            <p className="text-ash mt-3 max-w-xl text-base leading-relaxed">
+              {podcast.episodes.description}
             </p>
           </Reveal>
           <Reveal className="lg:col-span-3 lg:col-start-10" delay={0.06}>

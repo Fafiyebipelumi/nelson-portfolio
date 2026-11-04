@@ -1,24 +1,29 @@
 import { institutional } from "@/lib/content";
 import { Section, SectionBody, SectionLabel } from "./section";
-import { Stagger, StaggerItem } from "./motion-primitives";
+import { Reveal, Stagger, StaggerItem } from "./motion-primitives";
 
 /* ============================================================================
    07 — INSTITUTIONAL CONTEXT
    ----------------------------------------------------------------------------
    Replaces the former "Featured in" logo strip [brief §1.1]. Rather than
-   borrowed editorial logos, this panel states verifiable institutional
-   standing: advocacy, an award, named backers, and prior recognitions. All
-   copy is verbatim from brief §5.
+   borrowed editorial logos, this panel states institutional standing:
+   advocacy, the Geneva engagement, an award and earlier recognition.
 
-   Set as a quiet reference grid on paper, not a headline moment: the content
-   is credibility, so it should read as fact, plainly.
+   Set as a quiet reference grid, not a headline moment: the content is
+   credibility, so it should read as fact, plainly.
    ========================================================================== */
 
 export function InstitutionalContext() {
   return (
     <Section tone="ink" grain>
       <SectionBody>
-        <SectionLabel index="07" label={institutional.eyebrow} asHeading tone="ink" />
+        <SectionLabel index="07" label={institutional.eyebrow} tone="ink" />
+
+        <Reveal>
+          <h2 className="text-title text-bone mb-14 max-w-4xl font-medium sm:mb-20">
+            {institutional.headline}
+          </h2>
+        </Reveal>
 
         <Stagger className="border-rule-strong grid border-t sm:grid-cols-2">
           {institutional.items.map((item, i) => (

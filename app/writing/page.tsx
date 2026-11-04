@@ -1,28 +1,36 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { writingPage, social } from "@/lib/content";
 import { getPosts } from "@/lib/episodes";
 import { PageHeader } from "@/components/page-header";
-import { Section, SectionBody } from "@/components/section";
+import { Section, SectionBody, SectionLabel } from "@/components/section";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion-primitives";
 
 /* ============================================================================
-   /writing  —  long-form pieces. Launches as a list (brief §3). Reads posts
-   from Sanity; shows a graceful empty state with a LinkedIn pointer until the
-   first pieces are published.
+   /writing  —  introduction, editorial categories, then the latest pieces.
+   ----------------------------------------------------------------------------
+   Copy from the October 2026 copy proposal. Posts come from Sanity; a
+   graceful empty state with a LinkedIn pointer shows until the first pieces
+   are published.
    ========================================================================== */
 
 /* ISR: posts published in Sanity appear without a redeploy. */
 export const revalidate = 60;
 
 const DESCRIPTION =
-  "Long-form pieces and essays by Nelson T. Ajulo on artificial intelligence, safety, entrepreneurship, and the economics of access.";
+  "Writing by Nelson T. Ajulo on artificial intelligence and AI safety, venture building and investment, African technology and economic opportunity, and lessons from building companies.";
 
 export const metadata: Metadata = {
-  title: "Writing",
+  title: { absolute: "Nelson T. Ajulo | AI, Venture Building & Technology" },
   description: DESCRIPTION,
   alternates: { canonical: "/writing" },
-  openGraph: { type: "website", title: "Writing · Nelson T. Ajulo", description: DESCRIPTION, url: "/writing" },
+  openGraph: {
+    type: "website",
+    title: "Nelson T. Ajulo | AI, Venture Building & Technology",
+    description: DESCRIPTION,
+    url: "/writing",
+  },
 };
 
 function formatDate(iso: string): string {
@@ -38,10 +46,54 @@ export default async function WritingPage() {
 
   return (
     <main id="main">
-      <PageHeader eyebrow={writingPage.eyebrow} title={writingPage.heading} lead={writingPage.lead} />
+      <PageHeader eyebrow={writingPage.eyebrow} title={writingPage.heading} lead={writingPage.lead}>
+        <div className="mt-6 max-w-2xl space-y-5">
+          {writingPage.body.map((paragraph, i) => (
+            <Reveal key={i} delay={0.15 + i * 0.04}>
+              <p className="text-ash text-base leading-relaxed sm:text-lg">{paragraph}</p>
+            </Reveal>
+          ))}
+        </div>
 
+        <Reveal delay={0.3}>
+          <Link
+            href={writingPage.cta.href}
+            className="link-draw group text-signal-bright hover:text-bone mt-10 inline-flex items-baseline gap-2 font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors"
+          >
+            {writingPage.cta.label}
+            <ArrowUpRight
+              className="size-3.5 shrink-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
+          </Link>
+        </Reveal>
+      </PageHeader>
+
+      {/* Editorial categories */}
       <Section tone="ink" grain>
-        <SectionBody className="!pt-0">
+        <SectionBody className="!pt-0" rhythm="compact">
+          <Reveal>
+            <p className="eyebrow text-slate mb-5">{writingPage.categories.heading}</p>
+          </Reveal>
+          <Stagger className="flex flex-wrap gap-2.5">
+            {writingPage.categories.items.map((category) => (
+              <StaggerItem
+                key={category}
+                className="border-rule-ink text-ash border px-4 py-2 text-sm"
+              >
+                {category}
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </SectionBody>
+      </Section>
+
+      {/* Latest */}
+      <Section id="latest" tone="ink" grain>
+        <SectionBody>
+          <SectionLabel index="01" label={writingPage.latestHeading} tone="ink" asHeading />
+
           {posts.length === 0 ? (
             <Reveal>
               <div className="border-rule-ink border-t pt-10">

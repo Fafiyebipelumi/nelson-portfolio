@@ -6,8 +6,8 @@ import { Reveal } from "../motion-primitives";
 /* ============================================================================
    H — SPONSOR
    ----------------------------------------------------------------------------
-   Lets brands assess reach and fit quickly. Copy verbatim from brief §4.4.
-   Reach stats get added once available.
+   Lets brands assess reach and fit quickly. Copy from the October 2026 copy
+   proposal. Reach stats get added once available.
    ========================================================================== */
 
 const sponsor = podcast.sponsor;
@@ -23,11 +23,13 @@ export function PodcastSponsor() {
             <Reveal>
               <h2 className="text-title text-bone font-medium">{sponsor.headline}</h2>
             </Reveal>
-            <Reveal delay={0.06}>
-              <p className="text-ash mt-6 max-w-xl text-base leading-relaxed sm:text-lg">
-                {sponsor.body}
-              </p>
-            </Reveal>
+            <div className="mt-6 max-w-xl space-y-5">
+              {sponsor.body.map((paragraph, i) => (
+                <Reveal key={i} delay={0.06 + i * 0.04}>
+                  <p className="text-ash text-base leading-relaxed sm:text-lg">{paragraph}</p>
+                </Reveal>
+              ))}
+            </div>
           </div>
 
           <Reveal className="lg:col-span-4 lg:col-start-9 lg:pb-2" delay={0.1}>

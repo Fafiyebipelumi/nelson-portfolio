@@ -38,7 +38,7 @@ function Half({
       </h3>
 
       <p
-        className={`text-ash text-lead mt-6 max-w-sm ${
+        className={`text-ash mt-6 max-w-md text-base leading-relaxed sm:text-lg ${
           align === "right" ? "lg:ml-auto" : ""
         }`}
       >
@@ -52,14 +52,13 @@ export function Duality() {
   return (
     <Section tone="ink" grain>
       <SectionBody>
-        {/* The section's meaning is the closing statement, not a headline, so
-            the label carries the h2 and keeps the outline complete. */}
-        <SectionLabel
-          index="04"
-          label={duality.eyebrow}
-          tone="ink"
-          asHeading
-        />
+        <SectionLabel index="04" label={duality.eyebrow} tone="ink" />
+
+        <Reveal>
+          <h2 className="text-title text-bone mb-16 max-w-3xl font-medium sm:mb-20">
+            {duality.headline}
+          </h2>
+        </Reveal>
 
         <div className="relative grid gap-14 sm:gap-16 lg:grid-cols-12 lg:gap-8">
           {/* Divider — vertical on desktop, horizontal between the stacked
@@ -105,13 +104,13 @@ export function Duality() {
         <Reveal className="mt-24 sm:mt-32 lg:mt-44" y={30}>
           <div className="mx-auto max-w-5xl text-center">
             <DrawRule className="bg-signal-bright/40 mx-auto mb-12 h-px w-16 sm:mb-16" />
-            {/* <p className="text-display text-bone font-medium">
+            <p className="text-title text-bone font-medium">
               {duality.statement.before}
-              <span className="text-signal-bright font-serif italic">
+              <span className="text-signal-bright">
                 {duality.statement.emphasis}
               </span>
               {duality.statement.after}
-            </p> */}
+            </p>
           </div>
         </Reveal>
       </SectionBody>

@@ -36,20 +36,24 @@ export function PodcastHost() {
 
           <div className="lg:col-span-7 lg:col-start-6">
             <Reveal>
-              <h2 className="text-title text-bone font-medium">{host.name}</h2>
+              <h2 className="text-title text-bone font-medium">{host.heading}</h2>
             </Reveal>
 
-            <Reveal delay={0.06}>
-              <p className="text-ash mt-8 max-w-2xl text-base leading-relaxed sm:text-lg">
-                {host.bio}
-              </p>
-            </Reveal>
-
-            <Reveal delay={0.1}>
-              <p className="text-bone mt-6 max-w-2xl font-serif text-xl italic">
-                {host.line}
-              </p>
-            </Reveal>
+            <div className="mt-8 max-w-2xl space-y-6">
+              {host.bio.map((paragraph, i) => (
+                <Reveal key={i} delay={0.06 + i * 0.04}>
+                  <p
+                    className={
+                      i === 0
+                        ? "text-lead text-bone"
+                        : "text-ash text-base leading-relaxed sm:text-lg"
+                    }
+                  >
+                    {paragraph}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
 
             <Reveal delay={0.14}>
               <Link
