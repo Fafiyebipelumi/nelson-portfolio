@@ -8,6 +8,7 @@ import { HiveQuote } from "@/components/hive-quote";
 import { CredentialCards } from "@/components/credential-cards";
 import { HomeSpeaking } from "@/components/home-speaking";
 import { GetInTouch } from "@/components/get-in-touch";
+import { getSeasonStatus } from "@/lib/episodes";
 
 /* ============================================================================
    HOMEPAGE  (Figma redesign, November 2026)
@@ -17,12 +18,18 @@ import { GetInTouch } from "@/components/get-in-touch";
    here as each one is rebuilt from the design.
    ========================================================================== */
 
-export default function Home() {
+/* Re-checks Sanity every minute, so the BEFORE band switches from
+   "Season one begins January 2027" to the episode buttons on its own once
+   episode 01 is released. */
+export const revalidate = 60;
+
+export default async function Home() {
+  const { live, latest } = await getSeasonStatus();
   return (
     <main id="main">
       <SplashIntro />
-      <Hero />
-      <BeforePreview />
+      <Hero live={live} />
+      <BeforePreview live={live} latest={latest} />
       <StatsStrip />
       <QuoteSection />
       <VenturesRow />

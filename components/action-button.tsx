@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
    cream sections. External links open in a new tab.
    ========================================================================== */
 
-type Variant = "light" | "dark" | "ink";
+export type Variant = "light" | "dark" | "ink" | "paper";
 type Size = "md" | "sm";
 
 const base =
@@ -25,15 +25,27 @@ const base =
 const variants: Record<Variant, string> = {
   light:
     "bg-cream text-umber shadow-[4px_4px_0_0_#8f8a7d] hover:shadow-[2px_2px_0_0_#8f8a7d]",
-  dark:
-    "bg-umber text-cream border border-cream/70 shadow-[4px_4px_0_0_#ece5cf] hover:shadow-[2px_2px_0_0_#ece5cf]",
+  dark: "bg-umber text-cream border border-cream/70 shadow-[4px_4px_0_0_#ece5cf] hover:shadow-[2px_2px_0_0_#ece5cf]",
   ink: "bg-umber text-cream shadow-[4px_4px_0_0_#8f8a7d] hover:shadow-[2px_2px_0_0_#8f8a7d]",
+  /* White with a dark hairline and grey shadow: the secondary action on
+     cream sections. */
+  paper:
+    "bg-white text-umber border border-umber shadow-[4px_4px_0_0_#8f8a7d] hover:shadow-[2px_2px_0_0_#8f8a7d]",
 };
 
 const sizes: Record<Size, string> = {
   md: "px-5 py-3 text-base sm:px-6 sm:py-3.5 sm:text-[1.0625rem] lg:text-[1.1875rem]",
   sm: "px-5 py-2.5 text-[0.9375rem]",
 };
+
+/** The button's classes, for elements that aren't links (e.g. CopyButton). */
+export function actionButtonClasses(
+  variant: Variant = "light",
+  size: Size = "md",
+  className = "",
+) {
+  return `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+}
 
 export function ActionButton({
   href,
@@ -48,12 +60,32 @@ export function ActionButton({
   size?: Size;
   className?: string;
 }) {
-  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+  const classes = actionButtonClasses(variant, size, className);
+
+  /* No destination yet (e.g. a file still to be supplied): render the
+     button's look without a link, so nothing leads nowhere. */
+  if (!href) {
+    return (
+      <span
+        aria-disabled="true"
+        title="Coming soon"
+        className={`${classes} cursor-default`}
+      >
+        {children}
+      </span>
+    );
+  }
+
   const external = /^https?:\/\//.test(href);
 
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={classes}
+      >
         {children}
       </a>
     );

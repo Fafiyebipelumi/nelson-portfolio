@@ -111,6 +111,8 @@
   /* Above-the-fold intro. Done in CSS rather than JS so the hero needs
      no client bundle to animate on first paint. */
   --animate-rise: rise 1.05s var(--ease-editorial) both;
+  --animate-about-photo: about-photo 1.6s var(--ease-editorial) both;
+  --animate-myhives-art: myhives-art 1.3s var(--ease-editorial) both;
   --animate-veil: veil 1.6s var(--ease-editorial) both;
 
   /* A charge moving along the divider in section 04 — the only hint that
@@ -652,6 +654,18 @@ html[data-splash="done"] body > header {
   font-weight: 500;
 }
 
+/* The tighter gutter of the venture and speaking page designs (November
+   2026 Figma): ~40px at 1440, i.e. 2.8% of the width, never under 2.5rem. */
+@utility gutter-tight {
+  padding-inline: 1.375rem;
+  @media (width >= 40rem) {
+    padding-inline: 2.5rem;
+  }
+  @media (width >= 64rem) {
+    padding-inline: max(2.5rem, 2.8vw);
+  }
+}
+
 /* Horizontal page gutters, tuned per breakpoint. */
 @utility gutter {
   padding-inline: 1.375rem;
@@ -795,6 +809,52 @@ html[data-splash="done"] body > header {
   .before-sun,
   .before-bar,
   .before-qgroup {
+    animation: none;
+  }
+}
+
+/* Phones: the grey body text is lifted a step brighter so it reads easily on
+   a small screen (EA review, November 2026). Desktop keeps the design's
+   values. */
+@media (max-width: 639.98px) {
+  :root {
+    --color-sand: #e0d9ca;
+    --color-stone: #c2bcae;
+  }
+}
+
+/* About hero portrait: settles in from a slight zoom. */
+@keyframes about-photo {
+  from {
+    opacity: 0;
+    scale: 1.06;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-about-photo {
+    animation: none;
+  }
+}
+
+/* Artwork that should read as part of the page rather than a picture: it
+   can't be dragged out, selected, long-pressed to save on iOS, or
+   right-clicked as an image (pointer events pass to the section). */
+.no-save {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* MyHives hero artwork: rises into place from the section's bottom edge. */
+@keyframes myhives-art {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6%, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-myhives-art {
     animation: none;
   }
 }

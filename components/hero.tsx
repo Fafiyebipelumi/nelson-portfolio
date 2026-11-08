@@ -20,7 +20,10 @@ import { Stripes } from "./stripes";
    important screen on the site ships with no JavaScript of its own.
    ========================================================================== */
 
-export function Hero() {
+/* `live`: whether BEFORE season one has started (episode 01 released). Until
+   then the "Listen to BEFORE" button carries an arrow, not a play icon, so
+   nothing reads as playable before launch. */
+export function Hero({ live }: { live: boolean }) {
   return (
     <section
       id="top"
@@ -42,23 +45,25 @@ export function Hero() {
           edge so some of the glow still shows. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 right-[-14vw] z-0 aspect-[939/812] h-[64svh] overflow-hidden [mask-image:linear-gradient(to_right,transparent_22%,#000_48%)] sm:right-[-6vw] sm:h-[70svh] lg:right-0 lg:bottom-0 lg:h-auto lg:[mask-image:none]"
+        className="pointer-events-none absolute top-0 right-[-14vw] z-0 aspect-[939/812] h-[50svh] overflow-hidden [mask-image:linear-gradient(to_right,transparent_22%,#000_48%)] sm:right-[-6vw] sm:h-[70svh] lg:right-0 lg:bottom-0 lg:h-auto lg:[mask-image:none]"
       >
-        <div
-          className="absolute origin-top-left rotate-[4deg]"
-          style={{ left: "12.788%", top: "-18.719%", width: "122.23%", height: "212%" }}
-        >
-          <Image
-            src="/nelson-portrait.jpg"
-            alt=""
-            fill
-            priority
-            sizes="(min-width: 1024px) 75vw, 130vw"
-            className="object-cover"
-          />
+        {/* Below 1024px the frame ends mid-screen: its bottom edge fades out
+            (a mask, not a black overlay, so the glow shows through). */}
+        <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,#000_55%,transparent_98%)] lg:[mask-image:none]">
+          <div
+            className="absolute origin-top-left rotate-[4deg]"
+            style={{ left: "12.788%", top: "-18.719%", width: "122.23%", height: "212%" }}
+          >
+            <Image
+              src="/nelson-portrait.jpg"
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 1024px) 75vw, 130vw"
+              className="object-cover"
+            />
+          </div>
         </div>
-        {/* Below 1024px the frame ends mid-screen: fade its bottom edge out. */}
-        <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-b from-transparent to-black lg:hidden" />
       </div>
 
       {/* Small screens: the text sits over the lower part of the portrait,
@@ -68,7 +73,7 @@ export function Hero() {
         className="absolute inset-x-0 bottom-0 z-0 h-[62%] bg-gradient-to-t from-black via-black/85 to-transparent lg:hidden"
       />
 
-      <div className="gutter relative z-10 flex min-h-[112svh] flex-col justify-end pt-32 pb-14 sm:min-h-[100svh] lg:min-h-[max(100svh,46rem)] lg:pb-14">
+      <div className="gutter relative z-10 flex min-h-[100svh] flex-col justify-end pt-32 pb-14 sm:min-h-[100svh] lg:min-h-[max(100svh,46rem)] lg:pb-14">
         <div className="max-w-[46rem] lg:max-w-[58%]">
           {/* The design sets Instrument Serif about 12% narrower than its
               natural width (as on the intro screen), one line from 1024px. */}
@@ -98,8 +103,15 @@ export function Hero() {
             style={{ animationDelay: "0.54s" }}
           >
             <ActionButton href={homeHero.ctas.primary.href}>
-              <PlayIcon />
+              {live ? <PlayIcon /> : null}
               {homeHero.ctas.primary.label}
+              {live ? null : (
+                <ArrowUpRight
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+              )}
             </ActionButton>
             <ActionButton href={homeHero.ctas.secondary.href} variant="dark">
               {homeHero.ctas.secondary.label}

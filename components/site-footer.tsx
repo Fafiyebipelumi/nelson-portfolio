@@ -43,15 +43,36 @@ export function SiteFooter() {
 
           {/* Section links */}
           <nav aria-label="Footer">
-            <ul className="flex flex-wrap gap-x-5 gap-y-3 lg:pt-1.5">
+            <ul className="flex flex-wrap items-start gap-x-5 gap-y-3 lg:pt-1.5">
               {links.map((item) => (
                 <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-stone hover:text-cream font-sans text-[0.9375rem] tracking-[-0.01em] uppercase transition-colors lg:text-base"
-                  >
-                    {item.label}
-                  </Link>
+                  {item.children ? (
+                    /* A group label ("Ventures"), not a link. */
+                    <span className="text-stone font-sans text-[0.9375rem] tracking-[-0.01em] uppercase lg:text-base">
+                      {item.label}
+                    </span>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="text-stone hover:text-cream font-sans text-[0.9375rem] tracking-[-0.01em] uppercase transition-colors lg:text-base"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                  {item.children ? (
+                    <ul className="mt-2.5 space-y-1.5">
+                      {item.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className="text-stone hover:text-cream font-sans text-[0.875rem] transition-colors"
+                          >
+                            {child.label.replace(" Ventures", "")}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               ))}
             </ul>

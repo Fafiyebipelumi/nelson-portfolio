@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { getEpisode, getEpisodes } from "@/lib/episodes";
+import { urlForImage } from "@/sanity/lib/image";
 import { JsonLd } from "@/components/json-ld";
-import { Section, SectionBody } from "@/components/section";
+import { EpisodeHero } from "@/components/episode/episode-hero";
+import { EpisodeListen } from "@/components/episode/episode-listen";
+import { EpisodeMore } from "@/components/episode/episode-more";
+import { BeforeNewsletter } from "@/components/before/before-newsletter";
 
 /* ============================================================================
-   /before/[slug]  —  episode page
+   /before/[slug]  —  episode page  (BEFORE system, November 2026)
    ----------------------------------------------------------------------------
+   Hero on the /before ground · player and notes · more from season one ·
+   newsletter. The shared footer follows.
+
    Generated from the episode data model. Static params come from Sanity, so
    pages are prerendered per episode; with no project configured yet there are
    no params and any direct hit 404s cleanly. Carries PodcastEpisode structured
@@ -33,7 +38,7 @@ export async function generateMetadata(
 
   const description = episode.shortDescription;
   return {
-    title: { absolute: `${episode.title} | What Comes Next` },
+    title: { absolute: `${episode.title} | BEFORE` },
     description,
     alternates: { canonical: `/before/${episode.slug}` },
     openGraph: { type: "article", title: episode.title, description },
@@ -56,7 +61,7 @@ export default async function EpisodePage(props: PageProps<"/before/[slug]">) {
     url: `https://tnajulo.com/before/${episode.slug}`,
     partOfSeries: {
       "@type": "PodcastSeries",
-      name: "What Comes Next",
+      name: "BEFORE",
       url: "https://tnajulo.com/before",
     },
     ...(episode.guestName
@@ -65,73 +70,47 @@ export default async function EpisodePage(props: PageProps<"/before/[slug]">) {
   };
 
   const platforms = [
-    episode.spotifyUrl && { label: "Spotify", href: episode.spotifyUrl },
-    episode.appleUrl && { label: "Apple Podcasts", href: episode.appleUrl },
-    episode.youtubeUrl && { label: "YouTube", href: episode.youtubeUrl },
+    episode.spotifyUrl && { label: "Listen on Spotify", href: episode.spotifyUrl },
+    episode.appleUrl && { label: "Listen on Apple Podcasts", href: episode.appleUrl },
+    episode.youtubeUrl && { label: "Watch on YouTube", href: episode.youtubeUrl },
   ].filter(Boolean) as Array<{ label: string; href: string }>;
 
+  const index = String(episode.number).padStart(2, "0");
+  const guest = episode.guestName
+    ? `With ${episode.guestName}${episode.guestRole ? `, ${episode.guestRole}` : ""}`
+    : null;
+  const released = episode.publishedAt
+    ? new Date(episode.publishedAt).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : null;
+  const meta = [released ? `Released ${released}` : "Date to be confirmed", episode.duration]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
-    <main id="main" className="on-ink bg-ink text-bone">
+    <main id="main">
       <JsonLd data={jsonLd} />
-
-      <Section tone="ink" grain>
-        <SectionBody>
-          <div className="pt-8">
-            <Link
-              href="/before"
-              className="link-draw text-ash hover:text-airwave inline-flex items-center gap-2 font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors"
-            >
-              <ArrowLeft className="size-3.5" strokeWidth={1.75} aria-hidden="true" />
-              All episodes
-            </Link>
-          </div>
-
-          <p className="eyebrow text-airwave mt-12">Episode {episode.number}</p>
-          <h1 className="text-display text-bone mt-4 max-w-4xl font-medium">
-            {episode.title}
-          </h1>
-
-          {episode.guestName ? (
-            <p className="text-ash mt-6 text-lg">
-              With {episode.guestName}
-              {episode.guestRole ? `, ${episode.guestRole}` : ""}
-            </p>
-          ) : null}
-
-          {episode.embedUrl ? (
-            <div className="border-rule-ink relative mt-12 aspect-[16/9] overflow-hidden border">
-              <iframe
-                src={episode.embedUrl}
-                title={`${episode.title} player`}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-              />
-            </div>
-          ) : null}
-
-          <p className="text-ash mt-12 max-w-2xl text-lg leading-relaxed">
-            {episode.shortDescription}
-          </p>
-
-          {platforms.length > 0 ? (
-            <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
-              {platforms.map((p) => (
-                <li key={p.label}>
-                  <a
-                    href={p.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="link-draw text-ash hover:text-airwave text-sm transition-colors"
-                  >
-                    {p.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </SectionBody>
-      </Section>
+      <EpisodeHero
+        index={index}
+        title={episode.title}
+        guest={guest}
+        meta={meta}
+        topics={episode.topics ?? []}
+        photo={urlForImage(episode.coverArt ?? episode.guestPhoto)}
+        hasPlayer={Boolean(episode.embedUrl)}
+        platforms={platforms}
+      />
+      <EpisodeListen
+        title={episode.title}
+        embedUrl={episode.embedUrl ?? null}
+        description={episode.shortDescription}
+        guest={guest}
+      />
+      <EpisodeMore current={episode.number} />
+      <BeforeNewsletter />
     </main>
   );
 }

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { PortableText, type PortableTextComponents } from "@portabletext/react";
 import { getPost, getPostSlugs } from "@/lib/episodes";
+import { writingPage } from "@/lib/content";
 import { JsonLd } from "@/components/json-ld";
-import { Section, SectionBody } from "@/components/section";
-import { PageHeader } from "@/components/page-header";
+import { IntroHero } from "@/components/intro-hero";
+import { LIME_GLOW } from "@/components/glows";
+import { ActionButton } from "@/components/action-button";
+import { Stripes } from "@/components/stripes";
 
 /* ============================================================================
    /writing/[slug]  —  essay page
@@ -20,8 +22,9 @@ import { PageHeader } from "@/components/page-header";
    /writing/[slug] URL for such a post — for instance, from a stale link — we
    redirect them to the source rather than render a stub locally.
 
-   Body copy is Portable Text; the renderer is themed for the ink surface so
-   it matches the rest of the site.
+   Redesign system (November 2026): the Writing hero's black and glow with
+   the title, then the essay set on cream for reading, serif headings and
+   pull quotes, and the Writing page's two actions to close.
    ========================================================================== */
 
 /* ISR: new posts and edits in Sanity appear without a redeploy. Slugs not
@@ -58,54 +61,48 @@ export async function generateMetadata(
   };
 }
 
-/* ---- Portable Text renderer, tuned for the ink editorial surface ---------- */
+/* ---- Portable Text renderer, set for the cream reading band ------------- */
 
 const portableTextComponents: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
-      <p className="text-ash mt-6 text-base leading-relaxed sm:text-lg">
+      <p className="mt-6 font-sans text-[1.0625rem] leading-[1.65] tracking-[-0.01em] text-[#3d3a33] sm:text-[1.1875rem]">
         {children}
       </p>
     ),
     h2: ({ children }) => (
-      <h2 className="text-title text-bone mt-16 mb-6 font-medium sm:mt-20">
+      <h2 className="mt-16 mb-2 w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.1rem,3.4vw,3rem)] leading-[1.02] [scale:0.88_1] sm:mt-20">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-subtitle text-bone mt-12 mb-4 font-medium">
+      <h3 className="mt-12 mb-1 font-sans text-[1.375rem] leading-[1.2] font-semibold tracking-[-0.03em]">
         {children}
       </h3>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="border-signal-bright/50 text-bone my-10 border-l pl-6 font-serif text-xl leading-relaxed sm:pl-10 sm:text-2xl">
+      <blockquote className="border-umber my-12 border-l-[3px] pl-6 font-serif text-[clamp(1.6rem,2.4vw,2.1rem)] leading-[1.15] sm:pl-9">
         {children}
       </blockquote>
     ),
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="text-ash marker:text-signal-bright mt-6 list-disc space-y-2 pl-6 text-base leading-relaxed sm:text-lg">
+      <ul className="marker:text-umber mt-6 list-disc space-y-2 pl-6 font-sans text-[1.0625rem] leading-[1.6] text-[#3d3a33] sm:text-[1.1875rem]">
         {children}
       </ul>
     ),
     number: ({ children }) => (
-      <ol className="text-ash marker:text-signal-bright mt-6 list-decimal space-y-2 pl-6 text-base leading-relaxed sm:text-lg">
+      <ol className="marker:text-umber mt-6 list-decimal space-y-2 pl-6 font-sans text-[1.0625rem] leading-[1.6] text-[#3d3a33] sm:text-[1.1875rem]">
         {children}
       </ol>
     ),
   },
   marks: {
-    strong: ({ children }) => (
-      <strong className="text-bone font-semibold">{children}</strong>
-    ),
-    em: ({ children }) => (
-      <em className="font-serif italic">{children}</em>
-    ),
+    strong: ({ children }) => <strong className="text-umber font-semibold">{children}</strong>,
+    em: ({ children }) => <em className="italic">{children}</em>,
     code: ({ children }) => (
-      <code className="bg-ink-raised border-rule-ink text-bone rounded border px-1.5 py-0.5 font-mono text-[0.875em]">
-        {children}
-      </code>
+      <code className="rounded-[4px] bg-[#efe6c8] px-1.5 py-0.5 font-mono text-[0.875em]">{children}</code>
     ),
     link: ({ value, children }) => {
       const href = (value?.href as string | undefined) ?? "#";
@@ -113,10 +110,8 @@ const portableTextComponents: PortableTextComponents = {
       return (
         <a
           href={href}
-          className="link-draw text-signal-bright hover:text-bone transition-colors"
-          {...(external
-            ? { target: "_blank", rel: "noopener noreferrer" }
-            : {})}
+          className="text-umber decoration-umber/40 hover:decoration-umber underline underline-offset-4 transition-colors"
+          {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         >
           {children}
         </a>
@@ -159,55 +154,63 @@ export default async function WritingPost(
 
   const hasBody = Array.isArray(post.body) && post.body.length > 0;
 
+  const date = formatDate(post.publishedAt);
+  const arrow = (
+    <ArrowUpRight
+      className="size-[1.1rem] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      strokeWidth={2}
+      aria-hidden="true"
+    />
+  );
+
   return (
     <main id="main">
       <JsonLd data={jsonLd} />
 
-      <PageHeader
-        eyebrow={post.kicker ?? "Essay"}
+      <IntroHero
+        glow={LIME_GLOW}
+        back={{ label: "Writing", href: "/writing" }}
+        pill={post.kicker ?? "Essay"}
         title={post.title}
-        lead={post.excerpt}
+        lead={
+          <>
+            {post.excerpt ? <p>{post.excerpt}</p> : null}
+            {date ? (
+              <p className="text-stone mt-5 text-[0.9375rem] font-medium">
+                Nelson T. Ajulo · {date}
+              </p>
+            ) : null}
+          </>
+        }
+        align="center"
+        into="cream"
       />
 
-      <Section tone="ink" grain>
-        <SectionBody className="!pt-0">
-          <div className="grid gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-8">
-              <p className="eyebrow text-slate mb-10 sm:mb-12">
-                {formatDate(post.publishedAt)}
+      <section aria-label="Essay" className="bg-cream text-umber">
+        <div className="gutter-tight pt-10 pb-20 sm:pt-14 lg:pt-16 lg:pb-28">
+          <article className="mx-auto max-w-[44rem]">
+            {hasBody ? (
+              <PortableText value={post.body as never} components={portableTextComponents} />
+            ) : (
+              <p className="font-sans text-[1.0625rem] leading-[1.65] text-[#3d3a33] sm:text-[1.1875rem]">
+                The full text is not published yet. Subscribe to the newsletter for the release.
               </p>
+            )}
 
-              {hasBody ? (
-                <article className="max-w-2xl">
-                  <PortableText
-                    value={post.body as never}
-                    components={portableTextComponents}
-                  />
-                </article>
-              ) : (
-                <p className="text-ash max-w-2xl text-base leading-relaxed sm:text-lg">
-                  Full text is not published yet. Follow the site or the
-                  newsletter for the release.
-                </p>
-              )}
-
-              <div className="border-rule-ink mt-20 border-t pt-8 sm:mt-28">
-                <Link
-                  href="/writing"
-                  className="link-draw text-signal-bright hover:text-bone group inline-flex items-center gap-2 font-mono text-[0.6875rem] tracking-[0.16em] uppercase transition-colors"
-                >
-                  <ArrowLeft
-                    className="size-3.5 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-x-0.5"
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                  Back to writing
-                </Link>
-              </div>
+            <div className="mt-16 flex flex-wrap gap-4 border-t border-[#d8cfb4] pt-10 sm:mt-20">
+              <ActionButton href="/writing" variant="ink">
+                More writing
+                {arrow}
+              </ActionButton>
+              <ActionButton href={writingPage.ctas.subscribe.href} variant="paper">
+                {writingPage.ctas.subscribe.label}
+                {arrow}
+              </ActionButton>
             </div>
-          </div>
-        </SectionBody>
-      </Section>
+          </article>
+        </div>
+        <Stripes from="var(--color-cream)" to="var(--color-umber)" />
+      </section>
     </main>
   );
 }

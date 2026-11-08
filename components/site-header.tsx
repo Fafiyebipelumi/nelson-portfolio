@@ -29,9 +29,16 @@ const MobileMenu = dynamic(
   { ssr: false },
 );
 
+/* Routes whose hero is light (Figma: /speaking). Over those, until the page
+   scrolls, the header switches to dark type, a pale pill and the dark
+   Contact button. Once scrolled it takes the usual dark backing. */
+const LIGHT_HERO_ROUTES = new Set(["/speaking"]);
+
 function isActive(pathname: string, href: string) {
   const path = href.split("#")[0];
-  return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`);
+  return path === "/"
+    ? pathname === "/"
+    : pathname === path || pathname.startsWith(`${path}/`);
 }
 
 export function SiteHeader() {
@@ -66,9 +73,17 @@ export function SiteHeader() {
     setMenuOpen(true);
   }, []);
 
+  const light = !scrolled && LIGHT_HERO_ROUTES.has(pathname);
+
   const linkClass = (active: boolean) =>
     `whitespace-nowrap rounded-full px-3 py-2.5 font-sans text-[0.8125rem] tracking-[0.02em] uppercase transition-colors duration-200 xl:px-[1.15rem] xl:text-[0.9rem] ${
-      active ? "text-cream" : "text-stone hover:text-cream"
+      light
+        ? active
+          ? "text-umber"
+          : "text-umber/80 hover:text-umber"
+        : active
+          ? "text-cream"
+          : "text-stone hover:text-cream"
     }`;
 
   return (
@@ -82,7 +97,7 @@ export function SiteHeader() {
       </a>
 
       <header
-        className={`on-ink fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-300 ${
+        className={`${light ? "" : "on-ink"} fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-300 ${
           scrolled
             ? "border-b border-white/10 bg-black/75 backdrop-blur-xl"
             : "border-b border-transparent"
@@ -92,25 +107,34 @@ export function SiteHeader() {
           {/* Name mark (Home) */}
           <Link
             href="/"
-            className="text-cream shrink-0 font-serif text-[1.75rem] leading-none whitespace-nowrap lg:pl-6 lg:text-[2.25rem] xl:pl-9 xl:text-[2.65rem]"
+            className={`${light ? "text-umber" : "text-cream"} shrink-0 font-serif transition-colors duration-300 text-[1.75rem] leading-none whitespace-nowrap lg:pl-6 lg:text-[2.25rem] xl:pl-9 xl:text-[2.65rem]`}
           >
             Nelson T. Ajulo
           </Link>
 
           {/* Desktop navigation */}
           <nav aria-label="Primary" className="hidden lg:block">
-            <ul className="flex items-center rounded-full bg-white/[0.14] px-2 py-2 backdrop-blur-md xl:px-3">
+            <ul
+              className={`flex items-center rounded-full px-2 py-2 backdrop-blur-md transition-colors duration-300 xl:px-3 ${
+                light ? "bg-[#d6d4cc]/70" : "bg-white/[0.14]"
+              }`}
+            >
               {navigation.map((item) => {
                 const active = isActive(pathname, item.href);
 
                 if (item.children) {
-                  /* Dropdown: opens on hover and keyboard focus, no JS state. */
+                  /* Dropdown: opens on hover and keyboard focus, no JS state.
+                     The parent ("Ventures") is a label, not a link: it only
+                     opens the list. It reads as active on any child's page. */
+                  const childActive = item.children.some((child) =>
+                    isActive(pathname, child.href),
+                  );
                   return (
                     <li key={item.label} className="group relative">
-                      <Link
-                        href={item.href}
-                        aria-current={active ? "page" : undefined}
-                        className={`${linkClass(active)} inline-flex items-center gap-1.5`}
+                      <button
+                        type="button"
+                        aria-haspopup="true"
+                        className={`${linkClass(childActive)} inline-flex cursor-default items-center gap-1.5`}
                       >
                         {item.label}
                         <ChevronDown
@@ -118,7 +142,7 @@ export function SiteHeader() {
                           strokeWidth={2}
                           aria-hidden="true"
                         />
-                      </Link>
+                      </button>
                       <div className="invisible absolute top-full left-1/2 z-10 -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                         <ul className="flex min-w-48 flex-col rounded-2xl border border-white/10 bg-black/90 p-2 backdrop-blur-xl">
                           {item.children.map((child) => (
@@ -155,7 +179,12 @@ export function SiteHeader() {
           <div className="flex items-center gap-3 xl:pr-9">
             {/* Wrapped: the button's own inline-flex would override `hidden`. */}
             <div className="hidden lg:block">
-              <ActionButton href={navContact.href}>{navContact.label}</ActionButton>
+              <ActionButton
+                href={navContact.href}
+                variant={light ? "ink" : "light"}
+              >
+                {navContact.label}
+              </ActionButton>
             </div>
 
             {/* Mobile trigger */}
@@ -167,9 +196,11 @@ export function SiteHeader() {
               onFocus={prefetchMenu}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
-              className="text-cream -mr-2 flex items-center gap-2 p-2 lg:hidden"
+              className={`${light ? "text-umber" : "text-cream"} -mr-2 flex items-center gap-2 p-2 lg:hidden`}
             >
-              <span className="font-sans text-xs tracking-[0.12em] uppercase">Menu</span>
+              <span className="font-sans text-xs tracking-[0.12em] uppercase">
+                Menu
+              </span>
               <Menu className="size-5" strokeWidth={1.5} aria-hidden="true" />
             </button>
           </div>

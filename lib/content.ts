@@ -126,10 +126,14 @@ export const beforePreview = {
     "A MyHives Original. Conversations with people shaping our world about the experiences that shaped them.",
   body: "Everyone knows what they built. BEFORE asks what built them: what happened before the title, before the company, before the public story, and how those moments still shape what they decide today.",
   season: "Season one, the opening arc, from January 2027.",
+  /* Shown instead of the episode buttons until episode 01 is released
+     (getSeasonStatus), with the trailer button if before.trailer.href is set. */
+  prelaunch: "Season one begins January 2027",
   ctas: {
-    listen: { label: "Listen to BEFORE", href: "/before" },
+    latest: { label: "Latest episode", href: "/before#lineup" },
     episodes: { label: "All episodes", href: "/before#lineup" },
     apply: { label: "Apply to be a guest", href: "/before#apply" },
+    show: { href: "/before" },
   },
   cover: { src: "/BEFORE.svg", width: 576, height: 549 },
 } as const;
@@ -143,10 +147,13 @@ export const homeStats = {
     { src: "/anniek-avatar.jpg", name: "Anniek van Veldhuizen" },
   ],
   items: [
-    { value: "35,000+", label: "People protected by MyHives", visual: "avatars" },
-    { value: "190+", label: "Countries", visual: "globe" },
-    { value: "50+", label: "Language pairs for live emergency translation", visual: null },
-    { value: "500+", label: "Businesses answering customers through Joble", visual: null },
+    /* `source`: the source line for each figure, as set out in copy v3.1.
+       Shown as small print under the figure (and as a tooltip). TODO: fill in
+       from v3.1; a figure with an empty source shows no small print. */
+    { value: "35,000+", label: "People protected by MyHives", visual: "avatars", source: "" },
+    { value: "190+", label: "Countries", visual: "globe", source: "" },
+    { value: "50+", label: "Language pairs for live emergency translation", visual: null, source: "" },
+    { value: "500+", label: "Businesses answering customers through Joble", visual: null, source: "" },
   ],
 } as const;
 
@@ -233,7 +240,7 @@ export const homeCredentials = [
 export const homeSpeaking = {
   title: "Speaking",
   intro: "Four talks:",
-  cta: { label: "Invite Nelson to Speak", href: "/speaking#booking" },
+  cta: { label: "Invite Nelson to Speak", href: "/contact?desk=speaking#enquiry" },
   talks: [
     { title: "The first minute is the whole emergency.", image: "/speaking-ai-for-africa.jpg" },
     { title: "Who defines safety.", image: "/speaking-myhives-nl.jpg" },
@@ -565,7 +572,7 @@ export const speaking = {
     { title: "Venture building and investment", body: "What founders need beyond funding to build sustainable companies." },
   ] satisfies Topic[],
   recent: "AIFOD Summer Summit, United Nations Office at Geneva, August 2026.",
-  cta: { label: "Invite Nelson to speak", href: "/speaking#booking" },
+  cta: { label: "Invite Nelson to speak", href: "/contact#enquiry" },
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -603,7 +610,7 @@ export const social = {
 /* Footer icon rows (Figma). An empty href means the handle is not confirmed
    yet: the icon still shows but is not a link. Fill these in to activate. */
 export const footerSocial = [
-  { id: "x", label: "X (Twitter)", href: "" },
+  { id: "x", label: "X", href: "" },
   { id: "facebook", label: "Facebook", href: "" },
   { id: "instagram", label: "Instagram", href: "" },
   { id: "linkedin", label: "LinkedIn", href: social.linkedin },
@@ -625,73 +632,74 @@ export const contact = {
   body: "I'm open to conversations with founders, investors, researchers, event organisers and people working on problems where technology could make a real difference.",
   channels: [
     { label: "Building or backing a company", value: "Business and investment enquiries", href: "/contact#enquiry" },
-    { label: "Speaking", value: "Speaking enquiries", href: "/speaking#booking" },
+    { label: "Speaking", value: "Speaking enquiries", href: "/contact#enquiry" },
     { label: "Press and media", value: "Media enquiries", href: "mailto:press@tnajulo.com" },
     { label: "What Comes Next", value: "Podcast enquiries", href: "/before#apply" },
   ],
 } as const;
 
 export const contactPage = {
-  eyebrow: "Contact",
-  heading: "Let's talk about what you're building.",
-  intro: [
-    "I'm open to conversations with founders, investors, researchers, event organisers and people working on problems where technology could make a real difference.",
-    "Whether you're building a company, exploring an investment, planning an event or interested in a conversation for What Comes Next, tell me a little about what you have in mind.",
+  hero: {
+    headline: "Route it to the right desk",
+    body: "Nelson receives more enquiries than he can answer personally. Pick the desk and it reaches the right person the same day.",
+  },
+  /* The desks, in the design's order. `key` is what other pages link with
+     (/contact?desk=speaking#enquiry preselects the form); `tone` is the
+     card colour; the subject line tags emails and form submissions. */
+  desks: [
+    {
+      key: "guests",
+      title: "BEFORE: guests",
+      body: "Put yourself or someone else forward. Name, role, and the one experience that shaped how they lead.",
+      subject: "BEFORE, guest",
+      tone: "#ffe29b",
+    },
+    {
+      key: "sponsors",
+      title: "BEFORE: sponsors",
+      body: "Request the season deck.",
+      subject: "BEFORE, sponsor",
+      tone: "#e6c3ff",
+    },
+    {
+      key: "press",
+      title: "Press and media",
+      body: "Interviews, commentary, broadcast introductions.",
+      subject: "Press",
+      tone: "#d6ffd8",
+    },
+    {
+      key: "speaking",
+      title: "Speaking",
+      body: "Keynotes, panels, fireside conversations.",
+      subject: "Speaking",
+      tone: "#ffcff4",
+    },
+    {
+      key: "partnerships",
+      title: "Investment and partnerships",
+      body: "15Wins, MyHives partnerships, the Queen Badge.",
+      subject: "Partnership",
+      tone: "#9fe6fd",
+    },
   ],
-  routes: [
-    {
-      label: "Building or backing a company",
-      body: "For founders, investors and potential venture partners interested in AI, technology and early-stage company building.",
-      cta: "Business and investment enquiries",
-      href: "#enquiry",
-    },
-    {
-      label: "Speaking",
-      body: "For keynote invitations, conference panels, fireside chats and industry events.",
-      cta: "Speaking enquiries",
-      href: "/speaking#booking",
-    },
-    {
-      label: "Press and media",
-      body: "For interviews, commentary on AI and technology, and media requests.",
-      cta: "Media enquiries",
-      href: "mailto:press@tnajulo.com",
-    },
-    {
-      label: "What Comes Next",
-      body: "For guest applications, episode suggestions and sponsorship opportunities.",
-      cta: "Podcast enquiries",
-      href: "/before#apply",
-    },
-  ],
+  email: "hello@tnajulo.com",
   form: {
-    heading: "Send an enquiry",
-    fields: [
-      { name: "name", label: "Full name", type: "text", placeholder: "Your name", required: true, autoComplete: "name" },
-      { name: "email", label: "Work email", type: "email", placeholder: "you@organisation.com", required: true, autoComplete: "email" },
-      { name: "organisation", label: "Organisation", type: "text", placeholder: "Company or organisation", required: true, autoComplete: "organization" },
-      {
-        name: "reason",
-        label: "Reason for getting in touch",
-        type: "select",
-        placeholder: "Choose one",
-        required: true,
-        options: [
-          "Building or backing a company",
-          "Speaking",
-          "Press and media",
-          "What Comes Next podcast",
-          "Something else",
-        ],
-      },
-      { name: "message", label: "What would you like to discuss?", type: "textarea", placeholder: "A few lines on what you have in mind.", required: true },
-      { name: "link", label: "Website or LinkedIn profile", type: "url", placeholder: "https://", required: false, autoComplete: "url" },
-    ] satisfies ApplyField[],
-    submitLabel: "Send enquiry",
-    /* The proposal asks the form to explain how details are used and to link
-       a privacy policy. The explanation is here; the site has no privacy
-       policy page yet, so nothing is linked until Nelson supplies one. */
-    privacy: "Your details are used only to reply to your enquiry. You won't be added to a mailing list.",
+    heading: "Route it to the right desk.",
+    labels: {
+      name: "Full name",
+      email: "Email",
+      organisation: "Organisation",
+      desk: "Which desk",
+      website: "Website or LinkedIn (optional)",
+      message: "What would you like to discuss",
+    },
+    submitLabel: "Send",
+    /* `privacyHref`: set when the privacy page exists; until then the words
+       show without a link. */
+    privacy: { before: "Your details are not stored or used for research purposes. View more in the ", link: "privacy page.", privacyHref: "" },
+    successTitle: "Sent to the right desk.",
+    successBody: "Thank you. It reaches the right person the same day.",
   },
 } as const;
 
@@ -702,67 +710,44 @@ export const contactPage = {
 /* Verify before publishing (proposal checklist): Zarttech and Zarttalent
    history, dates and scale; education; awards; current titles. */
 export const about = {
-  eyebrow: "About",
-  heading: "I'm interested in what happens when technology meets a real problem.",
-  intro: [
-    "Nelson T. Ajulo is a technology entrepreneur and investor working across artificial intelligence, everyday safety and venture building. He is CEO and Co-Founder of MyHives, founder of Joble, and General Partner at 15Wins Ventures.",
-    "His work is driven by a recurring question: what does it take to turn an idea or a piece of technology into something that genuinely improves people's lives?",
-  ],
+  hero: {
+    eyebrow: "About me",
+    headline: "Redrawing the map of safety.",
+    body: "Nelson T. Ajulo is Co-Founder, CEO and CTO of MyHives, the everyday safety AI guardian, founder of Joble, and General Partner at 15Wins Ventures. He hosts BEFORE. He is Chairman of MyHives Nigeria.",
+    /* The design's close-up portrait. Swap for the original light-background
+       photo when available; this is the turtleneck cutout on white. */
+    photo: "/nelson-quote.jpg",
+  },
   story: {
     heading: "The story",
+    /* First person. The first paragraph opens on a drop cap. */
     body: [
-      "I started my career building around a problem I kept seeing: capable people could be ready to work, yet still struggle to access the opportunities available to them.",
-      "Through Zarttech, I worked to connect African engineering talent with international companies. The business grew across multiple countries, bringing engineers and employers together across borders.",
-      "That experience changed how I thought about opportunity. Having the right skills matters, but so do the systems that help people demonstrate those skills, find work and earn trust.",
-      "Over time, my work moved into other parts of the same challenge. Through venture building, I began working on the companies and infrastructure that help ideas become businesses. Through Joble, I focus on the everyday problems that cause small businesses to lose opportunities. Through MyHives and BEEKON, I am working on technology designed to help people get assistance when they cannot easily ask for it.",
-      "The products are different. The underlying interest remains the same: building things that are useful outside a presentation or a pitch deck.",
+      "I started my career on a problem I kept seeing: capable people could be ready to work and still not reach the opportunity in front of them. Through Zarttech I placed more than 700 African engineers into global technology teams, and through the Zarttalent Foundation we trained more than 2,000 young Africans in technology. The business grew across four countries and wound down in 2025. I learned that talent alone does not create opportunity. Access, trust and the systems around people decide who gets to take part.",
+      "That is also how I came to safety. The violence that makes the news is the end of a story. The beginning is quieter: a route changed, a night out skipped, a message not sent, an institution left early. A street you avoid is harm too. Most safety products assume you can act: press the button, make the call, say the words. MyHives is built for the seconds when none of that is possible, and for the grey zone of everyday moments below the emergency threshold that still narrow a life.",
+      "The idea that holds the work together is that safety is what decides participation. People who feel safe take part. People who do not withdraw. So who defines safety decides who gets it, and we are building a definition written by the people who live it. The product is a guardian. The company is a hive. The hive has a queen, but no commander.",
+      "BEFORE is where that idea becomes a conversation. I am the architect of the room, not the protagonist in it.",
+      "With Anniek van Veldhuizen, Co-Founder and CCO of MyHives.",
     ],
+    signature: { name: "Nelson T. Ajulo", avatar: "/nelson-quote-avatar.jpg" },
   },
-  earlierWork: {
-    heading: "Earlier work",
-    items: [
-      {
-        name: "Zarttech",
-        tagline: "Building connections between talent and opportunity",
-        body: "Founded in 2020, Zarttech worked to connect African engineering talent with international companies. The business scaled its talent network across several countries before concluding its operations in 2025.",
-      },
-      {
-        name: "Zarttalent Foundation",
-        tagline: "Expanding access to technology education",
-        body: "Alongside Zarttech, Nelson founded the Zarttalent Foundation, focused on technology education and skills development for young Africans, particularly women pursuing careers in technology.",
-      },
-      {
-        name: "Earlier ventures and investments",
-        tagline: "",
-        body: "Nelson's entrepreneurial experience also includes earlier ventures in technology, education and related services. His work has evolved across products and markets, with a continued interest in using technology to solve practical problems.",
-      },
-    ],
-  },
-  education: {
-    heading: "Education",
-    items: [
-      "PhD, International Economics, University of Gdańsk",
-      "MBA, Business Administration, Anglia Ruskin University",
-      "Master's and Bachelor's degrees, Architecture, Limkokwing University of Creative Technology",
-      "Executive programme in cybersecurity risk management, Harvard University",
-    ],
-  },
-  recognition: {
-    heading: "Recognition and affiliations",
-    items: [
-      "AIFOD Global Advocate",
-      "European Entrepreneur of the Year, 2024",
-      "Bold EdTech Award, 2023",
-      "FUTR150 Founders and Startups Award, 2022",
-      "CSU Innovation Award associated with MyHives, 2026",
-    ],
-  },
-  cta: {
-    heading: "Have a problem worth working on?",
-    body: "I'm interested in conversations with founders, investors, researchers and people working on technology that can make a practical difference.",
-    label: "Get in touch",
-    href: "/contact",
-  },
+  /* Three columns under the hive quote. `icon` picks the illustration. */
+  details: [
+    {
+      icon: "work",
+      heading: "Earlier work",
+      body: "Zarttech (2020 to 2025): 700+ African engineers placed into global technology teams across four countries. Zarttalent Foundation: 2,000+ young Africans trained in technology skills, handed to new leadership. Three earlier companies built and sold: The Bridge Empire Consultancy, The Bridge Education and Fly TBEC.",
+    },
+    {
+      icon: "education",
+      heading: "Education",
+      body: "PhD, International Economics, University of Gdańsk. MBA, Anglia Ruskin University. Master's and Bachelor's degrees in Architecture, Limkokwing University of Creative Technology. Executive programme in cybersecurity risk management, Harvard University.",
+    },
+    {
+      icon: "recognition",
+      heading: "Recognition",
+      body: "AIFOD Global Advocate; contributed to the AIFOD Summer Summit at the United Nations Palais des Nations, Geneva, in August 2026. European Entrepreneur of the Year 2024. CSU Innovation Award for MyHives. Bold EdTech Award 2023. FUTR150 Founders and Startups Award 2022.",
+    },
+  ],
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -770,33 +755,75 @@ export const about = {
 /* -------------------------------------------------------------------------- */
 
 export const speakingPage = {
-  eyebrow: "Speaking",
-  heading: "The important questions about AI begin where the product demo ends.",
-  intro: [
-    "Artificial intelligence is changing the way businesses work, how economies compete and how people access opportunities. But beyond the excitement around new technology are harder questions about ownership, safety, investment and who benefits.",
-    "Nelson T. Ajulo is a technology entrepreneur and investor who speaks about artificial intelligence, venture building, African innovation and the practical decisions that shape the future of technology.",
-    "His perspective draws on building technology businesses, working across international markets and developing products designed to address everyday problems.",
-  ],
-  topics: {
-    heading: "Speaking topics",
+  hero: {
+    headline: "The important questions about safety and AI begin",
+    accent: "where the product demo ends.",
+    body: "Nelson speaks about everyday safety, AI sovereignty and ownership in Africa, and building deep technology from Europe, drawing on MyHives, Joble, 15Wins and five years of placing African engineers into global teams.",
+  },
+  talks: {
+    heading: "Four talks",
+    /* Photos rendered from the designer's exports (325 x 186 frames). The
+       fourth uses the MSDUK & ESDP stage photo: Four-talks-4.svg in the
+       folder is a copy of the TEDx photo. */
     items: [
-      { title: "Artificial intelligence and society", body: "What changes when AI becomes part of everyday life, and how should businesses and communities respond?" },
-      { title: "AI sovereignty and access", body: "What does it take for countries and emerging markets to participate meaningfully in the AI economy rather than simply consume its products?" },
-      { title: "Everyday safety technology", body: "How can AI and connected devices help people access assistance when they cannot easily ask for it themselves?" },
-      { title: "Building deep tech from Europe", body: "What does it take to turn complex technology into products and businesses that solve real problems?" },
-      { title: "African innovation and diaspora capital", body: "How can talent, international networks and investment help African technology companies grow and compete globally?" },
-      { title: "Venture building and early-stage investment", body: "What do founders need beyond funding, and how can investors help turn promising ideas into viable companies?" },
-    ] satisfies Topic[],
+      {
+        title: "The first minute is the whole emergency.",
+        body: "Why the hardest problem in personal safety is not the response but the seconds before anyone knows, and what technology has to do to act when a person cannot.",
+        image: "/speaking-talk-1.jpg",
+      },
+      {
+        title: "Who defines safety.",
+        body: "Safety as participation. Why the grey zone below the emergency threshold decides who takes part, and how a definition written by the people who live it changes institutions.",
+        image: "/speaking-talk-2.jpg",
+      },
+      {
+        title: "Trained here, owned there.",
+        body: "Inclusion is rent; sovereignty is ownership. What Africa has to own in the AI economy, from compute to data to companies, and what it costs to keep renting.",
+        image: "/speaking-talk-3.jpg",
+      },
+      {
+        title: "Building deep tech from Europe.",
+        body: "Why the Old World may be better placed for the next decade than the Valley admits, and what a founder in The Hague does about it.",
+        image: "/speaking-esdp.jpg",
+      },
+    ],
   },
   recent: {
-    heading: "Recent engagement",
-    title: "AIFOD Summer Summit, Geneva, August 2026",
-    body: "Nelson contributed to discussions at the AI for Developing Countries Forum at the United Nations Office at Geneva, addressing AI sovereignty and equitable access under the theme “Small Takes the Lead.”",
-  },
-  booking: {
-    heading: "Planning an event, panel or conversation about the future of technology?",
-    body: "For keynote speeches, conference panels, fireside chats and media interviews, get in touch with the details of your event.",
-    submitLabel: "Enquire about speaking",
+    heading: "Recent",
+    /* `tone`: each card's colour, from the design. */
+    items: [
+      {
+        title: "NBCC Young Professionals: Resilience Workshop",
+        body: "Spoke at the Netherlands British Chamber of Commerce Young Professionals Resilience Workshop in Amsterdam in October 2026, on what he learned about resilience from shutting a company down.",
+        image: "/speaking-recent-1.jpg",
+        tone: "#d5ddfd",
+      },
+      {
+        title: "STV Nigerian television and radio, October 2026.",
+        body: "Nelson's interview on STV focused on Artificial Intelligence (AI) in Africa, the challenges limiting African innovation, and the role of MyHives in improving personal safety and economic participation.",
+        image: "/speaking-recent-2.jpg",
+        tone: "#a6effd",
+      },
+      {
+        title: "AIFOD Summer Summit at the United Nations Palais des Nations, Geneva, August 2026.",
+        body: "Contributed to the AIFOD Summer Summit at the United Nations Palais des Nations, Geneva, in August 2026, on the programme Small Takes the Lead, on AI sovereignty and equitable access. Nelson is an AIFOD Global Advocate.",
+        image: "/speaking-recent-3.jpg",
+        tone: "#c4fbc6",
+      },
+      {
+        title: "TEDx.",
+        body: "\u201cWhen the world doesn't feel safe.\u201d A talk on the quiet ways people change their lives when they don't feel safe, and why safety decides who gets to take part.",
+        image: "/speaking-recent-4.jpg",
+        tone: "#f0dcfd",
+      },
+    ],
+    note: ["Keynotes, panels, fireside conversations and media interviews.", "Send the date, the audience and the format."],
+    ctas: {
+      enquire: { label: "Enquire about speaking", href: "/contact?desk=speaking#enquiry" },
+      /* Set to the speaker kit's URL (e.g. a PDF in /public) when it exists;
+         until then the button shows but leads nowhere. */
+      kit: { label: "Download the speaker kit", href: "" },
+    },
   },
 } as const;
 
@@ -805,27 +832,42 @@ export const speakingPage = {
 /* -------------------------------------------------------------------------- */
 
 export const writingPage = {
-  eyebrow: "Writing",
-  heading: "Notes from the work of building.",
-  lead: "Some ideas become products. Others take longer to work through.",
-  body: [
-    "This is where I write about the questions that come up while building technology companies, investing in early-stage businesses and thinking about the future of AI.",
-    "You'll find perspectives on artificial intelligence, venture building, technology entrepreneurship, African innovation and the decisions that shape how opportunity is distributed.",
-    "These aren't predictions for the sake of predicting. They're ideas worth examining, questions worth asking and lessons from the work itself.",
-  ],
-  categories: {
-    heading: "Editorial categories",
-    items: [
-      "Artificial Intelligence & AI Safety",
-      "Venture Building & Investment",
-      "African Technology & Economic Opportunity",
-      "Entrepreneurship & Company Building",
-      "Leadership & Lessons from the Work",
+  hero: {
+    headline: "Notes from BEFORE",
+    /* Two parts: the design breaks the line after "accompanies" on desktop. */
+    body: [
+      "Essays on safety, participation and ownership, and the written piece that accompanies",
+      "every BEFORE episode: the moment the conversation turned, what the guest said that they had not said before, and the question it leaves for the community.",
     ],
   },
-  cta: { label: "Read the latest articles", href: "#latest" },
-  latestHeading: "Latest articles",
-  empty: "The first pieces are on the way. In the meantime, follow the thinking on LinkedIn.",
+  /* The pills under the hero. Each links to the essay of the same title once
+     it is published in Sanity (matched by title); until then it is shown but
+     not clickable. `from`/`to` are the pill's gradient, `arrow` the arrow's
+     colour, `width` its width at the 1440 design frame (px).
+     NOTE: the design repeats "What the work teaches."; kept as designed. */
+  featured: [
+    { title: "\u2018The grey zone.\u2019", from: "#ffb39b", to: "#fff4e4", arrow: "#ffe6d8", width: 500 },
+    { title: "Who defines safety.", from: "#f8f2ff", to: "#5cd6ff", arrow: "#5cd6ff", width: 341 },
+    { title: "Building from Europe.", from: "#f5fff4", to: "#86fb99", arrow: "#86fb99", width: 347 },
+    { title: "What the work teaches.", from: "#f9f0ff", to: "#d397ff", arrow: "#d397ff", width: 387 },
+    { title: "What the work teaches.", from: "#fff7de", to: "#ffd36c", arrow: "#ffd36c", width: 387 },
+  ],
+  themes: {
+    heading: "Themes",
+    /* In the design's order: the first two sit beside the heading. */
+    items: [
+      { title: "\u2018The grey zone.\u2019", tone: "#95ffa0" },
+      { title: "Who defines safety.", tone: "#ffdd8f" },
+      { title: "Inclusion is rent, sovereignty is ownership.", tone: "#d795ff" },
+      { title: "Building from Europe.", tone: "#93b8ff" },
+      { title: "What the work teaches.", tone: "#ffd7d7" },
+    ],
+  },
+  ctas: {
+    /* Goes to the newest published essay; LinkedIn until there is one. */
+    latest: { label: "Read the latest" },
+    subscribe: { label: "Subscribe", href: "/before#newsletter" },
+  },
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -1201,6 +1243,213 @@ export const before = {
 } as const;
 
 /* -------------------------------------------------------------------------- */
+/*  MyHives  (/myhives, Figma redesign November 2026)                         */
+/* -------------------------------------------------------------------------- */
+
+export const myhivesPage = {
+  hero: {
+    headline: "Move with confidence",
+    body: "MyHives is the everyday safety AI guardian. It protects 35,000+ people across 190+ countries from The Hague, with technology that acts when people cannot.",
+    /* Rendered from the designer's beekon-hero.svg (the SVG embeds full-size
+       photos and weighs 13 MB; the PNG is served through next/image). */
+    image: { src: "/beekon-hero.png", width: 1479, height: 1914 },
+  },
+  whatItIs: {
+    heading: "What it is",
+    /* `icon` picks the timeline glyph, in the design's order. */
+    items: [
+      {
+        icon: "zap",
+        text: "A free app for safer navigation, trip sharing and community safety signals, including a map of the grey zone between public and private space.",
+      },
+      {
+        icon: "atom",
+        text: "BEEKON, the guardian layer: six hands-free triggers (a safe word, silence, an attacker's words, a crash, a missed check-in, a panic hold), live-translated emergency calls across 50+ language pairs in under half a second, on-device processing, and evidence recording.",
+      },
+      {
+        icon: "phone",
+        text: "BEEKON+, a physical sensor that adds fire, gas, carbon monoxide and intrusion detection and calls for help on its own.",
+      },
+      {
+        icon: "languages",
+        text: "BEEKON X, a mobile robot that follows you and can get help on your behalf.",
+      },
+    ],
+    /* Rendered from beekon-app.svg, cropped to the phone. */
+    image: { src: "/beekon-app.png", width: 630, height: 1290 },
+  },
+  institutions: {
+    heading: "For employers and institutions",
+    cards: [
+      {
+        text: "Employer Nest gives organisations a duty-of-care dashboard for lone workers, shop counters and field teams, as a fleet or as a service.",
+        rule: false,
+      },
+      {
+        text: "The Queen Badge is the standard for organisations willing to be accountable to the lived experience of their people: a written standard, a listening channel, grievance handling, response and continued accountability, with a visible three-star status that can be lost.",
+        rule: true,
+      },
+    ],
+    partners: {
+      heading: "Partners",
+      body: "Trigion (Securitas group), Marsh, CSU and TZorg. CSU Innovation Award.",
+    },
+    people: {
+      heading: "People",
+      body: "Nelson T. Ajulo, Co-Founder, CEO and CTO. Anniek van Veldhuizen, Co-Founder and CCO.",
+    },
+    ctas: {
+      primary: { label: "Explore MyHives", href: "https://myhives.nl" },
+      secondary: { label: "Ask about the Queen Badge", href: "/contact?desk=partnerships#enquiry" },
+    },
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Joble  (/joble, Figma redesign November 2026)                             */
+/* -------------------------------------------------------------------------- */
+
+export const joblePage = {
+  hero: {
+    eyebrow: "Joble",
+    headline: ["Never miss", "a customer again."],
+    body: "A customer calls while the owner is serving someone else. A website enquiry arrives after hours. A promising lead never gets a reply. Joble puts an AI agent on the website and the phone so that the business answers, qualifies and books around the clock.",
+    /* The designer's player still (player.svg). Decorative until a demo
+       video exists: the play mark is part of the picture, not a control. */
+    player: { src: "/player.svg", width: 523, height: 295 },
+  },
+  whatItIs: {
+    heading: "What it is",
+    intro: "Live in five minutes with one line of code or a plugin for Shopify, WooCommerce and WordPress. 13 languages. EU data residency.",
+    /* Each card: its illustration (the designer's exports, at native size:
+       the avatars include their drop-shadow margin), colour and line. */
+    cards: [
+      {
+        image: { src: "/joble-logo.svg", width: 133, height: 133 },
+        tone: "#e3f6fd",
+        text: "One workspace holds every conversation, booking and lead.",
+      },
+      {
+        image: { src: "/joble-britney.png", width: 180, height: 179 },
+        tone: "#f3e6fd",
+        text: "Britney takes the calls and runs outbound.",
+      },
+      {
+        image: { src: "/joble-sophia.png", width: 192, height: 192 },
+        tone: "#e3f6fd",
+        text: "Sophia handles the website in chat and voice.",
+      },
+    ],
+  },
+  proof: {
+    heading: "Proof",
+    body: "500+ businesses across e-commerce, professional services and hospitality. MyHives runs its demos through Joble; the case study is on joble.app.",
+    cta: { label: "Explore Joble", href: "https://joble.app" },
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  15Wins Ventures  (/15wins, Figma redesign November 2026)                  */
+/* -------------------------------------------------------------------------- */
+
+export const fifteenWinsPage = {
+  hero: {
+    eyebrow: "15Wins Venture",
+    headline: ["Builds and backs the companies", "that widen access."],
+    /* TODO(copy): this is the line in the Figma frame, but it is the MyHives
+       standing line. Replace with the 15Wins line from copy v3.1. */
+    body: "MyHives is the everyday safety AI guardian. It protects 35,000+ people across 190+ countries from The Hague, with technology that acts when people cannot.",
+  },
+  whatItIs: {
+    heading: "What it is",
+    /* Card colours from the design. */
+    cards: [
+      { tone: "#D795FF", text: "Founders building where the answer to 'who does this reach?' is unusual." },
+      { tone: "#FFD7D7", text: "Teams with a route to real customers before a route to a headline." },
+      { tone: "#95FFA0", text: "Companies that can be owned where they are built." },
+    ],
+  },
+  approach: {
+    heading: "How to approach",
+    body: "One page: the problem, who has it, what you have built, what you need. Everything that fits gets a reply.",
+    cta: { label: "Investment and partnership enquiries", href: "/contact?desk=partnerships#enquiry" },
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
+/*  Press  (/press, Figma redesign November 2026)                             */
+/* -------------------------------------------------------------------------- */
+
+export const pressPage = {
+  hero: {
+    headline: "Press",
+    subhead: ["Everything a producer or journalist needs,", "ready to copy."],
+    /* The short bio: the hero's Copy button copies this. */
+    shortBio:
+      "Nelson T. Ajulo, PhD, is Co-Founder, CEO and CTO of MyHives, the everyday safety AI guardian protecting 35,000+ people across 190+ countries, founder of Joble, General Partner at 15Wins Ventures, and host of BEFORE.",
+    /* Pills on the right, in the design's three rows (px widths at the 1440
+       frame). Pills with an `href` carry an arrow and jump down the page;
+       the others are labels. */
+    pills: [
+      [
+        { label: "Press", from: "#f7ecff", to: "#d48bff", width: 239 },
+        { label: "Short bio", from: "#fff8e2", to: "#ffd36c", arrow: "#ffd36c", width: 240, href: "#bio" },
+      ],
+      [
+        { label: "Enquiries", from: "#f5f1ff", to: "#5ed8ff", width: 239 },
+        { label: "Media contact", from: "#f2fff2", to: "#86fb99", arrow: "#86fb99", width: 347, href: "#media-contact" },
+      ],
+      [{ label: "Press", from: "#ffb39b", to: "#fff4e4", arrow: "#ffe6d8", width: 477, href: "#boilerplates" }],
+    ],
+  },
+  /* The medium bio, over the portrait. */
+  bio: "Nelson T. Ajulo, PhD, is a technology entrepreneur and investor based in The Hague. He is Co-Founder, CEO and CTO of MyHives, the everyday safety AI guardian protecting 35,000+ people across 190+ countries, founder of Joble, and General Partner at 15Wins Ventures. He hosts BEFORE. He is an AIFOD Global Advocate, contributed to the AIFOD Summer Summit at the United Nations Palais des Nations, Geneva, in August 2026, and was named European Entrepreneur of the Year in 2024.",
+  standardBio: {
+    heading: "Standard bio",
+    body: "Nelson T. Ajulo, PhD, is a Nigerian-born technology entrepreneur and investor building at the intersection of artificial intelligence, everyday safety and capital access across Africa and Europe. He is Co-Founder, CEO and CTO of MyHives, the everyday safety AI guardian protecting 35,000+ people across 190+ countries, with live emergency translation in 50+ language pairs and partners including Trigion (Securitas group), Marsh, CSU and TZorg. He is founder of Joble, an AI customer engagement platform serving 500+ businesses, and General Partner at 15Wins Ventures, a venture platform for AI, safety and infrastructure companies across Europe, the UK, Africa and the US. He hosts BEFORE, a MyHives Original: conversations with people shaping our world about the experiences that shaped them. He previously founded Zarttech, which placed 700+ African engineers into global technology teams. He is an AIFOD Global Advocate, contributed to the AIFOD Summer Summit at the United Nations Palais des Nations, Geneva, in August 2026, and was named European Entrepreneur of the Year in 2024.",
+    photo: "/nelson-quote.jpg",
+  },
+  /* Company boilerplates, in the design's order (left to right, top to
+     bottom). `logo` null renders the name as a wordmark; `display` is the
+     logo's width in the design (px). */
+  boilerplates: [
+    {
+      name: "MyHives",
+      logo: { src: "/MyHives-dark.svg", width: 155, height: 33, display: 155 },
+      body: "MyHives is the everyday safety AI guardian: technology that acts when people cannot, protecting 35,000+ people across 190+ countries from The Hague. Move with confidence.",
+    },
+    {
+      name: "BEFORE",
+      logo: null,
+      body: "BEFORE is a MyHives Original: conversations with people shaping our world about the experiences that shaped them, hosted by Nelson T. Ajulo.",
+    },
+    {
+      name: "15Wins Ventures",
+      logo: { src: "/15wins-dark.svg", width: 139, height: 46, display: 122 },
+      body: "15Wins Ventures is a venture builder for AI, safety and infrastructure companies across Europe, the UK, Africa and the US. It built MyHives and Joble.",
+    },
+    {
+      name: "Joble",
+      logo: { src: "/Joble-dark.svg", width: 128, height: 29, display: 126 },
+      body: "Joble puts an AI agent on the website and phone of 500+ businesses, answering, qualifying and booking around the clock.",
+    },
+  ],
+  /* `source`: as on the homepage strip (copy v3.1); empty shows nothing. */
+  stats: [
+    { value: "35,000+", label: "People protected", visual: "avatars", source: "" },
+    { value: "190+", label: "Countries", visual: "globe", source: "" },
+    { value: "500+", label: "Joble businesses", visual: null, source: "" },
+    { value: "50+", label: "Language pairs for live emergency translation", visual: null, source: "" },
+    { value: "700+", label: "Engineers placed by Zarttech", visual: null, source: "" },
+    { value: "2,000+", label: "Trained by the Zarttalent Foundation", visual: null, source: "" },
+  ],
+  contact: {
+    email: "hello@tnajulo.com",
+    subject: "Press",
+  },
+} as const;
+
+/* -------------------------------------------------------------------------- */
 /*  Navigation                                                                */
 /* -------------------------------------------------------------------------- */
 
@@ -1221,9 +1470,9 @@ export const navigation: NavItem[] = [
     label: "Ventures",
     href: "/ventures",
     children: [
-      { label: "MyHives", href: "/ventures#myhives" },
-      { label: "Joble", href: "/ventures#joble" },
-      { label: "15Wins Ventures", href: "/ventures#15wins" },
+      { label: "MyHives", href: "/myhives" },
+      { label: "Joble", href: "/joble" },
+      { label: "15Wins Ventures", href: "/15wins" },
     ],
   },
   { label: "Speaking", href: "/speaking" },

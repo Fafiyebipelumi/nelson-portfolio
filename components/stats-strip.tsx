@@ -9,7 +9,9 @@ import { Stripes } from "./stripes";
    Cream band of four figures, centred in a row on desktop and a 2 x 2 grid on
    small screens. The first figure leads with overlapping founder avatars, the
    second with a globe; the band then resolves into the dark section below
-   through the striped divider.
+   through the striped divider. Each figure carries its source as small print
+   (and a hover tooltip), per copy v3.1; touch screens have no hover, so the
+   small print is what carries it there.
    ========================================================================== */
 
 export function StatsStrip() {
@@ -30,13 +32,18 @@ export function StatsStrip() {
                   className="size-11 shrink-0 lg:size-[3.25rem]"
                 />
               ) : null}
-              <div>
+              <div title={item.source ? `Source: ${item.source}` : undefined}>
                 <p className="font-sans text-[clamp(2.25rem,3.6vw,3.25rem)] leading-none font-medium tracking-[-0.03em]">
                   {item.value}
                 </p>
                 <p className="mt-2 max-w-[14rem] font-sans text-[0.9375rem] leading-snug lg:text-base">
                   {item.label}
                 </p>
+                {item.source ? (
+                  <p className="text-umber/70 mt-1.5 max-w-[14rem] font-sans text-[0.75rem] leading-snug">
+                    Source: {item.source}
+                  </p>
+                ) : null}
               </div>
             </StaggerItem>
           ))}
@@ -48,7 +55,7 @@ export function StatsStrip() {
   );
 }
 
-function Avatars() {
+export function Avatars() {
   return (
     <div className="flex shrink-0">
       {homeStats.avatars.map((person, i) => (

@@ -11,9 +11,12 @@ import { Stagger, StaggerItem } from "./motion-primitives";
    line, a short description, then the role and an "Explore" button pinned to
    the bottom so the three rows line up. Stacks with horizontal rules on small
    screens.
+
+   On /ventures (`toPages`) each button leads to the venture's own page on
+   this site instead of the company's website.
    ========================================================================== */
 
-export function VenturesRow() {
+export function VenturesRow({ toPages = false }: { toPages?: boolean }) {
   return (
     <section id="ventures" aria-label="Ventures" className="bg-umber text-cream">
       <Stagger className="grid divide-y divide-[#5e5a51] md:grid-cols-3 md:divide-x md:divide-y-0">
@@ -39,7 +42,7 @@ export function VenturesRow() {
               {venture.tagline}
             </h3>
 
-            <p className="text-sand mt-5 max-w-[34rem] font-sans text-[0.9375rem] leading-[1.45] tracking-[-0.01em] lg:text-base">
+            <p className="text-sand mt-5 max-w-[34rem] font-sans text-base leading-[1.45] tracking-[-0.01em] md:text-[0.9375rem] lg:text-base">
               {venture.body}
             </p>
 
@@ -47,7 +50,7 @@ export function VenturesRow() {
               <p className="font-sans text-[0.9375rem] font-medium tracking-[0.01em] uppercase xl:text-[0.9375rem] xl:whitespace-nowrap">
                 {venture.role}
               </p>
-              <ActionButton href={venture.cta.href} variant="dark" size="sm">
+              <ActionButton href={toPages ? `/${venture.id}` : venture.cta.href} variant="dark" size="sm">
                 {venture.cta.label}
                 <ArrowUpRight
                   className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
