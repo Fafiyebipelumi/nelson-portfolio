@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { aiAfrica } from "@/lib/content";
-import { PageHeader } from "@/components/page-header";
-import { Section, SectionBody, SectionLabel } from "@/components/section";
+import { IntroHero } from "@/components/intro-hero";
+import { CloseBand } from "@/components/close-band";
+import { LIME_GLOW, WHAT_GLOW } from "@/components/glows";
 import { Reveal, Stagger, StaggerItem } from "@/components/motion-primitives";
+import { Stripes } from "@/components/stripes";
 
 /* ============================================================================
    /ai-africa  —  AI, Africa and the bigger picture.
    ----------------------------------------------------------------------------
-   The full version of homepage section 06, promoted to its own page by the
-   copy proposal (October 2026). Point of view, the four questions Nelson is
-   working on, and how they connect to the businesses he builds.
+   The full version of the homepage's bigger-picture argument, promoted to its
+   own page by the copy proposal (October 2026). Redesign system (November
+   2026): the black hero with its edge glow; the argument on the warm dark
+   band, its opening line in the heavy sans and the rest in sand; the four
+   questions as colour cards on the grey offset shadow (the Writing themes'
+   palette) over the amber and teal glows; and the cream close into speaking.
    ========================================================================== */
 
 const DESCRIPTION =
@@ -29,99 +32,71 @@ export const metadata: Metadata = {
   },
 };
 
+/* The Writing themes' card colours, one per question. */
+const TONES = ["#95ffa0", "#ffdd8f", "#d795ff", "#93b8ff"];
+
 export default function AiAfricaPage() {
+  const [opening, ...rest] = aiAfrica.body;
   return (
     <main id="main">
-      <PageHeader
-        eyebrow={aiAfrica.eyebrow}
-        title={aiAfrica.heading}
-        lead={aiAfrica.lead}
-      />
+      <IntroHero glow={LIME_GLOW} pill={aiAfrica.eyebrow} title={aiAfrica.heading} lead={<p>{aiAfrica.lead}</p>} />
 
-      {/* Argument */}
-      <Section tone="ink" grain>
-        <SectionBody className="!pt-0">
-          <div className="grid gap-8 lg:grid-cols-12">
-            <div className="space-y-7 lg:col-span-8">
-              {aiAfrica.body.map((paragraph, i) => (
-                <Reveal key={i} delay={i * 0.05}>
-                  <p
-                    className={
-                      i === 0
-                        ? "text-lead text-bone"
-                        : "text-ash text-base leading-relaxed sm:text-lg"
-                    }
-                  >
-                    {paragraph}
-                  </p>
-                </Reveal>
+      {/* The argument */}
+      <section aria-label="The argument" className="bg-umber text-cream">
+        <div className="gutter grid gap-8 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:py-24">
+          <Reveal>
+            <p className="font-sans text-[clamp(1.5rem,2.3vw,2.15rem)] leading-[1.12] font-semibold tracking-[-0.035em]">
+              {opening}
+            </p>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <div className="text-sand space-y-6 font-sans text-[1.0625rem] leading-[1.5] tracking-[-0.01em] lg:pt-2 lg:text-[1.1875rem]">
+              {rest.map((p) => (
+                <p key={p}>{p}</p>
               ))}
             </div>
-          </div>
-        </SectionBody>
-      </Section>
+          </Reveal>
+        </div>
+        <Stripes from="var(--color-umber)" to="#000" />
+      </section>
 
       {/* The questions */}
-      <Section tone="ink" grain>
-        <SectionBody>
-          <SectionLabel index="01" label={aiAfrica.questions.heading} tone="ink" asHeading />
-
-          <Stagger className="border-rule-ink-strong grid border-t sm:grid-cols-2">
+      <section
+        aria-labelledby="questions-heading"
+        data-tone="ink"
+        className="on-ink text-cream relative isolate overflow-hidden bg-black"
+      >
+        <div aria-hidden="true" className="absolute inset-0 -z-10" style={{ background: WHAT_GLOW }} />
+        <div className="gutter-tight pt-14 pb-20 lg:pt-[5.5rem] lg:pb-[7.5rem] xl:px-[6.5rem]">
+          <Reveal>
+            <h2
+              id="questions-heading"
+              className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.6rem,4.6vw,4.4rem)] leading-none tracking-[-0.04em] [scale:0.88_1]"
+            >
+              {aiAfrica.questions.heading}
+            </h2>
+          </Reveal>
+          <Stagger className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-14 lg:gap-8">
             {aiAfrica.questions.items.map((item, i) => (
-              <StaggerItem
-                key={item.title}
-                className={`border-rule-ink border-b py-9 sm:py-11 ${
-                  i % 2 === 0 ? "sm:border-rule-ink sm:border-r sm:pr-12" : "sm:pl-12"
-                }`}
-              >
-                <h3 className="text-subtitle text-bone font-medium">{item.title}</h3>
-                <p className="text-ash mt-4 max-w-md text-base leading-relaxed sm:text-[1.0625rem]">
-                  {item.body}
-                </p>
+              <StaggerItem key={item.title} className="h-full">
+                <div
+                  className="text-umber flex h-full flex-col rounded-[4px] px-6 py-7 shadow-[4px_4px_0_0_#6f6b63] lg:px-8 lg:py-9"
+                  style={{ backgroundColor: TONES[i % TONES.length] }}
+                >
+                  <h3 className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(1.75rem,2.4vw,2.25rem)] leading-[1.02] tracking-[-0.02em] [scale:0.88_1] [-webkit-text-stroke:0.5px_currentColor]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-4 font-sans text-base leading-[1.45] font-medium lg:text-[1.0625rem]">
+                    {item.body}
+                  </p>
+                </div>
               </StaggerItem>
             ))}
           </Stagger>
-        </SectionBody>
-      </Section>
+        </div>
+      </section>
 
-      {/* From ideas to practical work */}
-      <Section tone="ink" grain>
-        <SectionBody rhythm="compact">
-          <SectionLabel index="02" label={aiAfrica.practice.heading} tone="ink" asHeading />
-
-          <div className="grid gap-8 lg:grid-cols-12">
-            <div className="space-y-7 lg:col-span-8">
-              {aiAfrica.practice.body.map((paragraph, i) => (
-                <Reveal key={i} delay={i * 0.05}>
-                  <p
-                    className={
-                      i === aiAfrica.practice.body.length - 1
-                        ? "text-subtitle text-bone"
-                        : "text-ash text-base leading-relaxed sm:text-lg"
-                    }
-                  >
-                    {paragraph}
-                  </p>
-                </Reveal>
-              ))}
-
-              <Reveal delay={0.12}>
-                <Link
-                  href={aiAfrica.cta.href}
-                  className="group border-rule-ink-strong hover:border-signal-bright text-bone mt-4 inline-flex items-center gap-2 border px-6 py-3.5 text-sm font-medium transition-colors"
-                >
-                  {aiAfrica.cta.label}
-                  <ArrowUpRight
-                    className="size-4 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                </Link>
-              </Reveal>
-            </div>
-          </div>
-        </SectionBody>
-      </Section>
+      <CloseBand from="#000" heading={aiAfrica.practice.heading} body={aiAfrica.practice.body} cta={aiAfrica.cta} />
     </main>
   );
 }

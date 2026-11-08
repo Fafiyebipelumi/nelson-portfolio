@@ -1,11 +1,11 @@
 import { renderOg, size, contentType } from "@/lib/og-image";
 
 export { size, contentType };
-export const alt = "Nelson T. Ajulo | AI, Venture Building & Technology";
+export const alt = "Notes from BEFORE | Writing by Nelson T. Ajulo";
 
 export default function Image() {
   return renderOg({
     eyebrow: "Writing",
-    title: "Notes from the work of building.",
+    title: "Notes from BEFORE",
   });
 }

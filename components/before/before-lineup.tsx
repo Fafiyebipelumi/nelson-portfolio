@@ -24,7 +24,7 @@ import { Reveal, Stagger, StaggerItem } from "../motion-primitives";
 
 const L = before.lineup;
 
-interface Card {
+export interface Card {
   key: string;
   index: string;
   title: string;
@@ -47,13 +47,13 @@ function monthYear(iso?: string): string | null {
   return d.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
 }
 
-function released(ep: Episode): boolean {
+export function released(ep: Episode): boolean {
   if (!ep.publishedAt) return false;
   const d = new Date(ep.publishedAt);
   return !Number.isNaN(d.getTime()) && d <= new Date();
 }
 
-function fromEpisode(ep: Episode): Card {
+export function fromEpisode(ep: Episode): Card {
   const photo = urlForImage(ep.guestPhoto);
   const month = monthYear(ep.publishedAt);
   const out = released(ep);
@@ -107,41 +107,48 @@ export async function BeforeLineup() {
         <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
           {cards.map((card) => (
             <StaggerItem key={card.key}>
-              <CardShell href={card.href}>
-                <div
-                  className="relative aspect-[16/11] overflow-hidden"
-                  style={card.guestPhoto ? undefined : { background: "linear-gradient(180deg, #e4e4e2 0%, #b9b9b6 55%, #8d8c88 100%)" }}
-                >
-                  <Image
-                    src={card.photo}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
-                    className={`object-cover ${card.guestPhoto ? "" : "mix-blend-multiply"}`}
-                    style={{ objectPosition: "50% 22%" }}
-                  />
-                  <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-[#2a241b]" />
-                </div>
-
-                <div className="flex flex-1 flex-col px-4 pt-1 pb-6">
-                  <p className="w-fit rounded-full bg-[#3a3833] px-2.5 py-1 font-sans text-[0.6875rem] font-medium">
-                    Episode {card.index}
-                  </p>
-                  <h3 className="mt-3 w-[calc(100%/0.88)] origin-left font-serif text-[1.3rem] leading-[1.05] [scale:0.88_1] [-webkit-text-stroke:0.4px_currentColor]">
-                    {card.title}
-                  </h3>
-                  <p className="text-sand mt-2 font-sans text-[0.9375rem] leading-[1.35]">{card.blurb}</p>
-                  <p className="text-stone mt-3 font-sans text-[0.75rem] leading-snug">{card.guest}</p>
-                  <p className={`mt-1 font-sans text-[0.6875rem] leading-snug ${card.href ? "text-cream font-medium" : "text-stone/80"}`}>
-                    {card.when}
-                  </p>
-                </div>
-              </CardShell>
+              <EpisodeCard card={card} />
             </StaggerItem>
           ))}
         </Stagger>
       </div>
     </section>
+  );
+}
+
+/** One lineup card. Shared with the episode page's "More from season one". */
+export function EpisodeCard({ card }: { card: Card }) {
+  return (
+    <CardShell href={card.href}>
+      <div
+        className="relative aspect-[16/11] overflow-hidden"
+        style={card.guestPhoto ? undefined : { background: "linear-gradient(180deg, #e4e4e2 0%, #b9b9b6 55%, #8d8c88 100%)" }}
+      >
+        <Image
+          src={card.photo}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
+          className={`object-cover ${card.guestPhoto ? "" : "mix-blend-multiply"}`}
+          style={{ objectPosition: "50% 22%" }}
+        />
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-[#2a241b]" />
+      </div>
+
+      <div className="flex flex-1 flex-col px-4 pt-1 pb-6">
+        <p className="w-fit rounded-full bg-[#3a3833] px-2.5 py-1 font-sans text-[0.6875rem] font-medium">
+          Episode {card.index}
+        </p>
+        <h3 className="mt-3 w-[calc(100%/0.88)] origin-left font-serif text-[1.3rem] leading-[1.05] [scale:0.88_1] [-webkit-text-stroke:0.4px_currentColor]">
+          {card.title}
+        </h3>
+        <p className="text-sand mt-2 font-sans text-base leading-[1.35] sm:text-[0.9375rem]">{card.blurb}</p>
+        <p className="text-stone mt-3 font-sans text-[0.8125rem] leading-snug sm:text-[0.75rem]">{card.guest}</p>
+        <p className={`mt-1 font-sans text-[0.75rem] leading-snug sm:text-[0.6875rem] ${card.href ? "text-cream font-medium" : "text-stone"}`}>
+          {card.when}
+        </p>
+      </div>
+    </CardShell>
   );
 }
 

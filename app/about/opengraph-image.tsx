@@ -6,6 +6,6 @@ export const alt = "About Nelson T. Ajulo";
 export default function Image() {
   return renderOg({
     eyebrow: "About",
-    title: "I'm interested in what happens when technology meets a real problem.",
+    title: "Redrawing the map of safety.",
   });
 }

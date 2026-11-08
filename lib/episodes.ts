@@ -103,6 +103,15 @@ export async function getLatestEpisode(): Promise<Episode | null> {
   return (await getEpisodes())[0] ?? null;
 }
 
+/** Whether BEFORE has launched: season one counts as live once episode 01 is
+ *  released. Until then the site shows nothing as playable (EA review,
+ *  November 2026). `latest` is the newest released episode once live. */
+export async function getSeasonStatus(): Promise<{ live: boolean; latest: Episode | null }> {
+  const released = await getEpisodes();
+  const live = released.some((ep) => ep.number === 1);
+  return { live, latest: live ? (released[0] ?? null) : null };
+}
+
 export async function getPosts(): Promise<Post[]> {
   if (!client) return [];
   try {

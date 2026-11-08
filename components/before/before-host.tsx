@@ -4,6 +4,7 @@ import { before } from "@/lib/content";
 import { ActionButton } from "../action-button";
 import { Reveal } from "../motion-primitives";
 import { Stripes } from "../stripes";
+import { bubbleClip } from "../bubble-clip";
 
 /* ============================================================================
    BEFORE — THE HOST
@@ -19,50 +20,10 @@ import { Stripes } from "../stripes";
    instead of stretching with it.
    ========================================================================== */
 
-const RADIUS = 16;
-const TAIL = 64; // tail width and drop, in px
-const JOIN = 14; // how far the inner curve where the tail leaves the card reaches
-
-type Pt = [x: number, fromRight: boolean, y: number, fromBottom: boolean];
-
-function bubbleClip(tail: "left" | "right") {
-  const pts: Pt[] = [];
-  const arc = (cx: number, cxR: boolean, cy: number, cyB: boolean, a0: number, a1: number) => {
-    for (let i = 0; i <= 6; i++) {
-      const a = ((a0 + ((a1 - a0) * i) / 6) * Math.PI) / 180;
-      // x grows rightwards, y grows downwards; offsets measured from the chosen edge.
-      const dx = Math.cos(a) * RADIUS;
-      const dy = Math.sin(a) * RADIUS;
-      pts.push([cxR ? cx - dx : cx + dx, cxR, cyB ? cy - dy : cy + dy, cyB]);
-    }
-  };
-
-  // Built for a tail on the right, mirrored below for the left one.
-  arc(RADIUS, false, RADIUS, false, 180, 270); // top-left
-  arc(RADIUS, true, RADIUS, false, 270, 360); // top-right
-  pts.push([0, true, 0, true]); // tail tip, bottom-right
-  // Inner curve where the diagonal meets the card's bottom edge (quadratic,
-  // control point at the corner).
-  const len = Math.hypot(TAIL, TAIL);
-  const p0: [number, number] = [TAIL - (TAIL / len) * JOIN, TAIL - (TAIL / len) * JOIN];
-  const p2: [number, number] = [TAIL + JOIN, TAIL];
-  for (let i = 0; i <= 5; i++) {
-    const t = i / 5;
-    const x = (1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * TAIL + t ** 2 * p2[0];
-    const y = (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * TAIL + t ** 2 * p2[1];
-    pts.push([x, true, y, true]);
-  }
-  arc(RADIUS, false, TAIL + RADIUS, true, 90, 180); // bottom-left of the card
-
-  const fmt = (v: number, fromEnd: boolean) =>
-    fromEnd ? `calc(100% - ${v.toFixed(2)}px)` : `${v.toFixed(2)}px`;
-  return `polygon(${pts
-    .map(([x, xr, y, yb]) => `${fmt(x, tail === "left" ? !xr : xr)} ${fmt(y, yb)}`)
-    .join(", ")})`;
-}
-
-const PHOTO_CLIP = bubbleClip("right");
-const CARD_CLIP = bubbleClip("left");
+/* Tail width and drop, in px: the bottom padding that makes room for it. */
+const TAIL = 64;
+const PHOTO_CLIP = bubbleClip("right", { tail: TAIL });
+const CARD_CLIP = bubbleClip("left", { tail: TAIL });
 
 export function BeforeHost() {
   const H = before.host;

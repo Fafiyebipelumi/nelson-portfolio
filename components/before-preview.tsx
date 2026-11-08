@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { beforePreview } from "@/lib/content";
+import { before, beforePreview } from "@/lib/content";
+import type { Episode } from "@/lib/episodes";
 import { ActionButton, PlayIcon } from "./action-button";
 import { Reveal } from "./motion-primitives";
 
@@ -9,16 +10,22 @@ import { Reveal } from "./motion-primitives";
    HOME — BEFORE (the podcast)  (Figma redesign, November 2026)
    ----------------------------------------------------------------------------
    Pure black. Left: pill label, the show name in Instrument Serif, the
-   positioning line, the premise, season timing and three actions. Right: the
+   positioning line, the premise, season timing and the actions. Right: the
    cover art at its Figma size, linking to the show.
+
+   Until episode 01 is released nothing here is playable: the block reads
+   "Season one begins January 2027", with the trailer button if a trailer is
+   set and the guest application. Once season one is live it switches to
+   "Latest episode", "All episodes" and "Apply to be a guest" (copy v3.1).
 
    The cover is the designer's own vector export (BEFORE.svg, with its salmon
    offset shadow built in), served as-is: it is already tiny and scales
    perfectly, so it skips the image optimiser.
    ========================================================================== */
 
-export function BeforePreview() {
+export function BeforePreview({ live, latest }: { live: boolean; latest: Episode | null }) {
   const { ctas, cover } = beforePreview;
+  const trailer = before.trailer;
 
   return (
     <section id="before" data-tone="ink" className="on-ink text-cream bg-black">
@@ -47,22 +54,37 @@ export function BeforePreview() {
             <p className="text-sand mt-5 max-w-[42rem] font-sans text-[clamp(1rem,1.2vw,1.15rem)] leading-[1.45]">
               {beforePreview.body}
             </p>
-            <p className="text-sand mt-6 font-sans text-[clamp(1rem,1.2vw,1.15rem)]">
-              {beforePreview.season}
-            </p>
+            {live ? (
+              <p className="text-sand mt-6 font-sans text-[clamp(1rem,1.2vw,1.15rem)]">
+                {beforePreview.season}
+              </p>
+            ) : (
+              <p className="mt-7 font-sans text-[clamp(1.2rem,1.6vw,1.5rem)] leading-tight font-medium tracking-[-0.02em]">
+                {beforePreview.prelaunch}
+              </p>
+            )}
           </Reveal>
 
           <Reveal delay={0.18}>
             <div className="mt-8 flex flex-wrap gap-4">
-              <ActionButton href={ctas.listen.href}>
-                <PlayIcon />
-                {ctas.listen.label}
-              </ActionButton>
-              <ActionButton href={ctas.episodes.href} variant="dark">
-                {ctas.episodes.label}
-                <Arrow />
-              </ActionButton>
-              <ActionButton href={ctas.apply.href} variant="dark">
+              {live ? (
+                <>
+                  <ActionButton href={latest ? `/before/${latest.slug}` : ctas.latest.href}>
+                    <PlayIcon />
+                    {ctas.latest.label}
+                  </ActionButton>
+                  <ActionButton href={ctas.episodes.href} variant="dark">
+                    {ctas.episodes.label}
+                    <Arrow />
+                  </ActionButton>
+                </>
+              ) : trailer.href ? (
+                <ActionButton href={trailer.href}>
+                  <PlayIcon />
+                  {trailer.cta}
+                </ActionButton>
+              ) : null}
+              <ActionButton href={ctas.apply.href} variant={live || trailer.href ? "dark" : "light"}>
                 {ctas.apply.label}
                 <Arrow />
               </ActionButton>
@@ -72,7 +94,7 @@ export function BeforePreview() {
 
         <Reveal y={28}>
           <Link
-            href={ctas.listen.href}
+            href={ctas.show.href}
             aria-label={`${beforePreview.name}: go to the podcast`}
             className="mx-auto block w-full max-w-[35rem] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 lg:mr-0"
           >
