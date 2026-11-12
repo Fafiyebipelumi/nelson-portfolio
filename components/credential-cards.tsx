@@ -24,7 +24,7 @@ export function CredentialCards() {
               <h3 className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(1.6rem,1.85vw,1.75rem)] leading-[1.05] [scale:0.88_1] [-webkit-text-stroke:0.5px_currentColor]">
                 {item.title}
               </h3>
-              <p className="text-sand mt-4 font-sans text-base leading-[1.35] tracking-[-0.01em]">
+              <p className="text-sand mt-4 font-sans text-[1.0625rem] sm:text-base leading-[1.35] tracking-[-0.01em]">
                 {item.body}
               </p>
             </StaggerItem>

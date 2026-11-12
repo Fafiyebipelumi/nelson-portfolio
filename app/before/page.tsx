@@ -10,6 +10,7 @@ import { BeforeQuestion } from "@/components/before/before-question";
 import { BeforeSeatSponsor } from "@/components/before/before-seat-sponsor";
 import { BeforeHost } from "@/components/before/before-host";
 import { BeforeNewsletter } from "@/components/before/before-newsletter";
+import { getSeasonStatus } from "@/lib/episodes";
 
 /* ============================================================================
    /before  —  BEFORE  (Figma redesign, November 2026)
@@ -47,14 +48,15 @@ const seriesJsonLd = {
   webFeed: "https://tnajulo.com/before/rss.xml",
 };
 
-export default function PodcastPage() {
+export default async function PodcastPage() {
+  const { live } = await getSeasonStatus();
   return (
     <main id="main">
       <JsonLd data={seriesJsonLd} />
-      <BeforeHero />
+      <BeforeHero live={live} />
       <BeforeTrailer />
       <BeforePremise />
-      <BeforeLineup />
+      <BeforeLineup live={live} />
       <BeforeFormat />
       <BeforeQuestion />
       <BeforeSeatSponsor />

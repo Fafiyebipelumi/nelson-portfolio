@@ -108,7 +108,8 @@ export const homeHero = {
   standing:
     "Co-Founder, CEO and CTO of MyHives, the everyday safety AI guardian protecting 35,000+ people across 190+ countries. Founder of Joble. General Partner at 15Wins Ventures. Host of BEFORE.",
   ctas: {
-    primary: { label: "Listen to BEFORE", href: "/before" },
+    /* "Discover" until episode 01 is released, then "Listen" (EA review). */
+    primary: { label: "Discover BEFORE", liveLabel: "Listen to BEFORE", href: "/before" },
     secondary: { label: "Explore MyHives", href: "https://myhives.nl" },
   },
 } as const;
@@ -141,19 +142,24 @@ export const beforePreview = {
 /* Figures as set in the Figma design. Verify before launch: the October copy
    proposal removed usage figures pending confirmation, and "50+ language
    pairs" is new in the design. */
+/* Stat sources, from the verification table of copy v3.1 (section 13, "How
+   to verify"). v3.1 asks for a dated dashboard export: once the export date
+   is known, add it here (e.g. "MyHives product dashboard, November 2026"). */
+const MYHIVES_SRC = "MyHives product dashboard";
+const JOBLE_SRC = "Joble customer records";
+
 export const homeStats = {
   avatars: [
     { src: "/nelson-avatar.jpg", name: "Nelson T. Ajulo" },
     { src: "/anniek-avatar.jpg", name: "Anniek van Veldhuizen" },
   ],
   items: [
-    /* `source`: the source line for each figure, as set out in copy v3.1.
-       Shown as small print under the figure (and as a tooltip). TODO: fill in
-       from v3.1; a figure with an empty source shows no small print. */
-    { value: "35,000+", label: "People protected by MyHives", visual: "avatars", source: "" },
-    { value: "190+", label: "Countries", visual: "globe", source: "" },
-    { value: "50+", label: "Language pairs for live emergency translation", visual: null, source: "" },
-    { value: "500+", label: "Businesses answering customers through Joble", visual: null, source: "" },
+    /* `source`: shown as small print under the figure and as a tooltip
+       (copy v3.1). An empty source shows no small print. */
+    { value: "35,000+", label: "People protected by MyHives", visual: "avatars", source: MYHIVES_SRC },
+    { value: "190+", label: "Countries", visual: "globe", source: MYHIVES_SRC },
+    { value: "50+", label: "Language pairs for live emergency translation", visual: null, source: MYHIVES_SRC },
+    { value: "500+", label: "Businesses answering customers through Joble", visual: null, source: JOBLE_SRC },
   ],
 } as const;
 
@@ -605,14 +611,17 @@ export const podcastPreview = {
 /* Social links. LinkedIn URL to be verified before launch. */
 export const social = {
   linkedin: "https://www.linkedin.com/in/nelson-ta/",
+  x: "https://x.com/neltop",
+  instagram: "https://www.instagram.com/neltop_/",
+  facebook: "https://www.facebook.com/NTA90",
 } as const;
 
 /* Footer icon rows (Figma). An empty href means the handle is not confirmed
-   yet: the icon still shows but is not a link. Fill these in to activate. */
+   yet: the social icon is hidden until it is filled in. */
 export const footerSocial = [
-  { id: "x", label: "X", href: "" },
-  { id: "facebook", label: "Facebook", href: "" },
-  { id: "instagram", label: "Instagram", href: "" },
+  { id: "x", label: "X", href: social.x },
+  { id: "facebook", label: "Facebook", href: social.facebook },
+  { id: "instagram", label: "Instagram", href: social.instagram },
   { id: "linkedin", label: "LinkedIn", href: social.linkedin },
 ] as const;
 
@@ -683,7 +692,7 @@ export const contactPage = {
       tone: "#9fe6fd",
     },
   ],
-  email: "hello@tnajulo.com",
+  email: "support@tnajulo.com",
   form: {
     heading: "Route it to the right desk.",
     labels: {
@@ -840,18 +849,18 @@ export const writingPage = {
       "every BEFORE episode: the moment the conversation turned, what the guest said that they had not said before, and the question it leaves for the community.",
     ],
   },
-  /* The pills under the hero. Each links to the essay of the same title once
-     it is published in Sanity (matched by title); until then it is shown but
-     not clickable. `from`/`to` are the pill's gradient, `arrow` the arrow's
-     colour, `width` its width at the 1440 design frame (px).
-     NOTE: the design repeats "What the work teaches."; kept as designed. */
-  featured: [
-    { title: "\u2018The grey zone.\u2019", from: "#ffb39b", to: "#fff4e4", arrow: "#ffe6d8", width: 500 },
-    { title: "Who defines safety.", from: "#f8f2ff", to: "#5cd6ff", arrow: "#5cd6ff", width: 341 },
-    { title: "Building from Europe.", from: "#f5fff4", to: "#86fb99", arrow: "#86fb99", width: 347 },
-    { title: "What the work teaches.", from: "#f9f0ff", to: "#d397ff", arrow: "#d397ff", width: 387 },
-    { title: "What the work teaches.", from: "#fff7de", to: "#ffd36c", arrow: "#ffd36c", width: 387 },
+  /* The essay pills under the hero: one per essay published in Sanity, newest
+     first, each linking to it. They take these gradients (the design's five
+     pills) in turn: `from`/`to` the gradient, `arrow` the arrow's colour. */
+  pillTones: [
+    { from: "#ffb39b", to: "#fff4e4", arrow: "#ffe6d8" },
+    { from: "#f8f2ff", to: "#5cd6ff", arrow: "#5cd6ff" },
+    { from: "#f5fff4", to: "#86fb99", arrow: "#86fb99" },
+    { from: "#f9f0ff", to: "#d397ff", arrow: "#d397ff" },
+    { from: "#fff7de", to: "#ffd36c", arrow: "#ffd36c" },
   ],
+  /* Shown instead of the pills while no essay is published. */
+  empty: "Nothing published yet. Subscribe to get the first note in your inbox.",
   themes: {
     heading: "Themes",
     /* In the design's order: the first two sit beside the heading. */
@@ -1169,6 +1178,8 @@ export const before = {
     headline: "Season one. The opening arc.",
     /* "Eight conversations." is generated from the number of cards shown. */
     subTail: "One thread: the moments that shape the people who shape the world.",
+    /* Shown instead of the cards until episode 01 is released. */
+    announce: "The season one lineup will be announced soon.",
     guest: "Guest to be announced",
     duration: "Duration to be confirmed",
     date: "Date to be confirmed",
@@ -1436,15 +1447,15 @@ export const pressPage = {
   ],
   /* `source`: as on the homepage strip (copy v3.1); empty shows nothing. */
   stats: [
-    { value: "35,000+", label: "People protected", visual: "avatars", source: "" },
-    { value: "190+", label: "Countries", visual: "globe", source: "" },
-    { value: "500+", label: "Joble businesses", visual: null, source: "" },
-    { value: "50+", label: "Language pairs for live emergency translation", visual: null, source: "" },
-    { value: "700+", label: "Engineers placed by Zarttech", visual: null, source: "" },
-    { value: "2,000+", label: "Trained by the Zarttalent Foundation", visual: null, source: "" },
+    { value: "35,000+", label: "People protected", visual: "avatars", source: MYHIVES_SRC },
+    { value: "190+", label: "Countries", visual: "globe", source: MYHIVES_SRC },
+    { value: "500+", label: "Joble businesses", visual: null, source: JOBLE_SRC },
+    { value: "50+", label: "Language pairs for live emergency translation", visual: null, source: MYHIVES_SRC },
+    { value: "700+", label: "Engineers placed by Zarttech", visual: null, source: "Zarttech records" },
+    { value: "2,000+", label: "Trained by the Zarttalent Foundation", visual: null, source: "Zarttalent Foundation report" },
   ],
   contact: {
-    email: "hello@tnajulo.com",
+    email: "support@tnajulo.com",
     subject: "Press",
   },
 } as const;

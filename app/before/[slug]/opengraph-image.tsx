@@ -1,4 +1,4 @@
-import { getEpisode } from "@/lib/episodes";
+import { getPublicEpisodes } from "@/lib/episodes";
 import { renderOg, size, contentType } from "@/lib/og-image";
 
 /* Per-episode share image (brief §4.3), on the BEFORE ground: episode
@@ -9,7 +9,7 @@ export const alt = "An episode of BEFORE, hosted by Nelson T. Ajulo";
 
 export default async function Image(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params;
-  const episode = await getEpisode(slug);
+  const episode = (await getPublicEpisodes()).find((ep) => ep.slug === slug);
 
   return renderOg({
     eyebrow: episode

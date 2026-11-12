@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getEpisodes, getPosts } from "@/lib/episodes";
+import { getPublicEpisodes, getPosts } from "@/lib/episodes";
 
 /* ============================================================================
    sitemap.xml
@@ -28,11 +28,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE}/ai-africa`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${SITE}/before`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${SITE}/speaking`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE}/writing`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
     { url: `${SITE}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.5 },
   ];
 
-  const [episodes, posts] = await Promise.all([getEpisodes(), getPosts()]);
+  const [episodes, posts] = await Promise.all([getPublicEpisodes(), getPosts()]);
 
   const episodeRoutes: MetadataRoute.Sitemap = episodes.map((ep) => ({
     url: `${SITE}/before/${ep.slug}`,
@@ -50,5 +49,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     }));
 
-  return [...staticRoutes, ...episodeRoutes, ...postRoutes];
+  /* /writing is always listed, with each published essay. */
+  const writingRoutes: MetadataRoute.Sitemap = [
+    { url: `${SITE}/writing`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    ...postRoutes,
+  ];
+
+  return [...staticRoutes, ...episodeRoutes, ...writingRoutes];
 }

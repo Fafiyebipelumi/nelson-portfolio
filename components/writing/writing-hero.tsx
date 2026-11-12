@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { writingPage } from "@/lib/content";
 import { Stripes } from "../stripes";
 import { GradientPill } from "../gradient-pill";
@@ -8,15 +7,20 @@ import { LIME_GLOW } from "../glows";
    WRITING — HERO  (Figma redesign, November 2026)
    ----------------------------------------------------------------------------
    Black with a blue-violet glow down the left edge and a broad yellow-green
-   one at the right, the centred serif title and the premise, then the essay
-   pills: gradient capsules, each with a dark arrow disc, at their Figma
-   widths (px at the 1440 frame, so vw here), which wrap into the design's
-   centred rows of three and two. On phones
-   they stack full width. A pill links to its essay once one with the same
-   title exists (`hrefs`); until then it is shown but inert.
+   one at the right, the centred serif title and the premise, then one pill
+   per published essay (newest first), each linking to it: gradient
+   capsules with a dark arrow disc, taking the design's five gradients in
+   turn and sized to their title, wrapping into centred rows. On phones they
+   stack full width. With nothing published there are no pills, only a line
+   that says so.
    ========================================================================== */
 
-export function WritingHero({ hrefs }: { hrefs: readonly (string | null)[] }) {
+export interface EssayPill {
+  title: string;
+  href: string;
+}
+
+export function WritingHero({ essays }: { essays: readonly EssayPill[] }) {
   const H = writingPage.hero;
   return (
     <section
@@ -45,28 +49,39 @@ export function WritingHero({ hrefs }: { hrefs: readonly (string | null)[] }) {
           {H.body[1]}
         </p>
 
-        <ul className="mt-10 flex w-full flex-col gap-3 lg:mt-[3.4rem] lg:max-w-none lg:max-w-[94vw] lg:flex-row lg:flex-wrap lg:justify-center lg:gap-x-[0.6vw] lg:gap-y-4">
-          {writingPage.featured.map((pill, i) => (
-            <li
-              key={`${pill.title}-${i}`}
-              className="animate-rise lg:w-[var(--pill-w)]"
-              style={
-                {
-                  "--pill-w": `${(pill.width / 1440) * 100}vw`,
-                  animationDelay: `${0.42 + i * 0.07}s`,
-                } as CSSProperties
-              }
-            >
-              <GradientPill
-                label={pill.title}
-                from={pill.from}
-                to={pill.to}
-                arrow={pill.arrow}
-                href={hrefs[i] ?? null}
-              />
-            </li>
-          ))}
-        </ul>
+        {essays.length > 0 ? (
+          <ul className="mt-10 flex w-full flex-col gap-3 lg:mt-[3.4rem] lg:max-w-[94vw] lg:flex-row lg:flex-wrap lg:justify-center lg:gap-x-[0.6vw] lg:gap-y-4">
+            {essays.map((essay, i) => {
+              const tone =
+                writingPage.pillTones[i % writingPage.pillTones.length];
+              return (
+                <li
+                  key={essay.href}
+                  className="animate-rise lg:max-w-[46vw] lg:min-w-[23.7vw]"
+                  style={{ animationDelay: `${0.42 + Math.min(i, 8) * 0.07}s` }}
+                >
+                  <GradientPill
+                    label={essay.title}
+                    from={tone.from}
+                    to={tone.to}
+                    arrow={tone.arrow}
+                    href={essay.href}
+                    fluid
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+
+        {essays.length === 0 ? (
+          <p
+            className="animate-rise text-stone mt-8 font-sans text-[1.0625rem] font-medium lg:mt-10"
+            style={{ animationDelay: "0.8s" }}
+          >
+            {writingPage.empty}
+          </p>
+        ) : null}
       </div>
 
       <Stripes from="#000" to="#5e5a51" fade className="relative z-10" />

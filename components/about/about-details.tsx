@@ -42,7 +42,7 @@ export function AboutDetails() {
                 <h2 className="mt-6 origin-left font-serif text-[clamp(1.5rem,1.8vw,1.75rem)] leading-none tracking-[-0.02em] [scale:0.88_1]">
                   {item.heading}
                 </h2>
-                <p className="text-sand mt-5 max-w-[30rem] font-sans text-base leading-[1.45] md:text-[0.9375rem]">
+                <p className="text-sand mt-5 max-w-[30rem] font-sans text-[1.0625rem] sm:text-base leading-[1.45] md:text-[0.9375rem]">
                   {item.body}
                 </p>
               </StaggerItem>

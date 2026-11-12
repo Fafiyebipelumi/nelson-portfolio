@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getEpisode, getEpisodes } from "@/lib/episodes";
+import { getEpisode, getPublicEpisodes } from "@/lib/episodes";
 import { urlForImage } from "@/sanity/lib/image";
 import { JsonLd } from "@/components/json-ld";
 import { EpisodeHero } from "@/components/episode/episode-hero";
@@ -25,7 +25,7 @@ import { BeforeNewsletter } from "@/components/before/before-newsletter";
 export const revalidate = 60;
 
 export async function generateStaticParams() {
-  const episodes = await getEpisodes();
+  const episodes = await getPublicEpisodes();
   return episodes.map((ep) => ({ slug: ep.slug }));
 }
 
@@ -33,7 +33,7 @@ export async function generateMetadata(
   props: PageProps<"/before/[slug]">,
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const episode = await getEpisode(slug);
+  const episode = (await getPublicEpisodes()).find((ep) => ep.slug === slug);
   if (!episode) return { title: "Episode not found" };
 
   const description = episode.shortDescription;
@@ -48,8 +48,13 @@ export async function generateMetadata(
 
 export default async function EpisodePage(props: PageProps<"/before/[slug]">) {
   const { slug } = await props.params;
-  const episode = await getEpisode(slug);
-  if (!episode) notFound();
+  const [episode, published] = await Promise.all([
+    getEpisode(slug),
+    getPublicEpisodes(),
+  ]);
+  /* Only released episodes, and only once season one is live (EA review):
+     anything else in Sanity 404s. */
+  if (!episode || !published.some((ep) => ep.slug === episode.slug)) notFound();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -70,9 +75,18 @@ export default async function EpisodePage(props: PageProps<"/before/[slug]">) {
   };
 
   const platforms = [
-    episode.spotifyUrl && { label: "Listen on Spotify", href: episode.spotifyUrl },
-    episode.appleUrl && { label: "Listen on Apple Podcasts", href: episode.appleUrl },
-    episode.youtubeUrl && { label: "Watch on YouTube", href: episode.youtubeUrl },
+    episode.spotifyUrl && {
+      label: "Listen on Spotify",
+      href: episode.spotifyUrl,
+    },
+    episode.appleUrl && {
+      label: "Listen on Apple Podcasts",
+      href: episode.appleUrl,
+    },
+    episode.youtubeUrl && {
+      label: "Watch on YouTube",
+      href: episode.youtubeUrl,
+    },
   ].filter(Boolean) as Array<{ label: string; href: string }>;
 
   const index = String(episode.number).padStart(2, "0");
@@ -86,7 +100,10 @@ export default async function EpisodePage(props: PageProps<"/before/[slug]">) {
         year: "numeric",
       })
     : null;
-  const meta = [released ? `Released ${released}` : "Date to be confirmed", episode.duration]
+  const meta = [
+    released ? `Released ${released}` : "Date to be confirmed",
+    episode.duration,
+  ]
     .filter(Boolean)
     .join(" · ");
 

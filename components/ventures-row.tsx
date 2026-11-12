@@ -42,12 +42,12 @@ export function VenturesRow({ toPages = false }: { toPages?: boolean }) {
               {venture.tagline}
             </h3>
 
-            <p className="text-sand mt-5 max-w-[34rem] font-sans text-base leading-[1.45] tracking-[-0.01em] md:text-[0.9375rem] lg:text-base">
+            <p className="text-sand mt-5 max-w-[34rem] font-sans text-[1.0625rem] sm:text-base leading-[1.45] tracking-[-0.01em] md:text-[0.9375rem] lg:text-base">
               {venture.body}
             </p>
 
             <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-4 pt-8 xl:flex-nowrap">
-              <p className="font-sans text-[0.9375rem] font-medium tracking-[0.01em] uppercase xl:text-[0.9375rem] xl:whitespace-nowrap">
+              <p className="font-sans text-base sm:text-[0.9375rem] font-medium tracking-[0.01em] uppercase xl:text-[0.9375rem] xl:whitespace-nowrap">
                 {venture.role}
               </p>
               <ActionButton href={toPages ? `/${venture.id}` : venture.cta.href} variant="dark" size="sm">
