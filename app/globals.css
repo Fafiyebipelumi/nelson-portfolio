@@ -814,12 +814,12 @@ html[data-splash="done"] body > header {
 }
 
 /* Phones: the grey body text is lifted a step brighter so it reads easily on
-   a small screen (EA review, November 2026). Desktop keeps the design's
+   a small screen (EA reviews, November 2026: lifted twice). Desktop keeps the design's
    values. */
 @media (max-width: 639.98px) {
   :root {
-    --color-sand: #e0d9ca;
-    --color-stone: #c2bcae;
+    --color-sand: #ebe5d6;
+    --color-stone: #d2ccbe;
   }
 }
 

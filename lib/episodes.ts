@@ -112,15 +112,31 @@ export async function getSeasonStatus(): Promise<{ live: boolean; latest: Episod
   return { live, latest: live ? (released[0] ?? null) : null };
 }
 
+/** Released episodes the public may see: none until season one is live
+ *  (episode 01 released). Feeds the episode pages, sitemap and RSS, so
+ *  test or early entries in Sanity never surface before launch. */
+export async function getPublicEpisodes(): Promise<Episode[]> {
+  const released = await getEpisodes();
+  return released.some((ep) => ep.number === 1) ? released : [];
+}
+
+/* Test posts in Sanity that must never appear on the site. Writing goes
+   live on its own: /writing shows its empty state while no other post is
+   published, and the essays appear (within a minute) once the first real
+   one is published. Safe to empty this list once the test post is deleted. */
+const HIDDEN_POST_SLUGS = new Set(["the-future-of-ai"]);
+const visible = (slug: string | undefined) => !!slug && !HIDDEN_POST_SLUGS.has(slug);
+
 export async function getPosts(): Promise<Post[]> {
   if (!client) return [];
   try {
-    return await client.fetch(
+    const posts: Post[] = await client.fetch(
       `*[_type == "post" && defined(slug.current) && publishedAt <= now()]
         | order(publishedAt desc){
           title, "slug": slug.current, kicker, publishedAt, excerpt, externalUrl
         }`,
     );
+    return posts.filter((post) => visible(post.slug));
   } catch {
     return [];
   }
@@ -129,7 +145,7 @@ export async function getPosts(): Promise<Post[]> {
 /** Full post including body Portable Text. Returns null when the post is
  *  missing or Sanity isn't configured; the caller decides what to render. */
 export async function getPost(slug: string): Promise<Post | null> {
-  if (!client) return null;
+  if (!client || !visible(slug)) return null;
   try {
     return await client.fetch(
       `*[_type == "post" && slug.current == $slug && publishedAt <= now()][0]{
@@ -146,9 +162,10 @@ export async function getPost(slug: string): Promise<Post | null> {
 export async function getPostSlugs(): Promise<string[]> {
   if (!client) return [];
   try {
-    return await client.fetch(
+    const slugs: string[] = await client.fetch(
       `*[_type == "post" && defined(slug.current) && publishedAt <= now()].slug.current`,
     );
+    return slugs.filter(visible);
   } catch {
     return [];
   }

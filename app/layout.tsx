@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { RevealObserver } from "@/components/reveal-observer";
 import { SiteHeader } from "@/components/site-header";
+import { SiteChrome } from "@/components/site-chrome";
 import { SiteFooter } from "@/components/site-footer";
 import { Analytics } from "@/components/analytics";
 import "./globals.css";
@@ -117,10 +118,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: SPLASH_SCRIPT }} />
       </head>
       <body className="bg-paper text-charcoal min-h-dvh">
-        {/* Header and footer are shared across every route. */}
-        <SiteHeader />
+        {/* Header and footer are shared across every route but /studio. */}
+        <SiteChrome>
+          <SiteHeader />
+        </SiteChrome>
         {children}
-        <SiteFooter />
+        <SiteChrome>
+          <SiteFooter />
+        </SiteChrome>
         {/* Drives every scroll reveal on the page from a single observer. */}
         <RevealObserver />
         <Analytics />

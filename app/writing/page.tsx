@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { social, writingPage } from "@/lib/content";
 import { getPosts } from "@/lib/episodes";
 import { WritingHero } from "@/components/writing/writing-hero";
 import { WritingThemes } from "@/components/writing/writing-themes";
@@ -32,29 +31,23 @@ export const metadata: Metadata = {
   },
 };
 
-/* Titles compared loosely: case, quotes and punctuation don't matter. */
-const normalise = (title: string) =>
-  title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-
 export default async function WritingPage() {
+  /* Empty until the first real essay is published (test posts are filtered
+     out in lib/episodes.ts); the page then fills in on its own. */
   const posts = await getPosts();
   const hrefOf = (post: (typeof posts)[number]) =>
     post.externalUrl ?? `/writing/${post.slug}`;
 
-  const byTitle = new Map(
-    posts.map((post) => [normalise(post.title), hrefOf(post)]),
-  );
-  const pillHrefs = writingPage.featured.map(
-    (pill) => byTitle.get(normalise(pill.title)) ?? null,
-  );
-  const latestHref = posts[0] ? hrefOf(posts[0]) : social.linkedin;
+  const essays = posts.map((post) => ({
+    title: post.title,
+    href: hrefOf(post),
+  }));
+  /* No essay yet: "Read the latest" renders inert (empty href). */
+  const latestHref = posts[0] ? hrefOf(posts[0]) : "";
 
   return (
     <main id="main">
-      <WritingHero hrefs={pillHrefs} />
+      <WritingHero essays={essays} />
       <WritingThemes latestHref={latestHref} />
     </main>
   );

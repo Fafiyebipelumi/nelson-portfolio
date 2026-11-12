@@ -21,8 +21,8 @@ import { Stripes } from "./stripes";
    ========================================================================== */
 
 /* `live`: whether BEFORE season one has started (episode 01 released). Until
-   then the "Listen to BEFORE" button carries an arrow, not a play icon, so
-   nothing reads as playable before launch. */
+   then the button reads "Discover BEFORE" with an arrow, not "Listen to
+   BEFORE" with a play icon, so nothing reads as playable before launch. */
 export function Hero({ live }: { live: boolean }) {
   return (
     <section
@@ -104,7 +104,7 @@ export function Hero({ live }: { live: boolean }) {
           >
             <ActionButton href={homeHero.ctas.primary.href}>
               {live ? <PlayIcon /> : null}
-              {homeHero.ctas.primary.label}
+              {live ? homeHero.ctas.primary.liveLabel : homeHero.ctas.primary.label}
               {live ? null : (
                 <ArrowUpRight
                   className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

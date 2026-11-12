@@ -23,7 +23,7 @@ export function BeforeSeatSponsor() {
             <h2 className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.4rem,4vw,3.6rem)] leading-[1.02] [scale:0.88_1]">
               {S.headline}
             </h2>
-            <p className="text-sand mt-6 font-sans text-base leading-[1.5] lg:text-[1.0625rem]">
+            <p className="text-sand mt-6 font-sans text-[1.0625rem] sm:text-base leading-[1.5] lg:text-[1.0625rem]">
               {S.body}
               <span className="text-cream mt-1 block font-medium">Subject line: {S.subject}</span>
             </p>
@@ -38,7 +38,7 @@ export function BeforeSeatSponsor() {
             <h2 className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.4rem,4vw,3.6rem)] leading-[1.02] [scale:0.88_1]">
               {P.headline}
             </h2>
-            <p className="text-sand mt-6 font-sans text-base leading-[1.5] lg:text-[1.0625rem]">{P.body}</p>
+            <p className="text-sand mt-6 font-sans text-[1.0625rem] sm:text-base leading-[1.5] lg:text-[1.0625rem]">{P.body}</p>
             <div className="mt-7">
               <ActionButton href={P.cta.href} variant="dark" size="sm">
                 {P.cta.label}

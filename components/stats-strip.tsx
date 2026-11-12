@@ -40,7 +40,7 @@ export function StatsStrip() {
                   {item.label}
                 </p>
                 {item.source ? (
-                  <p className="text-umber/70 mt-1.5 max-w-[14rem] font-sans text-[0.75rem] leading-snug">
+                  <p className="text-umber/80 mt-1.5 max-w-[14rem] font-sans text-[0.8125rem] leading-snug">
                     Source: {item.source}
                   </p>
                 ) : null}

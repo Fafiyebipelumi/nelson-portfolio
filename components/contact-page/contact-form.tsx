@@ -3,12 +3,14 @@
 /* ============================================================================
    CONTACT — ENQUIRY FORM  (Figma redesign, November 2026)
    ----------------------------------------------------------------------------
-   Cream band: the serif heading on the left, the form on the right (name and
+   Cream band with the form centred (the heading is screen-reader only, as
+   the hero carries the same line): name and
    email, organisation and desk, website, message), the privacy line and a
    Send button. Rounded light fields with a fine warm border.
 
-   Posts to the form service in NEXT_PUBLIC_PODCAST_FORM_ENDPOINT (Formspree,
-   recipient support@tnajulo.com), tagged with the chosen desk's subject.
+   Posts to /api/contact, which delivers to support@tnajulo.com with the
+   chosen desk's subject (through Resend once its key is set, Formspree until
+   then). A hidden "company" field is a honeypot for bots.
    Real validation, focus on the first error, and no silent success: an
    unconfigured or failed submit says so. Other pages can preselect a desk
    with ?desk=<key> (e.g. /contact?desk=speaking#enquiry).
@@ -21,7 +23,6 @@ import { contactPage } from "@/lib/content";
 import { actionButtonClasses } from "../action-button";
 import { Stripes } from "../stripes";
 
-const ENDPOINT = process.env.NEXT_PUBLIC_PODCAST_FORM_ENDPOINT;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const REQUIRED = ["name", "email", "message"] as const;
 
@@ -65,21 +66,12 @@ export function ContactForm() {
       return;
     }
 
-    const chosen = desks.find((d) => d.key === data.get("deskKey")) ?? desks[0];
     setStatus("submitting");
     try {
-      if (!ENDPOINT) throw new Error("Form endpoint not configured");
-      const res = await fetch(ENDPOINT, {
+      const res = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          ...Object.fromEntries(data.entries()),
-          desk: chosen.title,
-          _subject: chosen.subject,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(data.entries())),
       });
       if (!res.ok) throw new Error("Request failed");
       setStatus("success");
@@ -109,11 +101,10 @@ export function ContactForm() {
       aria-labelledby="enquiry-heading"
       className="bg-cream text-umber scroll-mt-24"
     >
-      <div className="gutter-tight grid gap-10 pt-16 pb-20 lg:grid-cols-[40.6%_minmax(0,1fr)] lg:gap-0 lg:pt-[8.1rem] lg:pb-[7.4rem]">
-        <h2
-          id="enquiry-heading"
-          className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.6rem,4.75vw,4.6rem)] leading-none tracking-[-0.05em] [scale:0.88_1] lg:pt-1"
-        >
+      <div className="gutter-tight mx-auto max-w-[56rem] pt-16 pb-20 lg:pt-[6.5rem] lg:pb-[7.4rem]">
+        {/* The hero already says "Route it to the right desk", so the
+            heading here is for screen readers only (EA review). */}
+        <h2 id="enquiry-heading" className="sr-only">
           {F.heading}
         </h2>
 
@@ -139,6 +130,13 @@ export function ContactForm() {
             noValidate
             className="grid gap-x-7 gap-y-7 sm:grid-cols-2"
           >
+            {/* Honeypot: hidden from people and assistive tech; bots fill it. */}
+            <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+              <label>
+                Company
+                <input type="text" name="company" tabIndex={-1} autoComplete="off" />
+              </label>
+            </div>
             <div>
               <label htmlFor="name" className={label}>
                 {F.labels.name}

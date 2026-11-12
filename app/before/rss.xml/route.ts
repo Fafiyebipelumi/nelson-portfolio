@@ -1,4 +1,4 @@
-import { getEpisodes } from "@/lib/episodes";
+import { getPublicEpisodes } from "@/lib/episodes";
 import { podcast } from "@/lib/content";
 
 /* ============================================================================
@@ -21,7 +21,7 @@ function escapeXml(value: string): string {
 }
 
 export async function GET() {
-  const episodes = await getEpisodes();
+  const episodes = await getPublicEpisodes();
 
   const items = episodes
     .map((ep) => {

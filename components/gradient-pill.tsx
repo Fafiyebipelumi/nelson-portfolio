@@ -17,6 +17,7 @@ export function GradientPill({
   to,
   arrow,
   href,
+  fluid = false,
 }: {
   label: string;
   from: string;
@@ -25,14 +26,17 @@ export function GradientPill({
   arrow?: string;
   /** Destination; omit (or null) to render the pill without a link. */
   href?: string | null;
+  /** Sized to its label (Writing essays) instead of a fixed width: the
+      label may wrap to two lines and keeps clear of the arrow. */
+  fluid?: boolean;
 }) {
   const hasArrow = Boolean(arrow);
   const body = (
     <>
       <span
-        className={`text-umber font-sans text-[1.3rem] leading-tight tracking-[-0.015em] lg:text-[clamp(1.15rem,1.5vw,1.45rem)] lg:whitespace-nowrap ${
-          hasArrow ? "text-left" : "w-full text-center"
-        }`}
+        className={`text-umber font-sans text-[1.3rem] leading-tight tracking-[-0.015em] lg:text-[clamp(1.15rem,1.5vw,1.45rem)] ${
+          fluid ? "line-clamp-2 lg:pr-[1.5vw]" : "lg:whitespace-nowrap"
+        } ${hasArrow ? "text-left" : "w-full text-center"}`}
       >
         {label}
       </span>

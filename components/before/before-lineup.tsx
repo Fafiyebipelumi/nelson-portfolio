@@ -38,7 +38,21 @@ export interface Card {
   href: string | null;
 }
 
-const COUNT = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+const COUNT = [
+  "Zero",
+  "One",
+  "Two",
+  "Three",
+  "Four",
+  "Five",
+  "Six",
+  "Seven",
+  "Eight",
+  "Nine",
+  "Ten",
+  "Eleven",
+  "Twelve",
+];
 
 function monthYear(iso?: string): string | null {
   if (!iso) return null;
@@ -58,7 +72,11 @@ export function fromEpisode(ep: Episode): Card {
   const month = monthYear(ep.publishedAt);
   const out = released(ep);
   const day = out
-    ? new Date(ep.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+    ? new Date(ep.publishedAt).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
     : null;
   return {
     key: ep.slug,
@@ -68,13 +86,43 @@ export function fromEpisode(ep: Episode): Card {
     guest: [ep.guestName || L.guest, ep.duration || L.duration].join(". "),
     photo: photo ?? L.photo,
     guestPhoto: Boolean(photo),
-    when: day ? `Out now. Released ${day}` : month ? `Expected ${month}` : `${L.date} / ${L.window}`,
+    when: day
+      ? `Out now. Released ${day}`
+      : month
+        ? `Expected ${month}`
+        : `${L.date} / ${L.window}`,
     href: out ? `/before/${ep.slug}` : null,
   };
 }
 
-export async function BeforeLineup() {
-  const [out, upcoming] = await Promise.all([getEpisodes(), getUpcomingEpisodes()]);
+export async function BeforeLineup({ live }: { live: boolean }) {
+  /* Before launch: no cards at all, just the announcement (EA review,
+     November 2026). Nothing unconfirmed shows until episode 01 is out. */
+  if (!live) {
+    return (
+      <section
+        id="lineup"
+        aria-label="Season one"
+        className="bg-umber text-cream"
+      >
+        <div className="gutter pt-16 pb-20 sm:pt-20 lg:pt-24 lg:pb-[7.5rem]">
+          <Reveal>
+            <h2 className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.4rem,4vw,3.6rem)] leading-[1.02] [scale:0.88_1]">
+              {L.headline}
+            </h2>
+            <p className="mt-4 font-sans text-base font-medium lg:text-[1.0625rem]">
+              {L.announce}
+            </p>
+          </Reveal>
+        </div>
+      </section>
+    );
+  }
+
+  const [out, upcoming] = await Promise.all([
+    getEpisodes(),
+    getUpcomingEpisodes(),
+  ]);
   const season = [...out, ...upcoming].sort((a, b) => a.number - b.number);
   const cards: Card[] =
     season.length > 0
@@ -95,13 +143,19 @@ export async function BeforeLineup() {
   const sub = `${COUNT[n] ?? n} ${n === 1 ? "conversation" : "conversations"}. ${L.subTail}`;
 
   return (
-    <section id="lineup" aria-label="Season one" className="bg-umber text-cream">
+    <section
+      id="lineup"
+      aria-label="Season one"
+      className="bg-umber text-cream"
+    >
       <div className="gutter pt-16 pb-20 sm:pt-20 lg:pt-24 lg:pb-[7.5rem]">
         <Reveal>
           <h2 className="w-[calc(100%/0.88)] origin-left font-serif text-[clamp(2.4rem,4vw,3.6rem)] leading-[1.02] [scale:0.88_1]">
             {L.headline}
           </h2>
-          <p className="mt-4 font-sans text-base font-medium lg:text-[1.0625rem]">{sub}</p>
+          <p className="mt-4 font-sans text-base font-medium lg:text-[1.0625rem]">
+            {sub}
+          </p>
         </Reveal>
 
         <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
@@ -122,7 +176,14 @@ export function EpisodeCard({ card }: { card: Card }) {
     <CardShell href={card.href}>
       <div
         className="relative aspect-[16/11] overflow-hidden"
-        style={card.guestPhoto ? undefined : { background: "linear-gradient(180deg, #e4e4e2 0%, #b9b9b6 55%, #8d8c88 100%)" }}
+        style={
+          card.guestPhoto
+            ? undefined
+            : {
+                background:
+                  "linear-gradient(180deg, #e4e4e2 0%, #b9b9b6 55%, #8d8c88 100%)",
+              }
+        }
       >
         <Image
           src={card.photo}
@@ -132,7 +193,10 @@ export function EpisodeCard({ card }: { card: Card }) {
           className={`object-cover ${card.guestPhoto ? "" : "mix-blend-multiply"}`}
           style={{ objectPosition: "50% 22%" }}
         />
-        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-[#2a241b]" />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-b from-transparent to-[#2a241b]"
+        />
       </div>
 
       <div className="flex flex-1 flex-col px-4 pt-1 pb-6">
@@ -142,9 +206,15 @@ export function EpisodeCard({ card }: { card: Card }) {
         <h3 className="mt-3 w-[calc(100%/0.88)] origin-left font-serif text-[1.3rem] leading-[1.05] [scale:0.88_1] [-webkit-text-stroke:0.4px_currentColor]">
           {card.title}
         </h3>
-        <p className="text-sand mt-2 font-sans text-base leading-[1.35] sm:text-[0.9375rem]">{card.blurb}</p>
-        <p className="text-stone mt-3 font-sans text-[0.8125rem] leading-snug sm:text-[0.75rem]">{card.guest}</p>
-        <p className={`mt-1 font-sans text-[0.75rem] leading-snug sm:text-[0.6875rem] ${card.href ? "text-cream font-medium" : "text-stone"}`}>
+        <p className="text-sand mt-2 font-sans text-base leading-[1.35] sm:text-[0.9375rem]">
+          {card.blurb}
+        </p>
+        <p className="text-stone mt-3 font-sans text-[0.8125rem] leading-snug sm:text-[0.75rem]">
+          {card.guest}
+        </p>
+        <p
+          className={`mt-1 font-sans text-[0.75rem] leading-snug sm:text-[0.6875rem] ${card.href ? "text-cream font-medium" : "text-stone"}`}
+        >
           {card.when}
         </p>
       </div>
@@ -157,7 +227,13 @@ const CARD =
 
 /* Released episodes are links that press into their shadow on hover, like
    the buttons; upcoming ones are plain cards. */
-function CardShell({ href, children }: { href: string | null; children: ReactNode }) {
+function CardShell({
+  href,
+  children,
+}: {
+  href: string | null;
+  children: ReactNode;
+}) {
   if (!href) return <article className={CARD}>{children}</article>;
   return (
     <Link

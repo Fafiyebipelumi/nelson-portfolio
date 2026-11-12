@@ -34,7 +34,7 @@ export function BeforeFormat() {
                 <h3 className="origin-left font-serif text-[1.45rem] leading-[1.1] [scale:0.88_1] [-webkit-text-stroke:0.4px_currentColor]">
                   {step.name}
                 </h3>
-                <p className="text-sand mt-1 font-sans text-base leading-snug sm:text-[0.9375rem]">{step.question}</p>
+                <p className="text-sand mt-1 font-sans text-[1.0625rem] leading-snug sm:text-[0.9375rem]">{step.question}</p>
               </div>
             </StaggerItem>
           ))}

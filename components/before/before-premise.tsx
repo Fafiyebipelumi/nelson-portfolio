@@ -28,7 +28,7 @@ export function BeforePremise() {
           {P.columns.map((col, c) => (
             <Reveal key={c} delay={c * 0.06} className="space-y-6">
               {col.map((p) => (
-                <p key={p} className="text-sand max-w-[40rem] font-sans text-base leading-[1.5] lg:text-[1.0625rem]">
+                <p key={p} className="text-sand max-w-[40rem] font-sans text-[1.0625rem] sm:text-base leading-[1.5] lg:text-[1.0625rem]">
                   {p}
                 </p>
               ))}

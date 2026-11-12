@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { footerListen, footerSocial, navigation } from "@/lib/content";
 import { ListenIcon, SocialIcon } from "./footer-icons";
+import { getSeasonStatus } from "@/lib/episodes";
 
 /* ============================================================================
    FOOTER  (Figma redesign, November 2026)
@@ -17,7 +18,9 @@ import { ListenIcon, SocialIcon } from "./footer-icons";
 
 const links = navigation.filter((item) => item.href !== "/");
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  /* Platform icons only once BEFORE is live: nothing to listen to before. */
+  const { live } = await getSeasonStatus();
   return (
     <footer className="bg-umber text-cream overflow-hidden">
       <div className="gutter pt-16 sm:pt-20 lg:pt-[5.5rem]">
@@ -31,7 +34,7 @@ export function SiteFooter() {
               Nelson T. Ajulo
             </Link>
             <ul className="mt-5 flex items-center gap-2.5" aria-label="Social">
-              {footerSocial.map((item) => (
+              {footerSocial.filter((item) => item.href).map((item) => (
                 <li key={item.id} className="size-7">
                   <IconLink href={item.href} label={item.label}>
                     <SocialIcon id={item.id} />
@@ -78,19 +81,23 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          {/* Podcast platforms */}
-          <ul
-            className="flex items-center gap-2.5 lg:justify-end lg:pt-2"
-            aria-label="Listen to BEFORE"
-          >
-            {footerListen.map((item) => (
-              <li key={item.id} className="size-8">
-                <IconLink href={item.href} label={item.label}>
-                  <ListenIcon id={item.id} />
-                </IconLink>
-              </li>
-            ))}
-          </ul>
+          {/* Podcast platforms (an empty cell before launch keeps the grid) */}
+          {live ? (
+            <ul
+              className="flex items-center gap-2.5 lg:justify-end lg:pt-2"
+              aria-label="Listen to BEFORE"
+            >
+              {footerListen.map((item) => (
+                <li key={item.id} className="size-8">
+                  <IconLink href={item.href} label={item.label}>
+                    <ListenIcon id={item.id} />
+                  </IconLink>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div aria-hidden="true" />
+          )}
         </div>
 
         {/* Dashed rule */}
@@ -128,7 +135,12 @@ function IconLink({
 }) {
   if (!href) {
     return (
-      <span role="img" aria-label={label} title={`${label} (coming soon)`} className="block size-full">
+      <span
+        role="img"
+        aria-label={label}
+        title={`${label} (coming soon)`}
+        className="block size-full"
+      >
         {children}
       </span>
     );
